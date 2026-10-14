@@ -1,3 +1,4 @@
+using Assets._Project.Develop.Runtime.Utilities.ConfigsManagement;
 using Assets._Project.Develop.Runtime.Utilities.SceneManagement;
 using VContainer;
 
@@ -17,7 +18,8 @@ namespace Assets._Project.Develop.Runtime.UI.MainMenu
             return new MainMenuScreenPresenter(
                 view,
                 _container.Resolve<ProjectPresentersFactory>(),
-                _container.Resolve<SceneSwitcherService>());
+                _container.Resolve<SceneSwitcherService>(),
+                _container.Resolve<ConfigsProviderService>());
         }
     }
 }

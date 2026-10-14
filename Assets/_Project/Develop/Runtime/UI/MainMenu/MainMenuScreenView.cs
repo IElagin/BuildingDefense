@@ -1,6 +1,7 @@
 using System;
 using Assets._Project.Develop.Runtime.UI.CommonViews;
 using Assets._Project.Develop.Runtime.UI.Core;
+using Assets._Project.Develop.Runtime.UI.Statistics;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,6 +12,7 @@ namespace Assets._Project.Develop.Runtime.UI.MainMenu
         public event Action PlayButtonClicked;
 
         [field: SerializeField] public IconTextListView WalletView { get; private set; }
+        [field: SerializeField] public StatisticsView StatisticsView { get; private set; }
 
         [SerializeField] private Button _playButton;
 

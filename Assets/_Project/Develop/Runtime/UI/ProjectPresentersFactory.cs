@@ -1,10 +1,14 @@
 using Assets._Project.Develop.Runtime.Configs.Meta.Wallet;
+using Assets._Project.Develop.Runtime.Meta.Features.Statistics;
 using Assets._Project.Develop.Runtime.Meta.Features.Wallet;
 using Assets._Project.Develop.Runtime.UI.CommonViews;
 using Assets._Project.Develop.Runtime.UI.Core;
+using Assets._Project.Develop.Runtime.UI.EndGamePopup;
+using Assets._Project.Develop.Runtime.UI.Statistics;
 using Assets._Project.Develop.Runtime.UI.Wallet;
 using Assets._Project.Develop.Runtime.Utilities.ConfigsManagement;
 using Assets._Project.Develop.Runtime.Utilities.Reactive;
+using Assets._Project.Develop.Runtime.Utilities.SceneManagement;
 using VContainer;
 
 namespace Assets._Project.Develop.Runtime.UI
@@ -37,6 +41,22 @@ namespace Assets._Project.Develop.Runtime.UI
                 this,
                 _container.Resolve<ViewsFactory>(),
                 view);
+        }
+
+        public StatisticsPresenter CreateStatisticsPresenter(StatisticsView view)
+        {
+            return new StatisticsPresenter(
+                _container.Resolve<GameStatisticsService>(),
+                view);
+        }
+
+        public EndGamePopupPresenter CreateEndGamePopupPresenter(EndGamePopupView view, string title, string message)
+        {
+            return new EndGamePopupPresenter(
+                view,
+                _container.Resolve<SceneSwitcherService>(),
+                title,
+                message);
         }
     }
 }

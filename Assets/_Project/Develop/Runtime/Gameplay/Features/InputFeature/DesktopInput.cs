@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
 
@@ -21,6 +22,51 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.InputFeature
                     return Vector3.zero;
 
                 return new Vector3(GetAxis(keyboard.aKey, keyboard.dKey), 0, GetAxis(keyboard.sKey, keyboard.wKey));
+            }
+        }
+
+        public Vector2 PointerPosition
+        {
+            get
+            {
+                Mouse mouse = Mouse.current;
+
+                if (mouse == null)
+                    return Vector2.zero;
+
+                return mouse.position.ReadValue();
+            }
+        }
+
+        // A click on a HUD button must not also hit the ground under it.
+        public bool IsPointerPressed
+        {
+            get
+            {
+                if (IsEnabled == false)
+                    return false;
+
+                Mouse mouse = Mouse.current;
+
+                if (mouse == null || mouse.leftButton.wasPressedThisFrame == false)
+                    return false;
+
+                EventSystem eventSystem = EventSystem.current;
+
+                return eventSystem == null || eventSystem.IsPointerOverGameObject() == false;
+            }
+        }
+
+        public bool IsStartWavePressed
+        {
+            get
+            {
+                if (IsEnabled == false)
+                    return false;
+
+                Keyboard keyboard = Keyboard.current;
+
+                return keyboard != null && keyboard.spaceKey.wasPressedThisFrame;
             }
         }
 

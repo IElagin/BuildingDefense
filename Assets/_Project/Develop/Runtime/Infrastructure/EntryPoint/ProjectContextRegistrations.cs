@@ -1,4 +1,5 @@
 using VContainer;
+using Assets._Project.Develop.Runtime.Meta.Features.Statistics;
 using Assets._Project.Develop.Runtime.Meta.Features.Wallet;
 using Assets._Project.Develop.Runtime.UI;
 using Assets._Project.Develop.Runtime.UI.Core;
@@ -49,9 +50,12 @@ namespace Assets._Project.Develop.Runtime.Infrastructure.EntryPoint
 
             container.Register(CreateTimerServiceFactory, Lifetime.Singleton);
 
+            container.Register(CreateGameStatisticsService, Lifetime.Singleton);
+
             container.RegisterBuildCallback(c =>
             {
                 c.Resolve<WalletService>();
+                c.Resolve<GameStatisticsService>();
             });
 
             container.RegisterDisposeCallback(c =>
@@ -63,6 +67,9 @@ namespace Assets._Project.Develop.Runtime.Infrastructure.EntryPoint
 
         private static TimerServiceFactory CreateTimerServiceFactory(IObjectResolver c)
             => new TimerServiceFactory();
+
+        private static GameStatisticsService CreateGameStatisticsService(IObjectResolver c)
+            => new GameStatisticsService(c.Resolve<PlayerDataProvider>());
 
         private static ViewsFactory CreateViewsFactory(IObjectResolver c)
             => new ViewsFactory(c.Resolve<ResourcesAssetsLoader>());

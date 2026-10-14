@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e53dcd26be29347f9aa14f890d9c0690, type: 3}
+  m_Name: LevelConfig2
+  m_EditorClassIdentifier: Assembly-CSharp::Assets._Project.Develop.Runtime.Configs.Gameplay.Levels.LevelConfig
+  _stageConfigs:
+  - {fileID: 11400000, guid: db5f428edced64660aeae23320c25fb0, type: 2}
+  - {fileID: 11400000, guid: b56b82d9f1cf44a3f99fb2ae5862a531, type: 2}
+  - {fileID: 11400000, guid: ebdf22487ad884b08a51cf5d96ebc25a, type: 2}
+  - {fileID: 11400000, guid: df9f1cabf0cfe4c4ba8db4f27e0d26c2, type: 2}
+  <BuildingMaxHealth>k__BackingField: 120
+  <RestDuration>k__BackingField: 12
+  <WinGoldReward>k__BackingField: 75

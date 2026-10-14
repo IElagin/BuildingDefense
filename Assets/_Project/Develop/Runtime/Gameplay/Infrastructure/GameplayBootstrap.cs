@@ -1,13 +1,17 @@
+using Assets._Project.Develop.Runtime.Configs.Gameplay.Levels;
 using Assets._Project.Develop.Runtime.Gameplay.EntitiesCore;
 using Assets._Project.Develop.Runtime.Gameplay.Features.AI;
+using Assets._Project.Develop.Runtime.Gameplay.Features.MainHero;
+using Assets._Project.Develop.Runtime.Gameplay.States;
 using Assets._Project.Develop.Runtime.Infrastructure;
+using Assets._Project.Develop.Runtime.UI.Gameplay;
 using VContainer;
 using Cysharp.Threading.Tasks;
+using Assets._Project.Develop.Runtime.Utilities.ConfigsManagement;
 using Assets._Project.Develop.Runtime.Utilities.SceneManagement;
 using System;
 using System.Threading;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace Assets._Project.Develop.Runtime.Gameplay.Infrastructure
 {
@@ -18,6 +22,8 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Infrastructure
 
         private EntitiesLifeContext _entitiesLifeContext;
         private AIBrainsContext _brainsContext;
+
+        private GameplayStatesContext _gameplayStatesContext;
 
         public override void ProcessRegistrations(IContainerBuilder container, IInputSceneArgs sceneArgs = null)
         {
@@ -41,24 +47,32 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Infrastructure
             _entitiesLifeContext = _container.Resolve<EntitiesLifeContext>();
             _brainsContext = _container.Resolve<AIBrainsContext>();
 
+            _gameplayStatesContext = _container.Resolve<GameplayStatesContext>();
+
+            LevelConfig levelConfig = _container
+                .Resolve<ConfigsProviderService>()
+                .GetConfig<LevelsListConfig>()
+                .GetBy(_inputArgs.LevelNumber);
+
+            _container.Resolve<MainHeroFactory>().Create(Vector3.zero, levelConfig.BuildingMaxHealth);
+
+            _container.Resolve<GameplayScreenPresenter>().Initialize();
+
             return UniTask.CompletedTask;
         }
 
         public override void Run()
         {
             Debug.Log("Старт геймплейной сцены");
+
+            _gameplayStatesContext.Run();
         }
 
         private void Update()
         {
             _brainsContext?.Update(Time.deltaTime);
             _entitiesLifeContext?.Update(Time.deltaTime);
-
-            if (Keyboard.current.fKey.wasPressedThisFrame)
-            {
-                SceneSwitcherService sceneSwitcherService = _container.Resolve<SceneSwitcherService>();
-                sceneSwitcherService.ProcessSwitchTo(Scenes.MainMenu).Forget(AsyncErrors.Report);
-            }
+            _gameplayStatesContext?.Update(Time.deltaTime);
         }
     }
 }

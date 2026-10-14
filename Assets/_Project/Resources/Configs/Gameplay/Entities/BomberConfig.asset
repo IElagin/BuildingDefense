@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b4143a3ae43749f49ef0942419ad905, type: 3}
+  m_Name: BomberConfig
+  m_EditorClassIdentifier: Assembly-CSharp::Assets._Project.Develop.Runtime.Configs.Gameplay.Entities.BomberConfig
+  <PrefabPath>k__BackingField: Entities/Bomber
+  <MoveSpeed>k__BackingField: 2.5
+  <RotationSpeed>k__BackingField: 720
+  <MaxHealth>k__BackingField: 50
+  <DeathProcessTime>k__BackingField: 0.8
+  <ReachDistance>k__BackingField: 2.2
+  <BlastRadius>k__BackingField: 1.5
+  <BlastDamage>k__BackingField: 10
