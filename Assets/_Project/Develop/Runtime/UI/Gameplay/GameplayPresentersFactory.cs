@@ -1,5 +1,5 @@
 using Assets._Project.Develop.Runtime.Configs.Gameplay.Defense;
-using Assets._Project.Develop.Runtime.Gameplay.Features.MainHero;
+using Assets._Project.Develop.Runtime.Gameplay.Features.BuildingFeature;
 using Assets._Project.Develop.Runtime.Gameplay.Features.Rest;
 using Assets._Project.Develop.Runtime.Gameplay.Features.StagesFeature;
 using Assets._Project.Develop.Runtime.Utilities.ConfigsManagement;
@@ -21,7 +21,7 @@ namespace Assets._Project.Develop.Runtime.UI.Gameplay
             return new GameplayScreenPresenter(
                 view,
                 _container.Resolve<ProjectPresentersFactory>(),
-                _container.Resolve<MainHeroHolderService>(),
+                _container.Resolve<BuildingHolderService>(),
                 _container.Resolve<StageProviderService>(),
                 _container.Resolve<RestPhaseService>(),
                 _container.Resolve<ConfigsProviderService>().GetConfig<DefenseConfig>());

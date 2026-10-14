@@ -2,18 +2,23 @@ using UnityEngine;
 
 namespace Assets._Project.Develop.Runtime.Gameplay.Features.Explosions
 {
-    // Visual only: grows the blast sphere to the entity's scale and fades it out.
+    // Visual only: grows the blast sphere to the entity's scale and fades it out over the explosion lifetime.
     public class ExplosionView : MonoBehaviour
     {
         [SerializeField] private Transform _sphere;
         [SerializeField] private Renderer _sphereRenderer;
-        [SerializeField, Min(0.01f)] private float _duration = 0.6f;
         [SerializeField, Range(0, 1)] private float _startScale = 0.3f;
 
+        private float _duration;
         private Vector3 _targetScale;
         private Material _material;
         private Color _color;
         private float _time;
+
+        public void Initialize(float duration)
+        {
+            _duration = duration;
+        }
 
         private void Awake()
         {

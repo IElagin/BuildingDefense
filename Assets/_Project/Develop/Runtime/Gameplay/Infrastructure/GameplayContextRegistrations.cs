@@ -1,10 +1,10 @@
 using Assets._Project.Develop.Runtime.Gameplay.EntitiesCore;
 using Assets._Project.Develop.Runtime.Gameplay.EntitiesCore.Mono;
 using Assets._Project.Develop.Runtime.Gameplay.Features.AI;
+using Assets._Project.Develop.Runtime.Gameplay.Features.BuildingFeature;
 using Assets._Project.Develop.Runtime.Gameplay.Features.Defense;
 using Assets._Project.Develop.Runtime.Gameplay.Features.Enemies;
 using Assets._Project.Develop.Runtime.Gameplay.Features.InputFeature;
-using Assets._Project.Develop.Runtime.Gameplay.Features.MainHero;
 using Assets._Project.Develop.Runtime.Gameplay.Features.Rest;
 using Assets._Project.Develop.Runtime.Gameplay.Features.StagesFeature;
 using Assets._Project.Develop.Runtime.Gameplay.States;
@@ -33,6 +33,8 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Infrastructure
             EntitiesLifeContext entitiesLifeContext = null;
             MonoEntitiesFactory monoEntitiesFactory = null;
 
+            container.Register(CreateLevelConfig, Lifetime.Scoped);
+
             container.Register(CreateEntitiesFactory, Lifetime.Scoped);
 
             container.Register(c => entitiesLifeContext ??= CreateEntitiesLifeContext(c), Lifetime.Transient);
@@ -43,7 +45,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Infrastructure
 
             container.Register(CreateAIBrainsContext, Lifetime.Scoped);
 
-            container.Register(CreateMainHeroFactory, Lifetime.Scoped);
+            container.Register(CreateBuildingFactory, Lifetime.Scoped);
             container.Register(CreateEnemiesFactory, Lifetime.Scoped);
 
             container.Register(CreateStagesFactory, Lifetime.Scoped);
@@ -52,15 +54,15 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Infrastructure
             container.Register(CreateRestPhaseService, Lifetime.Scoped);
 
             container.Register(CreateGroundPointService, Lifetime.Scoped);
-            container.Register(CreateExplosionAbilityService, Lifetime.Scoped);
-            container.Register(CreateMinesPlacementService, Lifetime.Scoped);
+            container.Register(CreateClickExplosionService, Lifetime.Scoped);
+            container.Register(CreateMinePlacementService, Lifetime.Scoped);
 
             container.Register(CreateGameplayStatesFactory, Lifetime.Scoped);
 
             container.Register(CreateGameplayStatesContext, Lifetime.Scoped);
 
-            container.Register(CreateMainHeroHolderService, Lifetime.Scoped);
-            container.RegisterBuildCallback(c => c.Resolve<MainHeroHolderService>().Initialize());
+            container.Register(CreateBuildingHolderService, Lifetime.Scoped);
+            container.RegisterBuildCallback(c => c.Resolve<BuildingHolderService>().Initialize());
 
             container.Register<IInputService>(CreateDesktopInput, Lifetime.Scoped);
 
@@ -119,7 +121,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Infrastructure
 
         private static GameplayStatesContext CreateGameplayStatesContext(IObjectResolver c)
         {
-            return new GameplayStatesContext(c.Resolve<GameplayStatesFactory>().CreateGameplayStateMachine(_inputArgs));
+            return new GameplayStatesContext(c.Resolve<GameplayStatesFactory>().CreateGameplayStateMachine());
         }
 
         private static GameplayStatesFactory CreateGameplayStatesFactory(IObjectResolver c)
@@ -127,25 +129,25 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Infrastructure
             return new GameplayStatesFactory(c);
         }
 
-        private static MainHeroHolderService CreateMainHeroHolderService(IObjectResolver c)
+        private static BuildingHolderService CreateBuildingHolderService(IObjectResolver c)
         {
-            return new MainHeroHolderService(c.Resolve<EntitiesLifeContext>());
+            return new BuildingHolderService(c.Resolve<EntitiesLifeContext>());
         }
 
-        private static MinesPlacementService CreateMinesPlacementService(IObjectResolver c)
+        private static MinePlacementService CreateMinePlacementService(IObjectResolver c)
         {
-            return new MinesPlacementService(
+            return new MinePlacementService(
                 c.Resolve<IInputService>(),
                 c.Resolve<GroundPointService>(),
                 c.Resolve<EntitiesFactory>(),
                 c.Resolve<WalletService>(),
-                c.Resolve<MainHeroHolderService>(),
+                c.Resolve<BuildingHolderService>(),
                 c.Resolve<ConfigsProviderService>().GetConfig<DefenseConfig>());
         }
 
-        private static ExplosionAbilityService CreateExplosionAbilityService(IObjectResolver c)
+        private static ClickExplosionService CreateClickExplosionService(IObjectResolver c)
         {
-            return new ExplosionAbilityService(
+            return new ClickExplosionService(
                 c.Resolve<IInputService>(),
                 c.Resolve<GroundPointService>(),
                 c.Resolve<EntitiesFactory>(),
@@ -161,14 +163,15 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Infrastructure
         private static RestPhaseService CreateRestPhaseService(IObjectResolver c)
         {
             return new RestPhaseService(
+                c.Resolve<IInputService>(),
                 c.Resolve<TimerServiceFactory>(),
-                GetLevelConfig(c).RestDuration);
+                c.Resolve<LevelConfig>().RestDuration);
         }
 
         private static StageProviderService CreateStageProviderService(IObjectResolver c)
         {
             return new StageProviderService(
-                GetLevelConfig(c),
+                c.Resolve<LevelConfig>(),
                 c.Resolve<StagesFactory>());
         }
 
@@ -182,9 +185,9 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Infrastructure
             return new EnemiesFactory(c);
         }
 
-        private static MainHeroFactory CreateMainHeroFactory(IObjectResolver c)
+        private static BuildingFactory CreateBuildingFactory(IObjectResolver c)
         {
-            return new MainHeroFactory(c);
+            return new BuildingFactory(c);
         }
 
         private static DesktopInput CreateDesktopInput(IObjectResolver c)
@@ -228,7 +231,13 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Infrastructure
                 c.Resolve<CollidersRegistryService>());
         }
 
-        private static LevelConfig GetLevelConfig(IObjectResolver c)
-            => c.Resolve<ConfigsProviderService>().GetConfig<LevelsListConfig>().GetBy(_inputArgs.LevelNumber);
+        // The single place where the scene learns its level; services take the LevelConfig from the container.
+        private static LevelConfig CreateLevelConfig(IObjectResolver c)
+        {
+            return c
+                .Resolve<ConfigsProviderService>()
+                .GetConfig<LevelsListConfig>()
+                .GetBy(_inputArgs.LevelNumber);
+        }
     }
 }

@@ -1,7 +1,7 @@
 using Assets._Project.Develop.Runtime.Configs.Gameplay.Stages;
 using Assets._Project.Develop.Runtime.Gameplay.EntitiesCore;
 using Assets._Project.Develop.Runtime.Gameplay.Features.Enemies;
-using Assets._Project.Develop.Runtime.Gameplay.Features.MainHero;
+using Assets._Project.Develop.Runtime.Gameplay.Features.BuildingFeature;
 using Assets._Project.Develop.Runtime.Utilities.Reactive;
 using System;
 using System.Collections.Generic;
@@ -18,7 +18,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.StagesFeature
         private readonly WaveStageConfig _config;
         private readonly EnemiesFactory _enemiesFactory;
         private readonly EntitiesLifeContext _entitiesLifeContext;
-        private readonly MainHeroHolderService _mainHeroHolderService;
+        private readonly BuildingHolderService _buildingHolderService;
 
         private readonly ReactiveEvent _completed = new();
         private readonly Dictionary<Entity, IDisposable> _aliveEnemiesToRemoveReason = new();
@@ -31,12 +31,12 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.StagesFeature
             WaveStageConfig config,
             EnemiesFactory enemiesFactory,
             EntitiesLifeContext entitiesLifeContext,
-            MainHeroHolderService mainHeroHolderService)
+            BuildingHolderService buildingHolderService)
         {
             _config = config;
             _enemiesFactory = enemiesFactory;
             _entitiesLifeContext = entitiesLifeContext;
-            _mainHeroHolderService = mainHeroHolderService;
+            _buildingHolderService = buildingHolderService;
         }
 
         public IReadOnlyEvent Completed => _completed;
@@ -120,7 +120,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.StagesFeature
 
         private Vector3 GetSpawnPosition()
         {
-            Vector3 center = _mainHeroHolderService.MainHero.Transform.position;
+            Vector3 center = _buildingHolderService.Building.Transform.position;
             float angle = Random.Range(0, FullTurn);
 
             return center + new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle)) * _config.SpawnRadius;

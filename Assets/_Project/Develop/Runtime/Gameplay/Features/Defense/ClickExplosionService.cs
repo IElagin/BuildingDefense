@@ -9,7 +9,7 @@ using UnityEngine;
 namespace Assets._Project.Develop.Runtime.Gameplay.Features.Defense
 {
     // During a wave a click on the ground creates an explosion; a cooldown limits how often.
-    public class ExplosionAbilityService : IDisposable
+    public class ClickExplosionService : IDisposable
     {
         private readonly IInputService _inputService;
         private readonly GroundPointService _groundPointService;
@@ -17,7 +17,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Defense
         private readonly DefenseConfig _config;
         private readonly TimerService _cooldown;
 
-        public ExplosionAbilityService(
+        public ClickExplosionService(
             IInputService inputService,
             GroundPointService groundPointService,
             EntitiesFactory entitiesFactory,
@@ -28,12 +28,12 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Defense
             _groundPointService = groundPointService;
             _entitiesFactory = entitiesFactory;
             _config = config;
-            _cooldown = timerServiceFactory.Create(config.ExplosionCooldown);
+            _cooldown = timerServiceFactory.Create(config.ClickExplosionCooldown);
         }
 
         public void Update()
         {
-            if (_inputService.IsPointerPressed == false)
+            if (_inputService.IsPointerClicked == false)
                 return;
 
             if (_cooldown.IsOver == false)
@@ -42,7 +42,13 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Defense
             if (_groundPointService.TryGetPoint(_inputService.PointerPosition, out Vector3 point) == false)
                 return;
 
-            _entitiesFactory.CreateExplosion(point, _config.ExplosionRadius, _config.ExplosionDamage, Teams.MainHero);
+            _entitiesFactory.CreateExplosion(
+                point,
+                _config.ClickExplosion,
+                _config.ClickExplosionRadius,
+                _config.ClickExplosionDamage,
+                Teams.Player);
+
             _cooldown.Restart();
         }
 

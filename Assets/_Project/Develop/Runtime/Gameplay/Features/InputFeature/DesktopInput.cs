@@ -22,7 +22,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.InputFeature
         }
 
         // A click on a HUD button must not also hit the ground under it.
-        public bool IsPointerPressed
+        public bool IsPointerClicked
         {
             get
             {

@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54cc90077963b40a1a6be1380488cbe1, type: 3}
+  m_Name: MineConfig
+  m_EditorClassIdentifier: Assembly-CSharp::Assets._Project.Develop.Runtime.Configs.Gameplay.Entities.MineConfig
+  <PrefabPath>k__BackingField: Entities/Mine
+  <TriggerRadius>k__BackingField: 1.2
+  <BlastRadius>k__BackingField: 3
+  <BlastDamage>k__BackingField: 100
+  <BlastExplosion>k__BackingField: {fileID: 11400000, guid: a2090d8af67fd46c699eaf42b3d1f2cc, type: 2}

@@ -1,6 +1,6 @@
 using Assets._Project.Develop.Runtime.Configs.Gameplay.Defense;
 using Assets._Project.Develop.Runtime.Gameplay.EntitiesCore;
-using Assets._Project.Develop.Runtime.Gameplay.Features.MainHero;
+using Assets._Project.Develop.Runtime.Gameplay.Features.BuildingFeature;
 using Assets._Project.Develop.Runtime.Gameplay.Features.Rest;
 using Assets._Project.Develop.Runtime.Gameplay.Features.StagesFeature;
 using Assets._Project.Develop.Runtime.UI.Core;
@@ -16,7 +16,7 @@ namespace Assets._Project.Develop.Runtime.UI.Gameplay
     {
         private readonly GameplayScreenView _screen;
         private readonly ProjectPresentersFactory _projectPresentersFactory;
-        private readonly MainHeroHolderService _mainHeroHolderService;
+        private readonly BuildingHolderService _buildingHolderService;
         private readonly StageProviderService _stageProviderService;
         private readonly RestPhaseService _restPhaseService;
         private readonly DefenseConfig _defenseConfig;
@@ -29,14 +29,14 @@ namespace Assets._Project.Develop.Runtime.UI.Gameplay
         public GameplayScreenPresenter(
             GameplayScreenView screen,
             ProjectPresentersFactory projectPresentersFactory,
-            MainHeroHolderService mainHeroHolderService,
+            BuildingHolderService buildingHolderService,
             StageProviderService stageProviderService,
             RestPhaseService restPhaseService,
             DefenseConfig defenseConfig)
         {
             _screen = screen;
             _projectPresentersFactory = projectPresentersFactory;
-            _mainHeroHolderService = mainHeroHolderService;
+            _buildingHolderService = buildingHolderService;
             _stageProviderService = stageProviderService;
             _restPhaseService = restPhaseService;
             _defenseConfig = defenseConfig;
@@ -51,7 +51,7 @@ namespace Assets._Project.Develop.Runtime.UI.Gameplay
             foreach (IPresenter presenter in _childPresenters)
                 presenter.Initialize();
 
-            _building = _mainHeroHolderService.MainHero;
+            _building = _buildingHolderService.Building;
 
             UpdateHealth();
             UpdatePhase();

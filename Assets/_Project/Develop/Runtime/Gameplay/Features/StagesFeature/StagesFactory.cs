@@ -1,7 +1,7 @@
 using Assets._Project.Develop.Runtime.Configs.Gameplay.Stages;
 using Assets._Project.Develop.Runtime.Gameplay.EntitiesCore;
 using Assets._Project.Develop.Runtime.Gameplay.Features.Enemies;
-using Assets._Project.Develop.Runtime.Gameplay.Features.MainHero;
+using Assets._Project.Develop.Runtime.Gameplay.Features.BuildingFeature;
 using System;
 using VContainer;
 
@@ -25,7 +25,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.StagesFeature
                         waveStageConfig,
                         _container.Resolve<EnemiesFactory>(),
                         _container.Resolve<EntitiesLifeContext>(),
-                        _container.Resolve<MainHeroHolderService>());
+                        _container.Resolve<BuildingHolderService>());
 
                 default:
                     throw new ArgumentException($"Not supported {stageConfig.GetType()} type config");

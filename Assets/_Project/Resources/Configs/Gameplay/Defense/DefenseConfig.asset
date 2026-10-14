@@ -12,12 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6cf2107f000b47caa1c696defbdc3bb, type: 3}
   m_Name: DefenseConfig
   m_EditorClassIdentifier: Assembly-CSharp::Assets._Project.Develop.Runtime.Configs.Gameplay.Defense.DefenseConfig
-  <ExplosionRadius>k__BackingField: 2.5
-  <ExplosionDamage>k__BackingField: 50
-  <ExplosionCooldown>k__BackingField: 0.6
+  <ClickExplosion>k__BackingField: {fileID: 11400000, guid: a2090d8af67fd46c699eaf42b3d1f2cc, type: 2}
+  <ClickExplosionRadius>k__BackingField: 2.5
+  <ClickExplosionDamage>k__BackingField: 50
+  <ClickExplosionCooldown>k__BackingField: 0.6
+  <Mine>k__BackingField: {fileID: 11400000, guid: 5ef8a5b43c6874d9a86fcc8d6740c4df, type: 2}
   <MinePrice>k__BackingField: 25
-  <MineTriggerRadius>k__BackingField: 1.2
-  <MineBlastRadius>k__BackingField: 3
-  <MineBlastDamage>k__BackingField: 100
   <MinMineDistanceToBuilding>k__BackingField: 3
   <MaxMineDistanceToBuilding>k__BackingField: 11

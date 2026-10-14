@@ -8,7 +8,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.InputFeature
 
         Vector2 PointerPosition { get; }
 
-        bool IsPointerPressed { get; }
+        bool IsPointerClicked { get; }
 
         bool IsStartWavePressed { get; }
     }

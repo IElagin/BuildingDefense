@@ -1,3 +1,4 @@
+using Assets._Project.Develop.Runtime.Configs.Gameplay.Entities;
 using Assets._Project.Develop.Runtime.Gameplay.EntitiesCore;
 using Assets._Project.Develop.Runtime.Gameplay.EntitiesCore.Systems;
 using Assets._Project.Develop.Runtime.Gameplay.Features.TeamsFeature;
@@ -10,6 +11,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Blast
     public class BlastSystem : IInitializableSystem, IUpdatableSystem
     {
         private readonly EntitiesFactory _entitiesFactory;
+        private readonly ExplosionConfig _explosionConfig;
 
         private ICompositeCondition _mustBlast;
         private ReactiveVariable<bool> _isBlasted;
@@ -18,9 +20,10 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Blast
         private ReactiveVariable<Teams> _team;
         private Transform _transform;
 
-        public BlastSystem(EntitiesFactory entitiesFactory)
+        public BlastSystem(EntitiesFactory entitiesFactory, ExplosionConfig explosionConfig)
         {
             _entitiesFactory = entitiesFactory;
+            _explosionConfig = explosionConfig;
         }
 
         public void OnInit(Entity entity)
@@ -42,7 +45,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Blast
                 return;
 
             _isBlasted.Value = true;
-            _entitiesFactory.CreateExplosion(_transform.position, _radius.Value, _damage.Value, _team.Value);
+            _entitiesFactory.CreateExplosion(_transform.position, _explosionConfig, _radius.Value, _damage.Value, _team.Value);
         }
     }
 }

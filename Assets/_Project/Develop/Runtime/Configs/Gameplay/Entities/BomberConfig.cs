@@ -13,5 +13,6 @@ namespace Assets._Project.Develop.Runtime.Configs.Gameplay.Entities
         [field: SerializeField, Min(0)] public float ReachDistance { get; private set; } = 2.2f;
         [field: SerializeField, Min(0)] public float BlastRadius { get; private set; } = 1.5f;
         [field: SerializeField, Min(0)] public float BlastDamage { get; private set; } = 10;
+        [field: SerializeField] public ExplosionConfig BlastExplosion { get; private set; }
     }
 }

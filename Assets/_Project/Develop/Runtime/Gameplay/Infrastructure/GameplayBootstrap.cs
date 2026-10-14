@@ -1,13 +1,11 @@
-using Assets._Project.Develop.Runtime.Configs.Gameplay.Levels;
 using Assets._Project.Develop.Runtime.Gameplay.EntitiesCore;
 using Assets._Project.Develop.Runtime.Gameplay.Features.AI;
-using Assets._Project.Develop.Runtime.Gameplay.Features.MainHero;
+using Assets._Project.Develop.Runtime.Gameplay.Features.BuildingFeature;
 using Assets._Project.Develop.Runtime.Gameplay.States;
 using Assets._Project.Develop.Runtime.Infrastructure;
 using Assets._Project.Develop.Runtime.UI.Gameplay;
 using VContainer;
 using Cysharp.Threading.Tasks;
-using Assets._Project.Develop.Runtime.Utilities.ConfigsManagement;
 using Assets._Project.Develop.Runtime.Utilities.SceneManagement;
 using System;
 using System.Threading;
@@ -49,12 +47,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Infrastructure
 
             _gameplayStatesContext = _container.Resolve<GameplayStatesContext>();
 
-            LevelConfig levelConfig = _container
-                .Resolve<ConfigsProviderService>()
-                .GetConfig<LevelsListConfig>()
-                .GetBy(_inputArgs.LevelNumber);
-
-            _container.Resolve<MainHeroFactory>().Create(Vector3.zero, levelConfig.BuildingMaxHealth);
+            _container.Resolve<BuildingFactory>().Create(Vector3.zero);
 
             _container.Resolve<GameplayScreenPresenter>().Initialize();
 

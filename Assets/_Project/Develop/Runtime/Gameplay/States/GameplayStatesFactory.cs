@@ -1,15 +1,13 @@
 using Assets._Project.Develop.Runtime.Configs.Gameplay.Levels;
+using Assets._Project.Develop.Runtime.Gameplay.Features.BuildingFeature;
 using Assets._Project.Develop.Runtime.Gameplay.Features.Defense;
 using Assets._Project.Develop.Runtime.Gameplay.Features.InputFeature;
-using Assets._Project.Develop.Runtime.Gameplay.Features.MainHero;
 using Assets._Project.Develop.Runtime.Gameplay.Features.Rest;
 using Assets._Project.Develop.Runtime.Gameplay.Features.StagesFeature;
-using Assets._Project.Develop.Runtime.Gameplay.Infrastructure;
 using Assets._Project.Develop.Runtime.Meta.Features.Statistics;
 using Assets._Project.Develop.Runtime.Meta.Features.Wallet;
 using Assets._Project.Develop.Runtime.UI.Gameplay;
 using Assets._Project.Develop.Runtime.Utilities.Conditions;
-using Assets._Project.Develop.Runtime.Utilities.ConfigsManagement;
 using Assets._Project.Develop.Runtime.Utilities.DataManagement.DataProviders;
 using VContainer;
 
@@ -24,35 +22,29 @@ namespace Assets._Project.Develop.Runtime.Gameplay.States
             _container = container;
         }
 
-        public PreparationState CreatePreparationState()
+        public RestState CreateRestState()
         {
-            return new PreparationState(
+            return new RestState(
                 _container.Resolve<RestPhaseService>(),
-                _container.Resolve<MinesPlacementService>(),
-                _container.Resolve<IInputService>());
+                _container.Resolve<MinePlacementService>());
         }
 
-        public StageProcessState CreateStageProcessState()
+        public WaveState CreateWaveState()
         {
-            return new StageProcessState(
+            return new WaveState(
                 _container.Resolve<StageProviderService>(),
-                _container.Resolve<ExplosionAbilityService>());
+                _container.Resolve<ClickExplosionService>());
         }
 
-        public WinState CreateWinState(GameplayInputArgs inputArgs)
+        public WinState CreateWinState()
         {
-            LevelConfig levelConfig = _container
-                .Resolve<ConfigsProviderService>()
-                .GetConfig<LevelsListConfig>()
-                .GetBy(inputArgs.LevelNumber);
-
             return new WinState(
                 _container.Resolve<IInputService>(),
                 _container.Resolve<WalletService>(),
                 _container.Resolve<GameStatisticsService>(),
                 _container.Resolve<PlayerDataProvider>(),
                 _container.Resolve<GameplayPopupService>(),
-                levelConfig.WinGoldReward);
+                _container.Resolve<LevelConfig>().WinGoldReward);
         }
 
         public DefeatState CreateDefeatState()
@@ -64,15 +56,15 @@ namespace Assets._Project.Develop.Runtime.Gameplay.States
                 _container.Resolve<GameplayPopupService>());
         }
 
-        public GameplayStateMachine CreateGameplayStateMachine(GameplayInputArgs gameplayInputArgs)
+        public GameplayStateMachine CreateGameplayStateMachine()
         {
             StageProviderService stageProviderService = _container.Resolve<StageProviderService>();
-            MainHeroHolderService mainHeroHolderService = _container.Resolve<MainHeroHolderService>();
+            BuildingHolderService buildingHolderService = _container.Resolve<BuildingHolderService>();
 
             GameplayStateMachine coreLoopState = CreateCoreLoopState();
 
             DefeatState defeatState = CreateDefeatState();
-            WinState winState = CreateWinState(gameplayInputArgs);
+            WinState winState = CreateWinState();
 
             ICompositeCondition coreLoopToWinStateCondition = new CompositeCondition()
                 .Add(new FuncCondition(() => stageProviderService.CurrentStageResult.Value == StageResults.Completed))
@@ -81,8 +73,8 @@ namespace Assets._Project.Develop.Runtime.Gameplay.States
             ICompositeCondition coreLoopToDefeatStateCondition = new CompositeCondition()
                 .Add(new FuncCondition(() =>
                 {
-                    if (mainHeroHolderService.MainHero != null)
-                        return mainHeroHolderService.MainHero.IsDead.Value;
+                    if (buildingHolderService.Building != null)
+                        return buildingHolderService.Building.IsDead.Value;
 
                     return false;
                 }));
@@ -104,23 +96,23 @@ namespace Assets._Project.Develop.Runtime.Gameplay.States
             RestPhaseService restPhaseService = _container.Resolve<RestPhaseService>();
             StageProviderService stageProviderService = _container.Resolve<StageProviderService>();
 
-            PreparationState preparationState = CreatePreparationState();
-            StageProcessState stageProcessState = CreateStageProcessState();
+            RestState restState = CreateRestState();
+            WaveState waveState = CreateWaveState();
 
-            ICompositeCondition preparationToStageProcessCondition = new CompositeCondition()
+            ICompositeCondition restToWaveCondition = new CompositeCondition()
                 .Add(new FuncCondition(() => restPhaseService.IsOver))
                 .Add(new FuncCondition(() => stageProviderService.HasNextStage()));
 
-            FuncCondition stageProcessToPreparationCondition =
+            FuncCondition waveToRestCondition =
                 new FuncCondition(() => stageProviderService.CurrentStageResult.Value == StageResults.Completed);
 
             GameplayStateMachine coreLoopState = new GameplayStateMachine();
 
-            coreLoopState.AddState(preparationState);
-            coreLoopState.AddState(stageProcessState);
+            coreLoopState.AddState(restState);
+            coreLoopState.AddState(waveState);
 
-            coreLoopState.AddTransition(preparationState, stageProcessState, preparationToStageProcessCondition);
-            coreLoopState.AddTransition(stageProcessState, preparationState, stageProcessToPreparationCondition);
+            coreLoopState.AddTransition(restState, waveState, restToWaveCondition);
+            coreLoopState.AddTransition(waveState, restState, waveToRestCondition);
 
             return coreLoopState;
         }

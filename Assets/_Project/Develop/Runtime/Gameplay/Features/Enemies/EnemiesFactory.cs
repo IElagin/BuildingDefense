@@ -1,7 +1,7 @@
 using Assets._Project.Develop.Runtime.Configs.Gameplay.Entities;
 using Assets._Project.Develop.Runtime.Gameplay.EntitiesCore;
 using Assets._Project.Develop.Runtime.Gameplay.Features.AI;
-using Assets._Project.Develop.Runtime.Gameplay.Features.MainHero;
+using Assets._Project.Develop.Runtime.Gameplay.Features.BuildingFeature;
 using Assets._Project.Develop.Runtime.Gameplay.Features.TeamsFeature;
 using VContainer;
 using Assets._Project.Develop.Runtime.Utilities.Reactive;
@@ -17,7 +17,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Enemies
         private readonly EntitiesFactory _entitiesFactory;
         private readonly BrainsFactory _brainsFactory;
         private readonly EntitiesLifeContext _entitiesLifeContext;
-        private readonly MainHeroHolderService _mainHeroHolderService;
+        private readonly BuildingHolderService _buildingHolderService;
 
         public EnemiesFactory(IObjectResolver container)
         {
@@ -25,7 +25,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Enemies
             _entitiesFactory = _container.Resolve<EntitiesFactory>();
             _brainsFactory = _container.Resolve<BrainsFactory>();
             _entitiesLifeContext = _container.Resolve<EntitiesLifeContext>();
-            _mainHeroHolderService = _container.Resolve<MainHeroHolderService>();
+            _buildingHolderService = _container.Resolve<BuildingHolderService>();
         }
 
         public Entity Create(Vector3 position, EntityConfig config)
@@ -36,7 +36,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Enemies
             {
                 case BomberConfig bomberConfig:
                     entity = _entitiesFactory.CreateBomber(position, bomberConfig);
-                    entity.AddCurrentTarget(new ReactiveVariable<Entity>(_mainHeroHolderService.MainHero));
+                    entity.AddCurrentTarget(new ReactiveVariable<Entity>(_buildingHolderService.Building));
                     _brainsFactory.CreateBomberBrain(entity);
                     break;
 

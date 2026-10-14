@@ -4,17 +4,18 @@ using Assets._Project.Develop.Runtime.Utilities.StateMachineCore;
 
 namespace Assets._Project.Develop.Runtime.Gameplay.States
 {
-    public class StageProcessState : State, IUpdatableState
+    // A wave (the course stage process state): the next stage runs and the click makes explosions.
+    public class WaveState : State, IUpdatableState
     {
         private readonly StageProviderService _stageProviderService;
-        private readonly ExplosionAbilityService _explosionAbilityService;
+        private readonly ClickExplosionService _clickExplosionService;
 
-        public StageProcessState(
+        public WaveState(
             StageProviderService stageProviderService,
-            ExplosionAbilityService explosionAbilityService)
+            ClickExplosionService clickExplosionService)
         {
             _stageProviderService = stageProviderService;
-            _explosionAbilityService = explosionAbilityService;
+            _clickExplosionService = clickExplosionService;
         }
 
         public override void Enter()
@@ -28,7 +29,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.States
         public void Update(float deltaTime)
         {
             _stageProviderService.UpdateCurrent(deltaTime);
-            _explosionAbilityService.Update();
+            _clickExplosionService.Update();
         }
 
         public override void Exit()

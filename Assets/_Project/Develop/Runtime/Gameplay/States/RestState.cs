@@ -1,25 +1,21 @@
 using Assets._Project.Develop.Runtime.Gameplay.Features.Defense;
-using Assets._Project.Develop.Runtime.Gameplay.Features.InputFeature;
 using Assets._Project.Develop.Runtime.Gameplay.Features.Rest;
 using Assets._Project.Develop.Runtime.Utilities.StateMachineCore;
 
 namespace Assets._Project.Develop.Runtime.Gameplay.States
 {
-    // Rest before a wave: the click places mines, Space or the HUD button starts the wave early.
-    public class PreparationState : State, IUpdatableState
+    // Rest before a wave (the course preparation state): the click places mines until the rest is over.
+    public class RestState : State, IUpdatableState
     {
         private readonly RestPhaseService _restPhaseService;
-        private readonly MinesPlacementService _minesPlacementService;
-        private readonly IInputService _inputService;
+        private readonly MinePlacementService _minePlacementService;
 
-        public PreparationState(
+        public RestState(
             RestPhaseService restPhaseService,
-            MinesPlacementService minesPlacementService,
-            IInputService inputService)
+            MinePlacementService minePlacementService)
         {
             _restPhaseService = restPhaseService;
-            _minesPlacementService = minesPlacementService;
-            _inputService = inputService;
+            _minePlacementService = minePlacementService;
         }
 
         public override void Enter()
@@ -31,10 +27,8 @@ namespace Assets._Project.Develop.Runtime.Gameplay.States
 
         public void Update(float deltaTime)
         {
-            if (_inputService.IsStartWavePressed)
-                _restPhaseService.RequestSkip();
-
-            _minesPlacementService.Update();
+            _restPhaseService.Update();
+            _minePlacementService.Update();
         }
 
         public override void Exit()

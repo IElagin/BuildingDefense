@@ -1,19 +1,22 @@
+using Assets._Project.Develop.Runtime.Gameplay.Features.InputFeature;
 using Assets._Project.Develop.Runtime.Utilities.Reactive;
 using Assets._Project.Develop.Runtime.Utilities.Timer;
 using System;
 
 namespace Assets._Project.Develop.Runtime.Gameplay.Features.Rest
 {
-    // Rest between waves: ends when its timer runs out or when the player starts the next wave earlier.
+    // Rest between waves: ends when its timer runs out or when the player starts the next wave earlier (Space or the HUD button).
     public class RestPhaseService : IDisposable
     {
+        private readonly IInputService _inputService;
         private readonly TimerService _timer;
         private readonly ReactiveVariable<bool> _isActive = new();
 
         private bool _isSkipRequested;
 
-        public RestPhaseService(TimerServiceFactory timerServiceFactory, float duration)
+        public RestPhaseService(IInputService inputService, TimerServiceFactory timerServiceFactory, float duration)
         {
+            _inputService = inputService;
             _timer = timerServiceFactory.Create(duration);
         }
 
@@ -26,6 +29,12 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Rest
             _isSkipRequested = false;
             _timer.Restart();
             _isActive.Value = true;
+        }
+
+        public void Update()
+        {
+            if (_inputService.IsStartWavePressed)
+                RequestSkip();
         }
 
         public void RequestSkip()

@@ -20,3 +20,4 @@ MonoBehaviour:
   <ReachDistance>k__BackingField: 2.2
   <BlastRadius>k__BackingField: 1.5
   <BlastDamage>k__BackingField: 10
+  <BlastExplosion>k__BackingField: {fileID: 11400000, guid: a2090d8af67fd46c699eaf42b3d1f2cc, type: 2}

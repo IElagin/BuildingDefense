@@ -1,4 +1,3 @@
-using Assets._Project.Develop.Runtime.Configs.Gameplay.Defense;
 using Assets._Project.Develop.Runtime.Configs.Gameplay.Entities;
 using Assets._Project.Develop.Runtime.Gameplay.EntitiesCore.Mono;
 using Assets._Project.Develop.Runtime.Gameplay.Features.ApplyDamage;
@@ -18,10 +17,8 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
 {
     public class EntitiesFactory
     {
-        private const string ExplosionPrefabPath = "Entities/Explosion";
-        private const string MinePrefabPath = "Entities/Mine";
-        private const float ExplosionEffectTime = 0.6f;
         private const int ContactsBufferSize = 64;
+        private const float DiameterPerRadius = 2;
 
         private readonly EntitiesLifeContext _entitiesLifeContext;
         private readonly CollidersRegistryService _collidersRegistryService;
@@ -127,7 +124,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
                 .AddSystem(new RigidbodyMovementSystem())
                 .AddSystem(new RigidbodyRotationSystem())
                 .AddSystem(new TargetReachDetectorSystem())
-                .AddSystem(new BlastSystem(this))
+                .AddSystem(new BlastSystem(this, config.BlastExplosion))
                 .AddSystem(new ApplyDamageSystem())
                 .AddSystem(new DeathSystem())
                 .AddSystem(new DisableCollidersOnDeathSystem())
@@ -137,12 +134,14 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
             return entity;
         }
 
-        public Entity CreateExplosion(Vector3 position, float radius, float damage, Teams team)
+        public Entity CreateExplosion(Vector3 position, ExplosionConfig config, float radius, float damage, Teams team)
         {
             Entity entity = CreateEmpty();
 
-            MonoEntity view = _monoEntitiesFactory.Create(entity, position, ExplosionPrefabPath);
-            view.transform.localScale = Vector3.one * radius * 2;
+            // The prefab is a unit-diameter blast: scale it to the damage radius and play it for the explosion lifetime.
+            MonoEntity view = _monoEntitiesFactory.Create(entity, position, config.PrefabPath);
+            view.transform.localScale = Vector3.one * (radius * DiameterPerRadius);
+            view.GetComponent<ExplosionView>().Initialize(config.EffectTime);
 
             entity
                 .AddTeam(new ReactiveVariable<Teams>(team))
@@ -154,7 +153,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
                 .AddIsAreaDamageApplied()
                 .AddIsDead()
                 .AddInDeathProcess()
-                .AddDeathProcessInitialTime(new ReactiveVariable<float>(ExplosionEffectTime))
+                .AddDeathProcessInitialTime(new ReactiveVariable<float>(config.EffectTime))
                 .AddDeathProcessCurrentTime();
 
             ICompositeCondition mustDie = new CompositeCondition()
@@ -181,21 +180,21 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
             return entity;
         }
 
-        public Entity CreateMine(Vector3 position, DefenseConfig config, Teams team)
+        public Entity CreateMine(Vector3 position, MineConfig config, Teams team)
         {
             Entity entity = CreateEmpty();
 
-            _monoEntitiesFactory.Create(entity, position, MinePrefabPath);
+            _monoEntitiesFactory.Create(entity, position, config.PrefabPath);
 
             entity
                 .AddTeam(new ReactiveVariable<Teams>(team))
                 .AddContactsDetectingMask(Layers.CharactersMask)
-                .AddContactsDetectingRadius(new ReactiveVariable<float>(config.MineTriggerRadius))
+                .AddContactsDetectingRadius(new ReactiveVariable<float>(config.TriggerRadius))
                 .AddContactCollidersBuffer(new Buffer<Collider>(ContactsBufferSize))
                 .AddContactEntitiesBuffer(new Buffer<Entity>(ContactsBufferSize))
                 .AddIsTouchAnotherTeam()
-                .AddBlastRadius(new ReactiveVariable<float>(config.MineBlastRadius))
-                .AddBlastDamage(new ReactiveVariable<float>(config.MineBlastDamage))
+                .AddBlastRadius(new ReactiveVariable<float>(config.BlastRadius))
+                .AddBlastDamage(new ReactiveVariable<float>(config.BlastDamage))
                 .AddIsBlasted()
                 .AddIsDead();
 
@@ -217,7 +216,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
                 .AddSystem(new SphereContactsDetectingSystem())
                 .AddSystem(new BodyContactsEntitiesFilterSystem(_collidersRegistryService))
                 .AddSystem(new AnotherTeamTouchDetectorSystem())
-                .AddSystem(new BlastSystem(this))
+                .AddSystem(new BlastSystem(this, config.BlastExplosion))
                 .AddSystem(new DeathSystem())
                 .AddSystem(new SelfReleaseSystem(_entitiesLifeContext));
 

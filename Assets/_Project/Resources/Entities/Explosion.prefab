@@ -74,7 +74,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Assets._Project.Develop.Runtime.Gameplay.Features.Explosions.ExplosionView
   _sphere: {fileID: 7658282788772571517}
   _sphereRenderer: {fileID: 6767731555221624895}
-  _duration: 0.6
   _startScale: 0.3
 --- !u!1 &3322328540072728651
 GameObject:

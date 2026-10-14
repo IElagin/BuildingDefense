@@ -337,13 +337,6 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
 			return AddComponent(new Assets._Project.Develop.Runtime.Gameplay.Features.MovementFeature.CanRotate() {Value = value}); 
 		}
 
-		public Assets._Project.Develop.Runtime.Gameplay.Features.MainHero.IsMainHero IsMainHeroC => GetComponent<Assets._Project.Develop.Runtime.Gameplay.Features.MainHero.IsMainHero>();
-
-		public Assets._Project.Develop.Runtime.Gameplay.EntitiesCore.Entity AddIsMainHero()
-		{
-			return AddComponent(new Assets._Project.Develop.Runtime.Gameplay.Features.MainHero.IsMainHero() ); 
-		}
-
 		public Assets._Project.Develop.Runtime.Gameplay.Features.LifeCycle.CurrentHealth CurrentHealthC => GetComponent<Assets._Project.Develop.Runtime.Gameplay.Features.LifeCycle.CurrentHealth>();
 
 		public Assets._Project.Develop.Runtime.Utilities.Reactive.ReactiveVariable<System.Single> CurrentHealth => CurrentHealthC.Value;
@@ -596,6 +589,13 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
 		public Assets._Project.Develop.Runtime.Gameplay.EntitiesCore.Entity AddIsAreaDamageApplied(Assets._Project.Develop.Runtime.Utilities.Reactive.ReactiveVariable<System.Boolean> value)
 		{
 			return AddComponent(new Assets._Project.Develop.Runtime.Gameplay.Features.Explosions.IsAreaDamageApplied() {Value = value}); 
+		}
+
+		public Assets._Project.Develop.Runtime.Gameplay.Features.BuildingFeature.IsBuilding IsBuildingC => GetComponent<Assets._Project.Develop.Runtime.Gameplay.Features.BuildingFeature.IsBuilding>();
+
+		public Assets._Project.Develop.Runtime.Gameplay.EntitiesCore.Entity AddIsBuilding()
+		{
+			return AddComponent(new Assets._Project.Develop.Runtime.Gameplay.Features.BuildingFeature.IsBuilding() ); 
 		}
 
 		public Assets._Project.Develop.Runtime.Gameplay.Features.Blast.BlastRadius BlastRadiusC => GetComponent<Assets._Project.Develop.Runtime.Gameplay.Features.Blast.BlastRadius>();
