@@ -120,3 +120,7 @@ InitTestScene*.unity*
 # OS / IDE
 .DS_Store
 .idea/
+
+# Internal working documents stay local (user decision 2026-10-14)
+/AGENTS.md
+/GameDocs/
