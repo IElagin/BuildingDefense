@@ -70,8 +70,8 @@ def export_static(name):
 
 
 export_rig("Dome", "Idle", "Dome")
-export_rig("Mine", "Armed", "LandMine")  # Mine.fbx is the L7 model
-for name in ("Arena", "Rock_A", "Rock_B", "Rock_C", "Crystal_A", "Crystal_B"):
+export_rig("Mine", "Armed", "LandMine")
+for name in ("Arena", "Rock_A", "Rock_B", "Rock_C", "Crystal_A", "Crystal_B", "Burrow"):
     export_static(name)
 
 for mname, from_sock, to_node, to_sock in saved:

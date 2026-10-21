@@ -2,7 +2,9 @@
 //   unity command --project-path <BuildingDefense> run_script --file ArtSource/UnityAuthoring/WorldAuthoring.cs --entry WorldAuthoring.Run --timeout_ms 180000
 // Idempotent: imports the world models, builds the dome and mine animators, swaps the Building and Mine
 // visuals, makes one explosion prefab and config per source (click strike, mine, bomber acid blast),
-// and rebuilds the Gameplay scene environment (arena, props, light, background).
+// the burrow prop (Resources/World/Burrow), and rebuilds the Gameplay scene environment (arena with
+// colliders for corpses, props). Look pass 2026-10-21: perspective diagonal camera like the mood frame,
+// post-processing volume (bloom, colour grading, vignette), warm low sun, haze background with fog.
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,6 +16,7 @@ using UnityEditor.Animations;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
 
 public static class WorldAuthoring
@@ -25,8 +28,20 @@ public static class WorldAuthoring
     private const string Entities = "Assets/_Project/Resources/Entities/";
     private const string EntityConfigs = "Assets/_Project/Resources/Configs/Gameplay/Entities/";
     private const string GameplayScene = "Assets/_Project/Scenes/Gameplay.unity";
+    private const string Rendering = "Assets/_Project/Art/Rendering/";
+    private const string WorldResources = "Assets/_Project/Resources/World/";
 
-    private static readonly string[] StaticModels = { "Arena", "Rock_A", "Rock_B", "Rock_C", "Crystal_A", "Crystal_B" };
+    private static readonly string[] StaticModels = { "Arena", "Rock_A", "Rock_B", "Rock_C", "Crystal_A", "Crystal_B", "Burrow" };
+    private static readonly Color Haze = new(0.86f, 0.84f, 0.81f);
+    private static readonly Vector3 CameraTarget = new(0f, -2f, 0f);
+    private const float CameraFieldOfView = 30f;
+    private const float CameraPitch = 40f;
+    private const float CameraYaw = 45f;
+    private const float CameraDistance = 52f;
+    private const float FogStart = 8f;
+    private const float FogEnd = 34f;
+    private const float SunPitch = 42f;
+    private const float SunYaw = 160f;
 
     public static string Run()
     {
@@ -53,6 +68,8 @@ public static class WorldAuthoring
         SetupBuilding(domeController, domeHit, log);
         SetupMine(mineController, log);
         SetupExplosions(particles, log);
+        SetupBurrow(log);
+        SetupRenderPipeline(log);
         SetupScene(log);
 
         AssetDatabase.SaveAssets();
@@ -396,49 +413,169 @@ public static class WorldAuthoring
         foreach (Transform child in environment.transform.Cast<Transform>().ToList())
             Object.DestroyImmediate(child.gameObject);
 
+        // the plateau and props are physical only for flying corpses (layer Environment; living bugs ignore it)
         GameObject arena = Place("Arena", Vector3.zero, 0f, null);
         arena.GetComponentInChildren<MeshRenderer>().shadowCastingMode = ShadowCastingMode.Off;
         arena.transform.SetParent(environment.transform, true);
+        AddCollider(arena, false);
 
+        // a rounded-square plateau 31 x 28 m; props keep 2.5 m and more from the level burrows (radius 11.5)
         var decor = new (string model, float x, float z, float yaw, float scale)[]
         {
-            ("Rock_A", -12f, 7f, 30f, 1f), ("Rock_A", 13f, -6f, 200f, 0.9f), ("Rock_B", -8.5f, -8.5f, 80f, 1f),
-            ("Rock_B", 9.5f, 8.5f, 140f, 1.1f), ("Rock_C", -15f, -2f, 10f, 1f), ("Rock_C", 4.5f, -10f, 250f, 1f),
-            ("Rock_C", 15f, 5f, 120f, 1f), ("Rock_C", -4f, 10f, 300f, 1f), ("Rock_B", 16f, -9.5f, 60f, 0.8f),
-            ("Crystal_A", -10.5f, -5f, 0f, 1.8f), ("Crystal_A", 7f, -7.5f, 45f, 1.6f), ("Crystal_B", 11f, 2f, 90f, 1.9f),
-            ("Crystal_B", -6f, 6.5f, 200f, 1.9f), ("Crystal_B", 2f, 10.5f, 310f, 1.7f),
+            ("Rock_A", -5.5f, 12f, 30f, 1f), ("Rock_A", 12.5f, -3.5f, 200f, 0.9f), ("Rock_B", -12f, 4f, 80f, 1f),
+            ("Rock_B", 5f, -12f, 140f, 1.1f), ("Rock_C", -7f, -7.5f, 10f, 1f), ("Rock_C", 7.5f, 6.5f, 250f, 1f),
+            ("Rock_C", 13f, 8.5f, 120f, 1f), ("Rock_C", -13.5f, -7.5f, 300f, 1f), ("Rock_B", -1.5f, 12.5f, 60f, 0.8f),
+            ("Crystal_A", -8.5f, 1.5f, 0f, 1.8f), ("Crystal_A", 5.5f, 8.5f, 45f, 1.6f), ("Crystal_B", 9f, -0.5f, 90f, 1.9f),
+            ("Crystal_B", -4f, 7f, 200f, 1.9f), ("Crystal_B", -1f, -8.5f, 310f, 1.7f),
         };
 
         foreach ((string model, float x, float z, float yaw, float scale) in decor)
         {
             GameObject prop = Place(model, new Vector3(x, 0f, z), yaw, environment.transform);
             prop.transform.localScale = Vector3.one * scale;
+            AddCollider(prop, true);
         }
 
         foreach (Transform t in environment.GetComponentsInChildren<Transform>(true))
+        {
             GameObjectUtility.SetStaticEditorFlags(t.gameObject, StaticEditorFlags.BatchingStatic);
+            t.gameObject.layer = LayerMask.NameToLayer("Environment");
+        }
 
-        Camera camera = scene.GetRootGameObjects().First(g => g.name == "Main Camera").GetComponent<Camera>();
-        camera.clearFlags = CameraClearFlags.SolidColor;
-        camera.backgroundColor = new Color(0.91f, 0.87f, 0.82f);
-
-        Light sun = scene.GetRootGameObjects().First(g => g.name == "Directional Light").GetComponent<Light>();
-        sun.color = new Color(1f, 0.96f, 0.9f);
-        sun.intensity = 1.15f;
-        sun.shadows = LightShadows.Soft;
-        sun.shadowStrength = 0.6f;
-
-        RenderSettings.ambientMode = AmbientMode.Trilight;
-        RenderSettings.ambientSkyColor = new Color(0.8f, 0.8f, 0.82f);
-        RenderSettings.ambientEquatorColor = new Color(0.58f, 0.54f, 0.5f);
-        RenderSettings.ambientGroundColor = new Color(0.3f, 0.28f, 0.27f);
+        SetupLook(scene);
 
         EditorSceneManager.MarkSceneDirty(scene);
         EditorSceneManager.SaveScene(scene);
-        log.AppendLine($"scene: arena, {decor.Length} props (batching static), warm sun, trilight ambient, sand background");
+        log.AppendLine($"scene: arena and {decor.Length} props with corpse colliders, diagonal perspective camera, volume, low warm sun, haze fog");
 
         if (string.IsNullOrEmpty(previous) == false && previous != GameplayScene)
             EditorSceneManager.OpenScene(previous, OpenSceneMode.Single);
+    }
+
+    private static void AddCollider(GameObject model, bool convex)
+    {
+        MeshFilter filter = model.GetComponentInChildren<MeshFilter>();
+        var collider = filter.gameObject.AddComponent<MeshCollider>();
+        collider.sharedMesh = filter.sharedMesh;
+        collider.convex = convex;
+    }
+
+    // The mood frame: a floating plateau seen diagonally from above, warm low sun with long shadows,
+    // saturated but soft colours, glowing abdomens and crystals, the cliff bottoms melting into haze.
+    private static void SetupLook(Scene scene)
+    {
+        Camera camera = scene.GetRootGameObjects().First(g => g.name == "Main Camera").GetComponent<Camera>();
+        camera.orthographic = false;
+        camera.fieldOfView = CameraFieldOfView;
+        camera.transform.rotation = Quaternion.Euler(CameraPitch, CameraYaw, 0f);
+        camera.transform.position = CameraTarget - camera.transform.forward * CameraDistance;
+        camera.nearClipPlane = 1f;
+        camera.farClipPlane = 200f;
+        camera.clearFlags = CameraClearFlags.SolidColor;
+        camera.backgroundColor = Haze;
+        UniversalAdditionalCameraData cameraData = camera.GetUniversalAdditionalCameraData();
+        cameraData.renderPostProcessing = true;
+        cameraData.antialiasing = AntialiasingMode.SubpixelMorphologicalAntiAliasing;
+        EditorUtility.SetDirty(cameraData);
+
+        Light sun = scene.GetRootGameObjects().First(g => g.name == "Directional Light").GetComponent<Light>();
+        sun.transform.rotation = Quaternion.Euler(SunPitch, SunYaw, 0f);
+        sun.color = new Color(1f, 0.9f, 0.76f);
+        sun.intensity = 1.5f;
+        sun.shadows = LightShadows.Soft;
+        sun.shadowStrength = 0.75f;
+
+        RenderSettings.ambientMode = AmbientMode.Trilight;
+        RenderSettings.ambientSkyColor = new Color(0.78f, 0.82f, 0.9f);
+        RenderSettings.ambientEquatorColor = new Color(0.72f, 0.58f, 0.44f);
+        RenderSettings.ambientGroundColor = new Color(0.36f, 0.24f, 0.2f);
+        RenderSettings.fog = true;
+        RenderSettings.fogMode = FogMode.Linear;
+        RenderSettings.fogColor = Haze;
+        RenderSettings.fogStartDistance = CameraDistance + FogStart;
+        RenderSettings.fogEndDistance = CameraDistance + FogEnd;
+
+        GameObject volumeObject = scene.GetRootGameObjects().FirstOrDefault(g => g.name == "PostProcess") ?? new GameObject("PostProcess");
+        if (volumeObject.TryGetComponent(out Volume volume) == false)
+            volume = volumeObject.AddComponent<Volume>();
+        volume.isGlobal = true;
+        volume.sharedProfile = VolumeProfileAsset();
+    }
+
+    private static VolumeProfile VolumeProfileAsset()
+    {
+        string path = Rendering + "GameplayVolume.asset";
+        if (AssetDatabase.IsValidFolder(Rendering.TrimEnd('/')) == false)
+            AssetDatabase.CreateFolder("Assets/_Project/Art", "Rendering");
+
+        var profile = AssetDatabase.LoadAssetAtPath<VolumeProfile>(path);
+        if (profile == null)
+        {
+            profile = ScriptableObject.CreateInstance<VolumeProfile>();
+            AssetDatabase.CreateAsset(profile, path);
+        }
+
+        Override<Tonemapping>(profile).mode.Override(TonemappingMode.Neutral);
+
+        Bloom bloom = Override<Bloom>(profile);
+        bloom.threshold.Override(0.95f);
+        bloom.intensity.Override(0.9f);
+        bloom.scatter.Override(0.65f);
+        bloom.highQualityFiltering.Override(true);
+
+        ColorAdjustments colour = Override<ColorAdjustments>(profile);
+        colour.postExposure.Override(0.15f);
+        colour.contrast.Override(16f);
+        colour.saturation.Override(10f);
+
+        WhiteBalance balance = Override<WhiteBalance>(profile);
+        balance.temperature.Override(6f);
+
+        Vignette vignette = Override<Vignette>(profile);
+        vignette.intensity.Override(0.24f);
+        vignette.smoothness.Override(0.45f);
+        vignette.color.Override(new Color(0.15f, 0.08f, 0.05f));
+
+        EditorUtility.SetDirty(profile);
+        return profile;
+    }
+
+    private static T Override<T>(VolumeProfile profile) where T : VolumeComponent
+    {
+        if (profile.TryGet(out T component) == false)
+        {
+            component = profile.Add<T>();
+            component.name = typeof(T).Name;
+            AssetDatabase.AddObjectToAsset(component, profile);
+        }
+
+        component.active = true;
+        return component;
+    }
+
+    // PC quality: MSAA 4x for the faceted edges, shadows far enough for the diagonal perspective view.
+    private static void SetupRenderPipeline(StringBuilder log)
+    {
+        var pipeline = AssetDatabase.LoadAssetAtPath<UniversalRenderPipelineAsset>("Assets/Settings/PC_RPAsset.asset");
+        pipeline.msaaSampleCount = 4;
+        pipeline.shadowDistance = 90f;
+        EditorUtility.SetDirty(pipeline);
+        log.AppendLine("PC_RPAsset: MSAA 4x, shadow distance 90");
+    }
+
+    // The hive burrow is a prop, not an entity: BurrowsService puts it at the level config positions.
+    private static void SetupBurrow(StringBuilder log)
+    {
+        if (AssetDatabase.IsValidFolder(WorldResources.TrimEnd('/')) == false)
+            AssetDatabase.CreateFolder("Assets/_Project/Resources", "World");
+
+        var root = new GameObject("Burrow");
+        GameObject model = Place("Burrow", Vector3.zero, 0f, root.transform);
+        MeshRenderer renderer = model.GetComponentInChildren<MeshRenderer>();
+        renderer.shadowCastingMode = ShadowCastingMode.Off;
+        PrefabUtility.SaveAsPrefabAsset(root, WorldResources + "Burrow.prefab");
+        Object.DestroyImmediate(root);
+        log.AppendLine("burrow prop prefab: Resources/World/Burrow");
     }
 
     private static GameObject Place(string model, Vector3 position, float yaw, Transform parent)
