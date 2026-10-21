@@ -1,3 +1,4 @@
+using Assets._Project.Develop.Runtime.Configs.Audio;
 using Assets._Project.Develop.Runtime.Configs.Gameplay.Defense;
 using Assets._Project.Develop.Runtime.Configs.Gameplay.Entities;
 using Assets._Project.Develop.Runtime.Configs.Gameplay.Levels;
@@ -22,6 +23,7 @@ namespace Assets._Project.Develop.Runtime.Utilities.ConfigsManagement
             {typeof(LevelsListConfig), "Configs/Gameplay/Levels/LevelsListConfig"},
             {typeof(BuildingConfig), "Configs/Gameplay/Entities/BuildingConfig"},
             {typeof(DefenseConfig), "Configs/Gameplay/Defense/DefenseConfig"},
+            {typeof(AudioConfig), "Configs/Audio/AudioConfig"},
         };
 
         public ResourcesConfigsLoader(ResourcesAssetsLoader resources)

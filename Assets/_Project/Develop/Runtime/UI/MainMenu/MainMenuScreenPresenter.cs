@@ -3,6 +3,7 @@ using Assets._Project.Develop.Runtime.Gameplay.Infrastructure;
 using Assets._Project.Develop.Runtime.UI.Core;
 using Assets._Project.Develop.Runtime.UI.Statistics;
 using Assets._Project.Develop.Runtime.UI.Wallet;
+using Assets._Project.Develop.Runtime.Utilities.Audio;
 using Assets._Project.Develop.Runtime.Utilities.ConfigsManagement;
 using Assets._Project.Develop.Runtime.Utilities.SceneManagement;
 using Cysharp.Threading.Tasks;
@@ -20,6 +21,7 @@ namespace Assets._Project.Develop.Runtime.UI.MainMenu
         private readonly SceneSwitcherService _sceneSwitcherService;
 
         private readonly ConfigsProviderService _configsProviderService;
+        private readonly IAudioService _audio;
 
         private readonly List<IPresenter> _childPresenters = new();
 
@@ -27,12 +29,14 @@ namespace Assets._Project.Develop.Runtime.UI.MainMenu
             MainMenuScreenView screen,
             ProjectPresentersFactory projectPresentersFactory,
             SceneSwitcherService sceneSwitcherService,
-            ConfigsProviderService configsProviderService)
+            ConfigsProviderService configsProviderService,
+            IAudioService audio)
         {
             _screen = screen;
             _projectPresentersFactory = projectPresentersFactory;
             _sceneSwitcherService = sceneSwitcherService;
             _configsProviderService = configsProviderService;
+            _audio = audio;
         }
 
         public void Initialize()
@@ -71,6 +75,8 @@ namespace Assets._Project.Develop.Runtime.UI.MainMenu
 
         private void OnPlayButtonClicked()
         {
+            _audio.Play(SoundIds.UIOpen);
+
             int levelsCount = _configsProviderService.GetConfig<LevelsListConfig>().Levels.Count;
             int levelNumber = Random.Range(1, levelsCount + 1);
 

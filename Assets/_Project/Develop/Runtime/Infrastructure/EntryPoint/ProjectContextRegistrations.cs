@@ -1,9 +1,11 @@
 using VContainer;
+using Assets._Project.Develop.Runtime.Configs.Audio;
 using Assets._Project.Develop.Runtime.Meta.Features.Statistics;
 using Assets._Project.Develop.Runtime.Meta.Features.Wallet;
 using Assets._Project.Develop.Runtime.UI;
 using Assets._Project.Develop.Runtime.UI.Core;
 using Assets._Project.Develop.Runtime.Utilities.AssetsManagement;
+using Assets._Project.Develop.Runtime.Utilities.Audio;
 using Assets._Project.Develop.Runtime.Utilities.ConfigsManagement;
 using Assets._Project.Develop.Runtime.Utilities.DataManagement;
 using Assets._Project.Develop.Runtime.Utilities.DataManagement.DataProviders;
@@ -27,6 +29,7 @@ namespace Assets._Project.Develop.Runtime.Infrastructure.EntryPoint
         public static void Process(IContainerBuilder container, CancellationToken projectToken)
         {
             StandardLoadingScreen loadingScreen = null;
+            AudioService audioService = null;
 
             container.Register(CreateConfigsProviderService, Lifetime.Singleton);
 
@@ -52,6 +55,8 @@ namespace Assets._Project.Develop.Runtime.Infrastructure.EntryPoint
 
             container.Register(CreateGameStatisticsService, Lifetime.Singleton);
 
+            container.Register<IAudioService>(c => audioService = CreateAudioService(c), Lifetime.Singleton);
+
             container.RegisterBuildCallback(c =>
             {
                 c.Resolve<WalletService>();
@@ -62,6 +67,9 @@ namespace Assets._Project.Develop.Runtime.Infrastructure.EntryPoint
             {
                 if (loadingScreen != null)
                     Object.Destroy(loadingScreen.gameObject);
+
+                if (audioService != null)
+                    Object.Destroy(audioService.gameObject);
             });
         }
 
@@ -123,6 +131,18 @@ namespace Assets._Project.Develop.Runtime.Infrastructure.EntryPoint
 
         private static ResourcesAssetsLoader CreateResourcesAssetsLoader(IObjectResolver c)
             => new ResourcesAssetsLoader();
+
+        // Studio audio addition (not from the course). Resolved after GameEntryPoint has loaded the configs
+        // (scene registrations are the first consumers).
+        private static AudioService CreateAudioService(IObjectResolver c)
+        {
+            AudioService prefab = c.Resolve<ResourcesAssetsLoader>().Load<AudioService>("Utilities/AudioService");
+
+            AudioService audioService = Object.Instantiate(prefab);
+            audioService.Initialize(c.Resolve<ConfigsProviderService>().GetConfig<AudioConfig>());
+
+            return audioService;
+        }
 
         private static StandardLoadingScreen CreateLoadingScreen(IObjectResolver c)
         {

@@ -10,6 +10,7 @@ using Assets._Project.Develop.Runtime.Gameplay.Features.StagesFeature;
 using Assets._Project.Develop.Runtime.Gameplay.States;
 using Assets._Project.Develop.Runtime.Configs.Gameplay.Defense;
 using Assets._Project.Develop.Runtime.Configs.Gameplay.Levels;
+using Assets._Project.Develop.Runtime.Gameplay.Features.AudioFeature;
 using Assets._Project.Develop.Runtime.Gameplay.Features.Burrows;
 using Assets._Project.Develop.Runtime.Meta.Features.Wallet;
 using Assets._Project.Develop.Runtime.UI;
@@ -17,6 +18,7 @@ using Assets._Project.Develop.Runtime.UI.Core;
 using Assets._Project.Develop.Runtime.UI.Gameplay;
 using VContainer;
 using Assets._Project.Develop.Runtime.Utilities.AssetsManagement;
+using Assets._Project.Develop.Runtime.Utilities.Audio;
 using Assets._Project.Develop.Runtime.Utilities.ConfigsManagement;
 using Assets._Project.Develop.Runtime.Utilities.Timer;
 using UnityEngine;
@@ -77,6 +79,14 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Infrastructure
 
             container.RegisterBuildCallback(c => c.Resolve<MonoEntitiesFactory>().Initialize());
 
+            // Studio audio addition: subscribes to entities before the bootstrap creates the building.
+            container.Register(CreateGameplaySoundsService, Lifetime.Scoped);
+            container.RegisterBuildCallback(c =>
+            {
+                c.Resolve<GameplaySoundsService>();
+                c.Resolve<IAudioService>().PlayAmbient(AmbientIds.Gameplay);
+            });
+
             // VContainer disposes tracked services in reverse creation order; the course releases entities before views.
             container.RegisterDisposeCallback(c =>
             {
@@ -84,6 +94,14 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Infrastructure
                 monoEntitiesFactory.Dispose();
             });
         }
+
+        private static GameplaySoundsService CreateGameplaySoundsService(IObjectResolver c)
+            => new GameplaySoundsService(
+                c.Resolve<IAudioService>(),
+                c.Resolve<EntitiesLifeContext>(),
+                c.Resolve<StageProviderService>(),
+                c.Resolve<ClickExplosionService>(),
+                c.Resolve<MinePlacementService>());
 
         private static GameplayPopupService CreateGameplayPopupService(IObjectResolver c)
         {

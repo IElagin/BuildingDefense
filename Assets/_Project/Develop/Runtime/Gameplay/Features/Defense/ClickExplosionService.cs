@@ -2,6 +2,7 @@ using Assets._Project.Develop.Runtime.Configs.Gameplay.Defense;
 using Assets._Project.Develop.Runtime.Gameplay.EntitiesCore;
 using Assets._Project.Develop.Runtime.Gameplay.Features.InputFeature;
 using Assets._Project.Develop.Runtime.Gameplay.Features.TeamsFeature;
+using Assets._Project.Develop.Runtime.Utilities.Reactive;
 using Assets._Project.Develop.Runtime.Utilities.Timer;
 using System;
 using UnityEngine;
@@ -16,6 +17,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Defense
         private readonly EntitiesFactory _entitiesFactory;
         private readonly DefenseConfig _config;
         private readonly TimerService _cooldown;
+        private readonly ReactiveEvent<Vector3> _exploded = new();
 
         public ClickExplosionService(
             IInputService inputService,
@@ -30,6 +32,8 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Defense
             _config = config;
             _cooldown = timerServiceFactory.Create(config.ClickExplosionCooldown);
         }
+
+        public IReadOnlyEvent<Vector3> Exploded => _exploded;
 
         public void Update()
         {
@@ -50,6 +54,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Defense
                 Teams.Player);
 
             _cooldown.Restart();
+            _exploded.Invoke(point);
         }
 
         public void Dispose()

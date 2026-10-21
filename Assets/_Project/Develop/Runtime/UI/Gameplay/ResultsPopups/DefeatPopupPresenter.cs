@@ -1,5 +1,6 @@
 using Assets._Project.Develop.Runtime.Gameplay.Infrastructure;
 using Assets._Project.Develop.Runtime.UI.Core;
+using Assets._Project.Develop.Runtime.Utilities.Audio;
 using Assets._Project.Develop.Runtime.Utilities.SceneManagement;
 using Cysharp.Threading.Tasks;
 
@@ -11,15 +12,18 @@ namespace Assets._Project.Develop.Runtime.UI.Gameplay.ResultsPopups
 
         private readonly DefeatPopupView _view;
         private readonly SceneSwitcherService _sceneSwitcher;
+        private readonly IAudioService _audio;
         private readonly GameplayInputArgs _currentLevelArgs;
 
         public DefeatPopupPresenter(
             DefeatPopupView view,
             SceneSwitcherService sceneSwitcher,
+            IAudioService audio,
             GameplayInputArgs currentLevelArgs)
         {
             _view = view;
             _sceneSwitcher = sceneSwitcher;
+            _audio = audio;
             _currentLevelArgs = currentLevelArgs;
         }
 
@@ -33,6 +37,8 @@ namespace Assets._Project.Develop.Runtime.UI.Gameplay.ResultsPopups
 
             _view.ContinueClicked += OnContinueClicked;
             _view.RestartClicked += OnRestartClicked;
+
+            _audio.Play(SoundIds.Defeat);
         }
 
         protected override void OnPreHide()
@@ -53,12 +59,14 @@ namespace Assets._Project.Develop.Runtime.UI.Gameplay.ResultsPopups
 
         private void OnContinueClicked()
         {
+            _audio.Play(SoundIds.UIClick);
             _sceneSwitcher.ProcessSwitchTo(Scenes.MainMenu).Forget(AsyncErrors.Report);
             OnCloseRequest();
         }
 
         private void OnRestartClicked()
         {
+            _audio.Play(SoundIds.UIClick);
             _sceneSwitcher
                 .ProcessSwitchTo(Scenes.Gameplay, new GameplayInputArgs(_currentLevelArgs.LevelNumber))
                 .Forget(AsyncErrors.Report);

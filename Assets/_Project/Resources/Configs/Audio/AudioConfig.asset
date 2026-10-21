@@ -1,0 +1,163 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5c69bc7de49243ddb113133842a6692, type: 3}
+  m_Name: AudioConfig
+  m_EditorClassIdentifier: Assembly-CSharp::Assets._Project.Develop.Runtime.Configs.Audio.AudioConfig
+  _sounds:
+  - <Id>k__BackingField: 0
+    <Channel>k__BackingField: 0
+    <Clips>k__BackingField:
+    - {fileID: 8300000, guid: 9f5f4c26d0f334ede9c86c5e2a8ffe17, type: 3}
+    <Volume>k__BackingField: 0.8
+    <PitchMin>k__BackingField: 0.97
+    <PitchMax>k__BackingField: 1.03
+    <Cooldown>k__BackingField: 0.03
+    <Delay>k__BackingField: 0
+  - <Id>k__BackingField: 1
+    <Channel>k__BackingField: 0
+    <Clips>k__BackingField:
+    - {fileID: 8300000, guid: 127148fdb92754f0c8f3d8571480dd5d, type: 3}
+    <Volume>k__BackingField: 0.7
+    <PitchMin>k__BackingField: 1
+    <PitchMax>k__BackingField: 1
+    <Cooldown>k__BackingField: 0.1
+    <Delay>k__BackingField: 0
+  - <Id>k__BackingField: 2
+    <Channel>k__BackingField: 0
+    <Clips>k__BackingField:
+    - {fileID: 8300000, guid: f24b0e9e165574108acb9ee2ccb438d9, type: 3}
+    <Volume>k__BackingField: 0.9
+    <PitchMin>k__BackingField: 1
+    <PitchMax>k__BackingField: 1
+    <Cooldown>k__BackingField: 0
+    <Delay>k__BackingField: 0
+  - <Id>k__BackingField: 3
+    <Channel>k__BackingField: 0
+    <Clips>k__BackingField:
+    - {fileID: 8300000, guid: 591b813c31b4c471aa815d57755b685a, type: 3}
+    <Volume>k__BackingField: 0.9
+    <PitchMin>k__BackingField: 1
+    <PitchMax>k__BackingField: 1
+    <Cooldown>k__BackingField: 0
+    <Delay>k__BackingField: 0
+  - <Id>k__BackingField: 4
+    <Channel>k__BackingField: 1
+    <Clips>k__BackingField:
+    - {fileID: 8300000, guid: 42a945c8596d64ce58362f615c7a6173, type: 3}
+    <Volume>k__BackingField: 0.6
+    <PitchMin>k__BackingField: 1
+    <PitchMax>k__BackingField: 1
+    <Cooldown>k__BackingField: 0.5
+    <Delay>k__BackingField: 0
+  - <Id>k__BackingField: 5
+    <Channel>k__BackingField: 1
+    <Clips>k__BackingField:
+    - {fileID: 8300000, guid: 81a28db0c37624d2f92b0825becf7515, type: 3}
+    - {fileID: 8300000, guid: 3712a1b21e0ce44759ede8309b6eaa46, type: 3}
+    <Volume>k__BackingField: 0.8
+    <PitchMin>k__BackingField: 0.95
+    <PitchMax>k__BackingField: 1.05
+    <Cooldown>k__BackingField: 0.05
+    <Delay>k__BackingField: 0
+  - <Id>k__BackingField: 6
+    <Channel>k__BackingField: 1
+    <Clips>k__BackingField:
+    - {fileID: 8300000, guid: 68042ff5814c34c5281c3db9f4d1bf8d, type: 3}
+    <Volume>k__BackingField: 0.7
+    <PitchMin>k__BackingField: 0.97
+    <PitchMax>k__BackingField: 1.03
+    <Cooldown>k__BackingField: 0.05
+    <Delay>k__BackingField: 0
+  - <Id>k__BackingField: 7
+    <Channel>k__BackingField: 0
+    <Clips>k__BackingField:
+    - {fileID: 8300000, guid: ab457b645bf0543d5b03c4be9297ec41, type: 3}
+    <Volume>k__BackingField: 0.6
+    <PitchMin>k__BackingField: 1
+    <PitchMax>k__BackingField: 1
+    <Cooldown>k__BackingField: 0.15
+    <Delay>k__BackingField: 0
+  - <Id>k__BackingField: 8
+    <Channel>k__BackingField: 1
+    <Clips>k__BackingField:
+    - {fileID: 8300000, guid: 3904ecb874b5b4908b3f9050fa575cea, type: 3}
+    - {fileID: 8300000, guid: 85498f04722c948aebe8ff840aa68e5b, type: 3}
+    - {fileID: 8300000, guid: 79ddbbeda0ce74d21ba20a01f1347498, type: 3}
+    <Volume>k__BackingField: 0.8
+    <PitchMin>k__BackingField: 0.92
+    <PitchMax>k__BackingField: 1.06
+    <Cooldown>k__BackingField: 0.06
+    <Delay>k__BackingField: 0
+  - <Id>k__BackingField: 9
+    <Channel>k__BackingField: 1
+    <Clips>k__BackingField:
+    - {fileID: 8300000, guid: 943179d0d56f943a0939ee8e9bf401e7, type: 3}
+    - {fileID: 8300000, guid: ab948b3b674434423b166ca19b73a3c3, type: 3}
+    <Volume>k__BackingField: 0.35
+    <PitchMin>k__BackingField: 0.9
+    <PitchMax>k__BackingField: 1.15
+    <Cooldown>k__BackingField: 0.12
+    <Delay>k__BackingField: 0
+  - <Id>k__BackingField: 10
+    <Channel>k__BackingField: 1
+    <Clips>k__BackingField:
+    - {fileID: 8300000, guid: 6c68c6f2098d64dbca8d397e8b9bb9a5, type: 3}
+    - {fileID: 8300000, guid: a8a63826d41604d2f9f840601f0fd1fd, type: 3}
+    - {fileID: 8300000, guid: 7de5afde48bcb4e0e8e00dca18d49aa2, type: 3}
+    <Volume>k__BackingField: 0.45
+    <PitchMin>k__BackingField: 0.85
+    <PitchMax>k__BackingField: 1.2
+    <Cooldown>k__BackingField: 0.035
+    <Delay>k__BackingField: 0
+  - <Id>k__BackingField: 11
+    <Channel>k__BackingField: 1
+    <Clips>k__BackingField:
+    - {fileID: 8300000, guid: c5dd6f925c4d34b83b8c78af7ebb7cca, type: 3}
+    - {fileID: 8300000, guid: ffe5e6024ddc8444096e0adb82eb3ef8, type: 3}
+    <Volume>k__BackingField: 0.55
+    <PitchMin>k__BackingField: 0.9
+    <PitchMax>k__BackingField: 1.1
+    <Cooldown>k__BackingField: 0.08
+    <Delay>k__BackingField: 0
+  - <Id>k__BackingField: 12
+    <Channel>k__BackingField: 1
+    <Clips>k__BackingField:
+    - {fileID: 8300000, guid: b024293df2e264791a1e12a64d684c21, type: 3}
+    - {fileID: 8300000, guid: eed84478f9e5e4012bdff5d827d2e988, type: 3}
+    - {fileID: 8300000, guid: 0d0165b792f154e7daa3563c46d8c9c4, type: 3}
+    <Volume>k__BackingField: 0.6
+    <PitchMin>k__BackingField: 0.92
+    <PitchMax>k__BackingField: 1.05
+    <Cooldown>k__BackingField: 0.12
+    <Delay>k__BackingField: 0
+  - <Id>k__BackingField: 13
+    <Channel>k__BackingField: 1
+    <Clips>k__BackingField:
+    - {fileID: 8300000, guid: 4f81c52d4e85143a8b11856e6fe022a0, type: 3}
+    <Volume>k__BackingField: 1
+    <PitchMin>k__BackingField: 1
+    <PitchMax>k__BackingField: 1
+    <Cooldown>k__BackingField: 0
+    <Delay>k__BackingField: 0
+  _ambients:
+  - <Id>k__BackingField: 0
+    <Clips>k__BackingField:
+    - {fileID: 8300000, guid: a737a73b0a75c408bb59cef111f5fa6a, type: 3}
+    <Volume>k__BackingField: 0.6
+  - <Id>k__BackingField: 1
+    <Clips>k__BackingField:
+    - {fileID: 8300000, guid: 34c100e4f2278469690f834e7e0070ad, type: 3}
+    <Volume>k__BackingField: 0.6
+  <UIVolume>k__BackingField: 1
+  <GameplayVolume>k__BackingField: 1
+  <AmbientVolume>k__BackingField: 0.5
+  <AmbientCrossfade>k__BackingField: 2

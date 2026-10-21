@@ -8,6 +8,7 @@ using Assets._Project.Develop.Runtime.UI.Core;
 using Assets._Project.Develop.Runtime.UI.Gameplay.HealthDisplay;
 using Assets._Project.Develop.Runtime.UI.Gameplay.ResultsPopups;
 using Assets._Project.Develop.Runtime.UI.Gameplay.Stages;
+using Assets._Project.Develop.Runtime.Utilities.Audio;
 using Assets._Project.Develop.Runtime.Utilities.ConfigsManagement;
 using Assets._Project.Develop.Runtime.Utilities.SceneManagement;
 using VContainer;
@@ -30,6 +31,7 @@ namespace Assets._Project.Develop.Runtime.UI.Gameplay
             return new WinPopupPresenter(
                 view,
                 _container.Resolve<SceneSwitcherService>(),
+                _container.Resolve<IAudioService>(),
                 goldReward);
         }
 
@@ -38,6 +40,7 @@ namespace Assets._Project.Develop.Runtime.UI.Gameplay
             return new DefeatPopupPresenter(
                 view,
                 _container.Resolve<SceneSwitcherService>(),
+                _container.Resolve<IAudioService>(),
                 _gameplayInputArgs);
         }
 
@@ -49,7 +52,8 @@ namespace Assets._Project.Develop.Runtime.UI.Gameplay
                 _container.Resolve<ProjectPresentersFactory>(),
                 _container.Resolve<StageProviderService>(),
                 _container.Resolve<RestPhaseService>(),
-                _container.Resolve<ConfigsProviderService>().GetConfig<DefenseConfig>());
+                _container.Resolve<ConfigsProviderService>().GetConfig<DefenseConfig>(),
+                _container.Resolve<IAudioService>());
         }
 
         public StagePresenter CreateStagePresenter(IconTextView view)

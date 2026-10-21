@@ -3,6 +3,7 @@ using Assets._Project.Develop.Runtime.UI;
 using Assets._Project.Develop.Runtime.UI.Core;
 using Assets._Project.Develop.Runtime.UI.MainMenu;
 using Assets._Project.Develop.Runtime.Utilities.AssetsManagement;
+using Assets._Project.Develop.Runtime.Utilities.Audio;
 using UnityEngine;
 
 namespace Assets._Project.Develop.Runtime.Meta.Infrastructure
@@ -18,6 +19,7 @@ namespace Assets._Project.Develop.Runtime.Meta.Infrastructure
             {
                 c.Resolve<MainMenuUIRoot>();
                 c.Resolve<MainMenuScreenPresenter>().Initialize();
+                c.Resolve<IAudioService>().PlayAmbient(AmbientIds.Menu);
             });
         }
 

@@ -4,6 +4,7 @@ using Assets._Project.Develop.Runtime.Gameplay.Features.StagesFeature;
 using Assets._Project.Develop.Runtime.UI.Core;
 using Assets._Project.Develop.Runtime.UI.Gameplay.HealthDisplay;
 using Assets._Project.Develop.Runtime.UI.Gameplay.Stages;
+using Assets._Project.Develop.Runtime.Utilities.Audio;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -21,6 +22,7 @@ namespace Assets._Project.Develop.Runtime.UI.Gameplay
         private readonly StageProviderService _stageProviderService;
         private readonly RestPhaseService _restPhaseService;
         private readonly DefenseConfig _defenseConfig;
+        private readonly IAudioService _audio;
 
         private readonly List<IPresenter> _childPresenters = new();
         private readonly List<IDisposable> _subscriptions = new();
@@ -33,7 +35,8 @@ namespace Assets._Project.Develop.Runtime.UI.Gameplay
             ProjectPresentersFactory projectPresentersFactory,
             StageProviderService stageProviderService,
             RestPhaseService restPhaseService,
-            DefenseConfig defenseConfig)
+            DefenseConfig defenseConfig,
+            IAudioService audio)
         {
             _screen = screen;
             _gameplayPresentersFactory = gameplayPresentersFactory;
@@ -41,6 +44,7 @@ namespace Assets._Project.Develop.Runtime.UI.Gameplay
             _stageProviderService = stageProviderService;
             _restPhaseService = restPhaseService;
             _defenseConfig = defenseConfig;
+            _audio = audio;
         }
 
         public void Initialize()
@@ -97,7 +101,11 @@ namespace Assets._Project.Develop.Runtime.UI.Gameplay
             _childPresenters.Add(_entitiesHealthDisplayPresenter);
         }
 
-        private void OnStartWaveButtonClicked() => _restPhaseService.RequestSkip();
+        private void OnStartWaveButtonClicked()
+        {
+            _audio.Play(SoundIds.UIClick);
+            _restPhaseService.RequestSkip();
+        }
 
         private void UpdatePhase()
         {
