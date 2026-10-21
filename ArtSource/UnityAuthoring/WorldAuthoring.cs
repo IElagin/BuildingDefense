@@ -228,9 +228,10 @@ public static class WorldAuthoring
     private static void ExplosionPrefab(string name, Material sphere, System.Action<GameObject> addEffects)
     {
         string path = Entities + name + ".prefab";
-        // rebuild in place when the prefab exists, so its GUID stays stable between runs
+        // rebuild in place when the prefab exists, so its GUID stays stable between runs; a missing one starts
+        // from OrbitalStrike (the L7 Explosion prefab they were first copied from is removed)
         if (AssetDatabase.LoadAssetAtPath<GameObject>(path) == null)
-            AssetDatabase.CopyAsset(Entities + "Explosion.prefab", path);
+            AssetDatabase.CopyAsset(Entities + "OrbitalStrike.prefab", path);
 
         GameObject root = PrefabUtility.LoadPrefabContents(path);
         root.name = name;

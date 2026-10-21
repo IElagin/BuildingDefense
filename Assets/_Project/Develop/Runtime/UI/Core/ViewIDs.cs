@@ -5,7 +5,6 @@ namespace Assets._Project.Develop.Runtime.UI.Core
         public const string CurrencyView = nameof(CurrencyView);
         public const string MainMenuScreen = nameof(MainMenuScreen);
         public const string GameplayScreen = nameof(GameplayScreen);
-        public const string EndGamePopup = nameof(EndGamePopup);
         public const string WinPopup = nameof(WinPopup);
         public const string DefeatPopup = nameof(DefeatPopup);
         public const string SimpleHealthBar = nameof(SimpleHealthBar);

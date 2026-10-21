@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Assets._Project.Develop.Runtime.UI.EndGamePopup;
 using UnityEngine;
 
 namespace Assets._Project.Develop.Runtime.UI.Core
@@ -8,8 +7,8 @@ namespace Assets._Project.Develop.Runtime.UI.Core
     public abstract class PopupService : IDisposable
     {
         protected readonly ViewsFactory ViewsFactory;
+        protected readonly ProjectPresentersFactory PresentersFactory;
 
-        private readonly ProjectPresentersFactory _presentersFactory;
         private readonly Dictionary<PopupPresenterBase, PopupInfo> _presenterToInfo = new();
 
         protected PopupService(
@@ -17,19 +16,10 @@ namespace Assets._Project.Develop.Runtime.UI.Core
             ProjectPresentersFactory presentersFactory)
         {
             ViewsFactory = viewsFactory;
-            _presentersFactory = presentersFactory;
+            PresentersFactory = presentersFactory;
         }
 
         protected abstract Transform PopupLayer { get; }
-
-        public EndGamePopupPresenter OpenEndGamePopup(string title, string message)
-        {
-            EndGamePopupView view = ViewsFactory.Create<EndGamePopupView>(ViewIDs.EndGamePopup, PopupLayer);
-            EndGamePopupPresenter popup = _presentersFactory.CreateEndGamePopupPresenter(view, title, message);
-            OnPopupCreated(popup, view);
-
-            return popup;
-        }
 
         public void ClosePopup(PopupPresenterBase popup)
         {
