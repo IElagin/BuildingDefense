@@ -36,7 +36,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.States
 
             _playerDataProvider.SaveAsync().Forget(AsyncErrors.Report);
 
-            _popupService.OpenEndGamePopup("Поражение", "Здание разрушено");
+            _popupService.OpenDefeatPopup();
         }
 
         public void Update(float deltaTime)

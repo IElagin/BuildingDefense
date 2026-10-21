@@ -23,6 +23,8 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Infrastructure
 
         private GameplayStatesContext _gameplayStatesContext;
 
+        private GameplayScreenPresenter _screenPresenter;
+
         public override void ProcessRegistrations(IContainerBuilder container, IInputSceneArgs sceneArgs = null)
         {
             if (sceneArgs is not GameplayInputArgs gameplayInputArgs)
@@ -49,7 +51,8 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Infrastructure
 
             _container.Resolve<BuildingFactory>().Create(Vector3.zero);
 
-            _container.Resolve<GameplayScreenPresenter>().Initialize();
+            _screenPresenter = _container.Resolve<GameplayScreenPresenter>();
+            _screenPresenter.Initialize();
 
             return UniTask.CompletedTask;
         }
@@ -66,6 +69,11 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Infrastructure
             _brainsContext?.Update(Time.deltaTime);
             _entitiesLifeContext?.Update(Time.deltaTime);
             _gameplayStatesContext?.Update(Time.deltaTime);
+        }
+
+        private void LateUpdate()
+        {
+            _screenPresenter?.LateUpdate();
         }
     }
 }

@@ -88,7 +88,8 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Infrastructure
             return new GameplayPopupService(
                 c.Resolve<ViewsFactory>(),
                 c.Resolve<ProjectPresentersFactory>(),
-                c.Resolve<GameplayUIRoot>());
+                c.Resolve<GameplayUIRoot>(),
+                c.Resolve<GameplayPresentersFactory>());
         }
 
         private static GameplayScreenPresenter CreateGameplayScreenPresenter(IObjectResolver c)
@@ -106,7 +107,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Infrastructure
 
         private static GameplayPresentersFactory CreateGameplayPresentersFactory(IObjectResolver c)
         {
-            return new GameplayPresentersFactory(c);
+            return new GameplayPresentersFactory(c, _inputArgs);
         }
 
         private static GameplayUIRoot CreateGameplayUIRoot(IObjectResolver c)

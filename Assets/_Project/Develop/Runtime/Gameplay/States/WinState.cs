@@ -44,7 +44,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.States
 
             _playerDataProvider.SaveAsync().Forget(AsyncErrors.Report);
 
-            _popupService.OpenEndGamePopup("Победа!", $"Здание выстояло. Награда: {_goldReward} золота");
+            _popupService.OpenWinPopup(_goldReward);
         }
 
         public void Update(float deltaTime)
