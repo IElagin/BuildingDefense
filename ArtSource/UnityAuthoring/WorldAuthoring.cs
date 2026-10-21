@@ -80,6 +80,8 @@ public static class WorldAuthoring
             importer.animationType = ModelImporterAnimationType.Generic;
             importer.avatarSetup = ModelImporterAvatarSetup.CreateFromThisModel;
             importer.importAnimation = true;
+            // keyframe reduction made the dish turn unevenly (±0.6° per step); the clips are tiny
+            importer.animationCompression = ModelImporterAnimationCompression.Off;
             ModelImporterClipAnimation[] clips = importer.defaultClipAnimations;
 
             foreach (ModelImporterClipAnimation clip in clips)

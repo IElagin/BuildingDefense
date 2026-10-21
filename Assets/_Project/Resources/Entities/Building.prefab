@@ -31,6 +31,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 4195269285133488313}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &5700202759011264898
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5996662872904001005}
+  m_Layer: 0
+  m_Name: HitPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5996662872904001005
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5700202759011264898}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.2, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4195269285133488313}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5818865965834536295
 GameObject:
   m_ObjectHideFlags: 0
@@ -127,8 +158,9 @@ Transform:
   m_Children:
   - {fileID: 4412271290540942240}
   - {fileID: 2955597430802188727}
-  - {fileID: 1430502903609005115}
   - {fileID: 7514551712380969594}
+  - {fileID: 2065791304269979758}
+  - {fileID: 5996662872904001005}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4254647544090337171
@@ -178,7 +210,7 @@ CapsuleCollider:
   m_Height: 3.4
   m_Direction: 1
   m_Center: {x: 0, y: 0.9, z: 0}
---- !u!1001 &1463832274653606864
+--- !u!1001 &1955005626973620101
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -244,29 +276,29 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 990b76e0f64f8471d8e2227f3cd63492, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 106336002114177381}
+      addedObject: {fileID: 6574080004736987057}
   m_SourcePrefab: {fileID: 100100000, guid: 990b76e0f64f8471d8e2227f3cd63492, type: 3}
---- !u!4 &1430502903609005115 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 990b76e0f64f8471d8e2227f3cd63492, type: 3}
-  m_PrefabInstance: {fileID: 1463832274653606864}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &1770471433008828033 stripped
+--- !u!1 &1720650569567845076 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 990b76e0f64f8471d8e2227f3cd63492, type: 3}
-  m_PrefabInstance: {fileID: 1463832274653606864}
+  m_PrefabInstance: {fileID: 1955005626973620101}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &106336002114177381
+--- !u!114 &6574080004736987057
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1770471433008828033}
+  m_GameObject: {fileID: 1720650569567845076}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bb81732be1ecb4cd2859ea5f7669c7f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Assets._Project.Develop.Runtime.Gameplay.Features.ApplyDamage.ApplyDamageView
   _applyDamageEffectPrefab: {fileID: 8438083304102601525, guid: 7015b09687d0147cb9550913a1a8c3e3, type: 3}
-  _effectSpawnPoint: {fileID: 7514551712380969594}
+  _effectSpawnPoint: {fileID: 5996662872904001005}
+--- !u!4 &2065791304269979758 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 990b76e0f64f8471d8e2227f3cd63492, type: 3}
+  m_PrefabInstance: {fileID: 1955005626973620101}
+  m_PrefabAsset: {fileID: 0}

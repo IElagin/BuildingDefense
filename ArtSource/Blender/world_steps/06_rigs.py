@@ -1,5 +1,5 @@
 # World step 6: rigid-part rigs and looping clips for the animated world assets.
-#   Dome (armature "Dome"): Root, Dish (rotates once per loop), Tip (pulses twice); clip Idle, 48 frames.
+#   Dome (armature "Dome"): Root, Dish (turns clockwise once per loop), Tip (pulses twice); clip Idle, 48 frames.
 #   Mine (armature "Mine", placed at the mine's authoring slot): Root, Light (pulses); clip Armed, 24 frames.
 # Parts follow their bones by bone parenting, so Unity imports plain MeshRenderers. Every bone is keyed.
 import bpy, math
@@ -83,10 +83,11 @@ dome = build_rig(
     {"Dome_Plinth": "Root", "Dome_Shell": "Root", "Dome_Door": "Root", "Dome_Tanks": "Root",
      "Dome_Mast": "Root", "Dome_Dish": "Dish", "Dome_Tip": "Tip"})
 new_action(dome, "Idle")
-for f in range(0, 49, 2):
+for f in range(0, 49):  # every frame keyed: an even turn
     t = f / 48.0
     dish = dome.pose.bones["Dish"]
-    dish.rotation_quaternion = local_q(dish, Matrix.Rotation(t * TAU, 3, "Z"))
+    # clockwise seen from above (user, 2026-10-21): negative turn about +Z
+    dish.rotation_quaternion = local_q(dish, Matrix.Rotation(-t * TAU, 3, "Z"))
     tip = dome.pose.bones["Tip"]
     tip.scale = Vector((1, 1, 1)) * (1.0 + 0.55 * max(0.0, math.sin(2 * TAU * t)) ** 2)
     key_all(dome, f + 1)

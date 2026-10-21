@@ -31,7 +31,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 8877968492544998247}
+  - {fileID: 8096361897619290851}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7041360109278528128
@@ -58,7 +58,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 403e5e59a61744061b9a4df9b716840f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Assets._Project.Develop.Runtime.Gameplay.Common.TransformEntityRegistrator
---- !u!1001 &8988718882545753228
+--- !u!1001 &8635290832278625544
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -128,33 +128,33 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 3b702d4f8b41c44a58a359e381a76731, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 4334031832314848191}
+      addedObject: {fileID: 7670187197247732462}
   m_SourcePrefab: {fileID: 100100000, guid: 3b702d4f8b41c44a58a359e381a76731, type: 3}
---- !u!4 &3784624387916436889 stripped
+--- !u!4 &4606409074233431069 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -4018345670150305515, guid: 3b702d4f8b41c44a58a359e381a76731, type: 3}
-  m_PrefabInstance: {fileID: 8988718882545753228}
+  m_PrefabInstance: {fileID: 8635290832278625544}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &8106252705048125917 stripped
+--- !u!4 &8096361897619290851 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 3b702d4f8b41c44a58a359e381a76731, type: 3}
+  m_PrefabInstance: {fileID: 8635290832278625544}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &8869802716120653913 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 3b702d4f8b41c44a58a359e381a76731, type: 3}
-  m_PrefabInstance: {fileID: 8988718882545753228}
+  m_PrefabInstance: {fileID: 8635290832278625544}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &4334031832314848191
+--- !u!114 &7670187197247732462
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8106252705048125917}
+  m_GameObject: {fileID: 8869802716120653913}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2cc7b04d534cc4b7b85c2b6c7e05860e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Assets._Project.Develop.Runtime.Gameplay.Features.Sensors.ContactsRadiusView
-  _radiusIndicator: {fileID: 3784624387916436889}
---- !u!4 &8877968492544998247 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 3b702d4f8b41c44a58a359e381a76731, type: 3}
-  m_PrefabInstance: {fileID: 8988718882545753228}
-  m_PrefabAsset: {fileID: 0}
+  _radiusIndicator: {fileID: 4606409074233431069}
