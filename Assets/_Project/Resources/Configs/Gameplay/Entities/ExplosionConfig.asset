@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86cb5b1867cd940ea974575fb430473a, type: 3}
   m_Name: ExplosionConfig
   m_EditorClassIdentifier: Assembly-CSharp::Assets._Project.Develop.Runtime.Configs.Gameplay.Entities.ExplosionConfig
-  <PrefabPath>k__BackingField: Entities/Explosion
+  <PrefabPath>k__BackingField: Entities/OrbitalStrike
   <EffectTime>k__BackingField: 0.6

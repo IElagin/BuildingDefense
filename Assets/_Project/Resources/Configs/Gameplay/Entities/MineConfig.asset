@@ -16,4 +16,4 @@ MonoBehaviour:
   <TriggerRadius>k__BackingField: 1.2
   <BlastRadius>k__BackingField: 3
   <BlastDamage>k__BackingField: 100
-  <BlastExplosion>k__BackingField: {fileID: 11400000, guid: a2090d8af67fd46c699eaf42b3d1f2cc, type: 2}
+  <BlastExplosion>k__BackingField: {fileID: 11400000, guid: 7ed6721bb5b3847b9b1a17b6ff750c74, type: 2}
