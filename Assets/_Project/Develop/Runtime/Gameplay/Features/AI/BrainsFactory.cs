@@ -17,15 +17,22 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.AI
 
         public StateMachineBrain CreateBomberBrain(Entity entity)
         {
+            AIStateMachine stateMachine = CreateMoveToTargetStateMachine(entity);
+            StateMachineBrain brain = new StateMachineBrain(stateMachine);
+
+            _brainsContext.SetFor(entity, brain);
+
+            return brain;
+        }
+
+        private AIStateMachine CreateMoveToTargetStateMachine(Entity entity)
+        {
             MoveToTargetState moveToTargetState = new MoveToTargetState(entity);
 
             AIStateMachine stateMachine = new AIStateMachine();
             stateMachine.AddState(moveToTargetState);
 
-            StateMachineBrain brain = new StateMachineBrain(stateMachine);
-            _brainsContext.SetFor(entity, brain);
-
-            return brain;
+            return stateMachine;
         }
     }
 }
