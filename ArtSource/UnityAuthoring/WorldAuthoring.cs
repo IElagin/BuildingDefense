@@ -228,14 +228,17 @@ public static class WorldAuthoring
     private static void ExplosionPrefab(string name, Material sphere, System.Action<GameObject> addEffects)
     {
         string path = Entities + name + ".prefab";
-        AssetDatabase.DeleteAsset(path);
-        AssetDatabase.CopyAsset(Entities + "Explosion.prefab", path);
+        // rebuild in place when the prefab exists, so its GUID stays stable between runs
+        if (AssetDatabase.LoadAssetAtPath<GameObject>(path) == null)
+            AssetDatabase.CopyAsset(Entities + "Explosion.prefab", path);
+
         GameObject root = PrefabUtility.LoadPrefabContents(path);
         root.name = name;
         root.transform.Find("Blast").GetComponent<MeshRenderer>().sharedMaterial = sphere;
-        Transform sparks = root.transform.Find("Sparks");
-        if (sparks != null)
-            Object.DestroyImmediate(sparks.gameObject);
+
+        foreach (Transform child in root.transform.Cast<Transform>().ToList())
+            if (child.name != "Blast")
+                Object.DestroyImmediate(child.gameObject);
 
         addEffects(root);
         PrefabUtility.SaveAsPrefabAsset(root, path);
