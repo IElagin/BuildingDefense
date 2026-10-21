@@ -10,6 +10,7 @@ using Assets._Project.Develop.Runtime.Gameplay.Features.StagesFeature;
 using Assets._Project.Develop.Runtime.Gameplay.States;
 using Assets._Project.Develop.Runtime.Configs.Gameplay.Defense;
 using Assets._Project.Develop.Runtime.Configs.Gameplay.Levels;
+using Assets._Project.Develop.Runtime.Gameplay.Features.Burrows;
 using Assets._Project.Develop.Runtime.Meta.Features.Wallet;
 using Assets._Project.Develop.Runtime.UI;
 using Assets._Project.Develop.Runtime.UI.Core;
@@ -48,6 +49,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Infrastructure
             container.Register(CreateBuildingFactory, Lifetime.Scoped);
             container.Register(CreateEnemiesFactory, Lifetime.Scoped);
 
+            container.Register(CreateBurrowsService, Lifetime.Scoped);
             container.Register(CreateStagesFactory, Lifetime.Scoped);
             container.Register(CreateStageProviderService, Lifetime.Scoped);
 
@@ -174,6 +176,13 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Infrastructure
             return new StageProviderService(
                 c.Resolve<LevelConfig>(),
                 c.Resolve<StagesFactory>());
+        }
+
+        private static BurrowsService CreateBurrowsService(IObjectResolver c)
+        {
+            return new BurrowsService(
+                c.Resolve<LevelConfig>(),
+                c.Resolve<ResourcesAssetsLoader>());
         }
 
         private static StagesFactory CreateStagesFactory(IObjectResolver c)

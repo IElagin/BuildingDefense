@@ -8,11 +8,14 @@ namespace Assets._Project.Develop.Runtime.Configs.Gameplay.Levels
     public class LevelConfig : ScriptableObject
     {
         [SerializeField] private List<StageConfig> _stageConfigs;
+        [SerializeField] private List<Vector3> _burrowPositions;
 
         [field: SerializeField, Min(1)] public float BuildingMaxHealth { get; private set; } = 150;
         [field: SerializeField, Min(0)] public float RestDuration { get; private set; } = 12;
         [field: SerializeField, Min(0)] public int WinGoldReward { get; private set; } = 50;
 
         public IReadOnlyList<StageConfig> StageConfigs => _stageConfigs;
+
+        public IReadOnlyList<Vector3> BurrowPositions => _burrowPositions;
     }
 }

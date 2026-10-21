@@ -1,6 +1,7 @@
 using Assets._Project.Develop.Runtime.Gameplay.EntitiesCore;
 using Assets._Project.Develop.Runtime.Gameplay.Features.AI;
 using Assets._Project.Develop.Runtime.Gameplay.Features.BuildingFeature;
+using Assets._Project.Develop.Runtime.Gameplay.Features.Burrows;
 using Assets._Project.Develop.Runtime.Gameplay.States;
 using Assets._Project.Develop.Runtime.Infrastructure;
 using Assets._Project.Develop.Runtime.UI.Gameplay;
@@ -49,6 +50,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Infrastructure
 
             _gameplayStatesContext = _container.Resolve<GameplayStatesContext>();
 
+            _container.Resolve<BurrowsService>().Create();
             _container.Resolve<BuildingFactory>().Create(Vector3.zero);
 
             _screenPresenter = _container.Resolve<GameplayScreenPresenter>();

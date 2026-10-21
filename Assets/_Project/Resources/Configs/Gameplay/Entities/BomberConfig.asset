@@ -16,9 +16,9 @@ MonoBehaviour:
   <MoveSpeed>k__BackingField: 2.5
   <RotationSpeed>k__BackingField: 720
   <MaxHealth>k__BackingField: 50
-  <DeathProcessTime>k__BackingField: 0.8
+  <DeathProcessTime>k__BackingField: 2.2
   <SpawnProcessTime>k__BackingField: 0.6
   <ReachDistance>k__BackingField: 2.2
   <BlastRadius>k__BackingField: 1.5
-  <BlastDamage>k__BackingField: 10
+  <BlastDamage>k__BackingField: 5
   <BlastExplosion>k__BackingField: {fileID: 11400000, guid: 30795551dbeb74595821f4eef0ab5896, type: 2}

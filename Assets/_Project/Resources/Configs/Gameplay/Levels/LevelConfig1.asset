@@ -16,6 +16,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 237d434baaaef4d308b3d687312d1e22, type: 2}
   - {fileID: 11400000, guid: b6867f6189d15441ab56935e55c87626, type: 2}
   - {fileID: 11400000, guid: 5dd2714c7e2274d34ae4ad84f7d59f81, type: 2}
+  _burrowPositions:
+  - {x: 11.108147, y: 0, z: 2.976419}
+  - {x: -8.131728, y: 0, z: 8.131728}
+  - {x: -11.108147, y: 0, z: -2.9764194}
+  - {x: 8.131726, y: 0, z: -8.131729}
   <BuildingMaxHealth>k__BackingField: 150
   <RestDuration>k__BackingField: 12
   <WinGoldReward>k__BackingField: 50

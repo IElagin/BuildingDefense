@@ -37,9 +37,12 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
             _releaseRequests.Clear();
         }
 
+        // An entity can get two release reasons in one frame (the stage cleanup on defeat and its own self-release
+        // after a blast); it is released once.
         public void Release(Entity entity)
         {
-            _releaseRequests.Add(entity);
+            if (_releaseRequests.Contains(entity) == false)
+                _releaseRequests.Add(entity);
         }
 
         public void Dispose()

@@ -47,6 +47,7 @@ GameObject:
   - component: {fileID: 8312661149548582686}
   - component: {fileID: 3038774890554794379}
   - component: {fileID: 1917421494631954257}
+  - component: {fileID: 1851660134878627181}
   m_Layer: 6
   m_Name: Bomber
   m_TagString: Untagged
@@ -184,6 +185,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Assets._Project.Develop.Runtime.Gameplay.Features.LifeCycle.HealthBarPointRegistrator
   _point: {fileID: 8248926084983125360}
+--- !u!114 &1851660134878627181
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2455737206078625900}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3012a6e07ada14b7db74d558a12673ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Assets._Project.Develop.Runtime.Gameplay.Features.Knockback.DeathFlightView
+  _body: {fileID: 8551036550124805974}
+  _corpseCollider: {fileID: 6157033609693364380}
+  _spin: 12
+  _shrinkTime: 0.4
 --- !u!1 &6366470385811536569
 GameObject:
   m_ObjectHideFlags: 0
@@ -263,9 +280,89 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -6301890793443725722, guid: f6f40e3205b8d4a919ad43ab4efb7129, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -5263708278316202627, guid: f6f40e3205b8d4a919ad43ab4efb7129, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -4935899222958429550, guid: f6f40e3205b8d4a919ad43ab4efb7129, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -4457246921523339479, guid: f6f40e3205b8d4a919ad43ab4efb7129, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -4391938488549627923, guid: f6f40e3205b8d4a919ad43ab4efb7129, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -3553590855165859149, guid: f6f40e3205b8d4a919ad43ab4efb7129, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -3215830794833885242, guid: f6f40e3205b8d4a919ad43ab4efb7129, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -1530766264280883370, guid: f6f40e3205b8d4a919ad43ab4efb7129, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -1424274039705290461, guid: f6f40e3205b8d4a919ad43ab4efb7129, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -1359778961155980740, guid: f6f40e3205b8d4a919ad43ab4efb7129, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -819274942171610691, guid: f6f40e3205b8d4a919ad43ab4efb7129, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -698657924575433220, guid: f6f40e3205b8d4a919ad43ab4efb7129, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 529189465505913653, guid: f6f40e3205b8d4a919ad43ab4efb7129, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: f6f40e3205b8d4a919ad43ab4efb7129, type: 3}
       propertyPath: m_Name
       value: Visual
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: f6f40e3205b8d4a919ad43ab4efb7129, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1242639935360170303, guid: f6f40e3205b8d4a919ad43ab4efb7129, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1636338333092811758, guid: f6f40e3205b8d4a919ad43ab4efb7129, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1868406969897689591, guid: f6f40e3205b8d4a919ad43ab4efb7129, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2101779975983021292, guid: f6f40e3205b8d4a919ad43ab4efb7129, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3277400048956782018, guid: f6f40e3205b8d4a919ad43ab4efb7129, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4980879364222182960, guid: f6f40e3205b8d4a919ad43ab4efb7129, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: f6f40e3205b8d4a919ad43ab4efb7129, type: 3}
       propertyPath: m_Controller
@@ -274,6 +371,18 @@ PrefabInstance:
     - target: {fileID: 5866666021909216657, guid: f6f40e3205b8d4a919ad43ab4efb7129, type: 3}
       propertyPath: m_CullingMode
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5884179126866141685, guid: f6f40e3205b8d4a919ad43ab4efb7129, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7798088531438514696, guid: f6f40e3205b8d4a919ad43ab4efb7129, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7976867114805325277, guid: f6f40e3205b8d4a919ad43ab4efb7129, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -294,6 +403,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f6f40e3205b8d4a919ad43ab4efb7129, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3153727544669199913}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f6f40e3205b8d4a919ad43ab4efb7129, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8551036550124805974}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f6f40e3205b8d4a919ad43ab4efb7129, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6157033609693364380}
   m_SourcePrefab: {fileID: 100100000, guid: f6f40e3205b8d4a919ad43ab4efb7129, type: 3}
 --- !u!95 &1156225118818910263 stripped
 Animator:
@@ -364,3 +479,51 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Assets._Project.Develop.Runtime.Gameplay.Features.ApplyDamage.ApplyDamageView
   _applyDamageEffectPrefab: {fileID: 1927871519647247444, guid: 86c08bf2d208a4818b1db13ae7f51243, type: 3}
   _effectSpawnPoint: {fileID: 3659456272790433393}
+--- !u!54 &8551036550124805974
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5593542095934079223}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0.05
+  m_AngularDamping: 0.4
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 1
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!65 &6157033609693364380
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5593542095934079223}
+  m_Material: {fileID: 13400000, guid: 3f3842dee330640b1b61888b9651ac89, type: 2}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 0
+  serializedVersion: 3
+  m_Size: {x: 0.8556822, y: 0.91434824, z: 0.5248556}
+  m_Center: {x: 0, y: -0.03666666, z: -0.32624578}

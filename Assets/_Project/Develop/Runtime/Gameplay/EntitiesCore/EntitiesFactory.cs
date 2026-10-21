@@ -3,6 +3,7 @@ using Assets._Project.Develop.Runtime.Gameplay.EntitiesCore.Mono;
 using Assets._Project.Develop.Runtime.Gameplay.Features.ApplyDamage;
 using Assets._Project.Develop.Runtime.Gameplay.Features.Blast;
 using Assets._Project.Develop.Runtime.Gameplay.Features.Explosions;
+using Assets._Project.Develop.Runtime.Gameplay.Features.Knockback;
 using Assets._Project.Develop.Runtime.Gameplay.Features.LifeCycle;
 using Assets._Project.Develop.Runtime.Gameplay.Features.MovementFeature;
 using Assets._Project.Develop.Runtime.Gameplay.Features.Sensors;
@@ -18,7 +19,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
 {
     public class EntitiesFactory
     {
-        private const int ContactsBufferSize = 64;
+        private const int ContactsBufferSize = 256;
 
         private readonly EntitiesLifeContext _entitiesLifeContext;
         private readonly CollidersRegistryService _collidersRegistryService;
@@ -91,7 +92,8 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
                 .AddIsBlasted()
                 .AddSpawnInitialTime(new ReactiveVariable<float>(config.SpawnProcessTime))
                 .AddSpawnCurrentTime()
-                .AddInSpawnProcess();
+                .AddInSpawnProcess()
+                .AddTakeImpulseEvent();
 
             ICompositeCondition canMove = new CompositeCondition()
                 .Add(new FuncCondition(() => entity.IsDead.Value == false))
@@ -155,6 +157,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
                 .AddContactEntitiesBuffer(new Buffer<Entity>(ContactsBufferSize))
                 .AddAreaDamage(new ReactiveVariable<float>(damage))
                 .AddIsAreaDamageApplied()
+                .AddAreaImpulse(new ReactiveVariable<float>(config.ImpulseForce))
                 .AddIsDead()
                 .AddInDeathProcess()
                 .AddDeathProcessInitialTime(new ReactiveVariable<float>(config.EffectTime))
@@ -174,6 +177,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
             entity
                 .AddSystem(new SphereContactsDetectingSystem())
                 .AddSystem(new BodyContactsEntitiesFilterSystem(_collidersRegistryService))
+                .AddSystem(new AreaImpulseSystem())
                 .AddSystem(new AreaDamageSystem())
                 .AddSystem(new DeathSystem())
                 .AddSystem(new DeathProcessTimerSystem())

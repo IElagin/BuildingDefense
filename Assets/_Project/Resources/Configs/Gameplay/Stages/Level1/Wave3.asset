@@ -12,7 +12,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ec114e79ca0144bda39f40effdddbb6, type: 3}
   m_Name: Wave3
   m_EditorClassIdentifier: Assembly-CSharp::Assets._Project.Develop.Runtime.Configs.Gameplay.Stages.WaveStageConfig
-  <EnemyConfig>k__BackingField: {fileID: 11400000, guid: 6e15bc2a2307d4690bab9c7468d54dc4, type: 2}
-  <EnemiesCount>k__BackingField: 8
-  <SpawnInterval>k__BackingField: 1.2
-  <SpawnRadius>k__BackingField: 11.5
+  _burrowSpawns:
+  - <BurrowIndex>k__BackingField: 0
+    <EnemyConfig>k__BackingField: {fileID: 11400000, guid: 6e15bc2a2307d4690bab9c7468d54dc4, type: 2}
+    <Count>k__BackingField: 15
+    <SpawnInterval>k__BackingField: 0.4
+    <StartDelay>k__BackingField: 0
+  - <BurrowIndex>k__BackingField: 1
+    <EnemyConfig>k__BackingField: {fileID: 11400000, guid: 6e15bc2a2307d4690bab9c7468d54dc4, type: 2}
+    <Count>k__BackingField: 15
+    <SpawnInterval>k__BackingField: 0.4
+    <StartDelay>k__BackingField: 0.5
+  - <BurrowIndex>k__BackingField: 2
+    <EnemyConfig>k__BackingField: {fileID: 11400000, guid: 6e15bc2a2307d4690bab9c7468d54dc4, type: 2}
+    <Count>k__BackingField: 15
+    <SpawnInterval>k__BackingField: 0.4
+    <StartDelay>k__BackingField: 1
+  - <BurrowIndex>k__BackingField: 3
+    <EnemyConfig>k__BackingField: {fileID: 11400000, guid: 6e15bc2a2307d4690bab9c7468d54dc4, type: 2}
+    <Count>k__BackingField: 15
+    <SpawnInterval>k__BackingField: 0.4
+    <StartDelay>k__BackingField: 1.5

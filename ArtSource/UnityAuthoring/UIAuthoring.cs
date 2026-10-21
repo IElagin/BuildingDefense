@@ -83,8 +83,8 @@ public static class UIAuthoring
         AddMainMenuBackground();
         BuildLoadingScreen();
         BuildGameplayScreen();
-        BuildHealthBar(UI + "Gameplay/HealthBars/SimpleHealthBar.prefab", new Vector2(96, 16), 2, 3, false);
-        BuildHealthBar(UI + "Gameplay/HealthBars/BuildingHealthBar.prefab", new Vector2(300, 40), 1, 5, true);
+        BuildHealthBar(UI + "Gameplay/HealthBars/SimpleHealthBar.prefab", new Vector2(64, 11), 3, 2, false, true);
+        BuildHealthBar(UI + "Gameplay/HealthBars/BuildingHealthBar.prefab", new Vector2(300, 40), 1, 5, true, false);
         BuildWinPopup();
         BuildDefeatPopup();
         AddHealthBarPoint(Entities + "Bomber.prefab", 0.25f, log);
@@ -333,7 +333,8 @@ public static class UIAuthoring
     }
 
     // Course lesson 55: slider bar with a dark back and a tintable filler; the simple variant hides the text.
-    private static void BuildHealthBar(string path, Vector2 size, float spriteScale, float inset, bool withText)
+    // Enemy bars (L8 hordes) are compact and stay hidden while the enemy is at full health.
+    private static void BuildHealthBar(string path, Vector2 size, float spriteScale, float inset, bool withText, bool hiddenWhenFull)
     {
         Rebuild(path, root =>
         {
@@ -369,6 +370,9 @@ public static class UIAuthoring
             BarWithText view = GetOrAdd<BarWithText>(root);
             SetRef(view, "_text", value);
             SetRef(view, "_bar", bar);
+            var serialized = new SerializedObject(view);
+            serialized.FindProperty("_hiddenWhenFull").boolValue = hiddenWhenFull;
+            serialized.ApplyModifiedPropertiesWithoutUndo();
         });
     }
 

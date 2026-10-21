@@ -1,7 +1,7 @@
 using Assets._Project.Develop.Runtime.Configs.Gameplay.Stages;
 using Assets._Project.Develop.Runtime.Gameplay.EntitiesCore;
+using Assets._Project.Develop.Runtime.Gameplay.Features.Burrows;
 using Assets._Project.Develop.Runtime.Gameplay.Features.Enemies;
-using Assets._Project.Develop.Runtime.Gameplay.Features.BuildingFeature;
 using Assets._Project.Develop.Runtime.Utilities.Reactive;
 using System;
 using System.Collections.Generic;
@@ -10,33 +10,33 @@ using Random = UnityEngine.Random;
 
 namespace Assets._Project.Develop.Runtime.Gameplay.Features.StagesFeature
 {
-    // A wave: enemies appear one by one on a ring around the building; the wave ends when all of them are dead.
+    // A wave: every burrow of the wave releases its enemies one by one with its own interval after its start delay;
+    // the wave ends when all burrows are empty and every spawned enemy is dead.
     public class WaveStage : IStage
     {
-        private const float FullTurn = Mathf.PI * 2;
+        private const float SpawnScatter = 1.2f;
 
         private readonly WaveStageConfig _config;
         private readonly EnemiesFactory _enemiesFactory;
         private readonly EntitiesLifeContext _entitiesLifeContext;
-        private readonly BuildingHolderService _buildingHolderService;
+        private readonly BurrowsService _burrowsService;
 
         private readonly ReactiveEvent _completed = new();
         private readonly Dictionary<Entity, IDisposable> _aliveEnemiesToRemoveReason = new();
+        private readonly List<BurrowSpawn> _burrowSpawns = new();
 
         private bool _inProcess;
-        private int _spawnedCount;
-        private float _timeToNextSpawn;
 
         public WaveStage(
             WaveStageConfig config,
             EnemiesFactory enemiesFactory,
             EntitiesLifeContext entitiesLifeContext,
-            BuildingHolderService buildingHolderService)
+            BurrowsService burrowsService)
         {
             _config = config;
             _enemiesFactory = enemiesFactory;
             _entitiesLifeContext = entitiesLifeContext;
-            _buildingHolderService = buildingHolderService;
+            _burrowsService = burrowsService;
         }
 
         public IReadOnlyEvent Completed => _completed;
@@ -46,8 +46,11 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.StagesFeature
             if (_inProcess)
                 throw new InvalidOperationException("Wave already started");
 
-            _spawnedCount = 0;
-            _timeToNextSpawn = 0;
+            _burrowSpawns.Clear();
+
+            foreach (BurrowSpawnConfig spawnConfig in _config.BurrowSpawns)
+                _burrowSpawns.Add(new BurrowSpawn(spawnConfig, _burrowsService.GetPosition(spawnConfig.BurrowIndex)));
+
             _inProcess = true;
         }
 
@@ -56,13 +59,18 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.StagesFeature
             if (_inProcess == false)
                 return;
 
-            if (_spawnedCount < _config.EnemiesCount)
+            bool allSpawned = true;
+
+            foreach (BurrowSpawn burrowSpawn in _burrowSpawns)
             {
-                UpdateSpawn(deltaTime);
-                return;
+                if (burrowSpawn.IsDone)
+                    continue;
+
+                UpdateSpawn(burrowSpawn, deltaTime);
+                allSpawned = false;
             }
 
-            if (_aliveEnemiesToRemoveReason.Count == 0)
+            if (allSpawned && _aliveEnemiesToRemoveReason.Count == 0)
                 ProcessEnd();
         }
 
@@ -89,22 +97,24 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.StagesFeature
             _inProcess = false;
         }
 
-        private void UpdateSpawn(float deltaTime)
+        private void UpdateSpawn(BurrowSpawn burrowSpawn, float deltaTime)
         {
-            _timeToNextSpawn -= deltaTime;
+            burrowSpawn.TimeToNextSpawn -= deltaTime;
 
-            if (_timeToNextSpawn > 0)
+            if (burrowSpawn.TimeToNextSpawn > 0)
                 return;
 
-            SpawnEnemy();
-
-            _spawnedCount++;
-            _timeToNextSpawn = _config.SpawnInterval;
+            SpawnEnemy(burrowSpawn);
+            burrowSpawn.SpawnedCount++;
+            burrowSpawn.TimeToNextSpawn = burrowSpawn.Config.SpawnInterval;
         }
 
-        private void SpawnEnemy()
+        private void SpawnEnemy(BurrowSpawn burrowSpawn)
         {
-            Entity spawnedEnemy = _enemiesFactory.Create(GetSpawnPosition(), _config.EnemyConfig);
+            Vector2 scatter = Random.insideUnitCircle * SpawnScatter;
+            Vector3 position = burrowSpawn.Position + new Vector3(scatter.x, 0, scatter.y);
+
+            Entity spawnedEnemy = _enemiesFactory.Create(position, burrowSpawn.Config.EnemyConfig);
 
             IDisposable removeReason = spawnedEnemy.IsDead.Subscribe((oldValue, isDead) =>
             {
@@ -118,18 +128,26 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.StagesFeature
             _aliveEnemiesToRemoveReason.Add(spawnedEnemy, removeReason);
         }
 
-        private Vector3 GetSpawnPosition()
-        {
-            Vector3 center = _buildingHolderService.Building.Transform.position;
-            float angle = Random.Range(0, FullTurn);
-
-            return center + new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle)) * _config.SpawnRadius;
-        }
-
         private void ProcessEnd()
         {
             _inProcess = false;
             _completed.Invoke();
+        }
+
+        private class BurrowSpawn
+        {
+            public BurrowSpawn(BurrowSpawnConfig config, Vector3 position)
+            {
+                Config = config;
+                Position = position;
+                TimeToNextSpawn = config.StartDelay;
+            }
+
+            public BurrowSpawnConfig Config { get; }
+            public Vector3 Position { get; }
+            public int SpawnedCount { get; set; }
+            public float TimeToNextSpawn { get; set; }
+            public bool IsDone => SpawnedCount >= Config.Count;
         }
     }
 }
