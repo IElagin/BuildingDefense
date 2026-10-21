@@ -10,6 +10,7 @@ namespace Assets._Project.Develop.Runtime.Configs.Gameplay.Entities
         [field: SerializeField, Min(0)] public float RotationSpeed { get; private set; } = 720;
         [field: SerializeField, Min(0)] public float MaxHealth { get; private set; } = 50;
         [field: SerializeField, Min(0)] public float DeathProcessTime { get; private set; } = 0.8f;
+        [field: SerializeField, Min(0)] public float SpawnProcessTime { get; private set; } = 0.6f;
         [field: SerializeField, Min(0)] public float ReachDistance { get; private set; } = 2.2f;
         [field: SerializeField, Min(0)] public float BlastRadius { get; private set; } = 1.5f;
         [field: SerializeField, Min(0)] public float BlastDamage { get; private set; } = 10;
