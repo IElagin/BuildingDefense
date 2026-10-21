@@ -197,8 +197,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3012a6e07ada14b7db74d558a12673ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Assets._Project.Develop.Runtime.Gameplay.Features.Knockback.DeathFlightView
-  _body: {fileID: 8551036550124805974}
+  _model: {fileID: 5110336850135358029}
   _corpseCollider: {fileID: 6157033609693364380}
+  _mass: 1
+  _linearDamping: 0.05
+  _angularDamping: 0.4
   _spin: 12
   _shrinkTime: 0.4
 --- !u!1 &6366470385811536569
@@ -405,9 +408,6 @@ PrefabInstance:
       addedObject: {fileID: 3153727544669199913}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f6f40e3205b8d4a919ad43ab4efb7129, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 8551036550124805974}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f6f40e3205b8d4a919ad43ab4efb7129, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 6157033609693364380}
   m_SourcePrefab: {fileID: 100100000, guid: f6f40e3205b8d4a919ad43ab4efb7129, type: 3}
 --- !u!95 &1156225118818910263 stripped
@@ -479,33 +479,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Assets._Project.Develop.Runtime.Gameplay.Features.ApplyDamage.ApplyDamageView
   _applyDamageEffectPrefab: {fileID: 1927871519647247444, guid: 86c08bf2d208a4818b1db13ae7f51243, type: 3}
   _effectSpawnPoint: {fileID: 3659456272790433393}
---- !u!54 &8551036550124805974
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5593542095934079223}
-  serializedVersion: 5
-  m_Mass: 1
-  m_LinearDamping: 0.05
-  m_AngularDamping: 0.4
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 1
-  m_Interpolate: 1
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!65 &6157033609693364380
 BoxCollider:
   m_ObjectHideFlags: 0

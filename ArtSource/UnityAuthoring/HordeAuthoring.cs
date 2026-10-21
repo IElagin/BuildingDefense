@@ -1,7 +1,7 @@
 // Editor authoring for the hordes (L8 look pass, 2026-10-21), run in the open Editor through Pipeline run_script:
 //   unity command --project-path <BuildingDefense> run_script --file ArtSource/UnityAuthoring/HordeAuthoring.cs --entry HordeAuthoring.Run --timeout_ms 180000
 // Idempotent: the Corpses physics layer (corpses hit only the plateau, props and each other; living entities never
-// touch the Environment colliders), the bomber's death flight (model rigidbody, corpse collider, DeathFlightView;
+// touch the Environment colliders), the bomber's death flight (corpse collider, DeathFlightView adds the rigidbody;
 // thin legs and mandibles cast no shadows), blast impulses per explosion config, the level burrows and waves
 // (up to ~150 bugs at once) and the balance for such waves.
 using System.Collections.Generic;
@@ -116,14 +116,10 @@ public static class HordeAuthoring
             renderer.shadowCastingMode = thin ? ShadowCastingMode.Off : ShadowCastingMode.On;
         }
 
-        if (model.TryGetComponent(out Rigidbody body) == false)
-            body = model.AddComponent<Rigidbody>();
-        body.isKinematic = true;
-        body.useGravity = true;
-        body.mass = 1f;
-        body.linearDamping = 0.05f;
-        body.angularDamping = 0.4f;
-        body.interpolation = RigidbodyInterpolation.Interpolate;
+        // the corpse rigidbody is added by DeathFlightView at death: a kinematic body on the living model held its
+        // spawn rotation while the entity turned, so bugs walked sideways or backwards
+        if (model.TryGetComponent(out Rigidbody body))
+            Object.DestroyImmediate(body);
 
         if (model.TryGetComponent(out BoxCollider collider) == false)
             collider = model.AddComponent<BoxCollider>();
@@ -137,11 +133,11 @@ public static class HordeAuthoring
         if (root.TryGetComponent(out DeathFlightView view) == false)
             view = root.AddComponent<DeathFlightView>();
         var serialized = new SerializedObject(view);
-        serialized.FindProperty("_body").objectReferenceValue = body;
+        serialized.FindProperty("_model").objectReferenceValue = model.transform;
         serialized.FindProperty("_corpseCollider").objectReferenceValue = collider;
         serialized.ApplyModifiedPropertiesWithoutUndo();
 
-        log.AppendLine($"bomber: corpse body and collider {collider.size} on {model.name}, DeathFlightView, thin parts without shadows");
+        log.AppendLine($"bomber: corpse collider {collider.size} on {model.name}, DeathFlightView, thin parts without shadows");
         PrefabUtility.SaveAsPrefabAsset(root, BomberPrefab);
         PrefabUtility.UnloadPrefabContents(root);
     }
