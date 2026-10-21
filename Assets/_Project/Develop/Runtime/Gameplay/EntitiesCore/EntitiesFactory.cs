@@ -18,7 +18,6 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
     public class EntitiesFactory
     {
         private const int ContactsBufferSize = 64;
-        private const float DiameterPerRadius = 2;
 
         private readonly EntitiesLifeContext _entitiesLifeContext;
         private readonly CollidersRegistryService _collidersRegistryService;
@@ -138,10 +137,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
         {
             Entity entity = CreateEmpty();
 
-            // The prefab is a unit-diameter blast: scale it to the damage radius and play it for the explosion lifetime.
-            MonoEntity view = _monoEntitiesFactory.Create(entity, position, config.PrefabPath);
-            view.transform.localScale = Vector3.one * (radius * DiameterPerRadius);
-            view.GetComponent<ExplosionView>().Initialize(config.EffectTime);
+            _monoEntitiesFactory.Create(entity, position, config.PrefabPath);
 
             entity
                 .AddTeam(new ReactiveVariable<Teams>(team))

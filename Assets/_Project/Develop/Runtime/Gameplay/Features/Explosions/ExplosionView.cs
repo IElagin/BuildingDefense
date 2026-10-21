@@ -1,10 +1,15 @@
+using Assets._Project.Develop.Runtime.Gameplay.EntitiesCore;
+using Assets._Project.Develop.Runtime.Gameplay.EntitiesCore.Mono;
 using UnityEngine;
 
 namespace Assets._Project.Develop.Runtime.Gameplay.Features.Explosions
 {
-    // Visual only: grows the blast sphere to the entity's scale and fades it out over the explosion lifetime.
-    public class ExplosionView : MonoBehaviour
+    // Course entity view (L8): takes the blast radius and the explosion lifetime from the entity,
+    // grows the blast sphere to that radius and fades it out while the explosion lives.
+    public class ExplosionView : EntityView
     {
+        private const float DiameterPerRadius = 2;
+
         [SerializeField] private Transform _sphere;
         [SerializeField] private Renderer _sphereRenderer;
         [SerializeField, Range(0, 1)] private float _startScale = 0.3f;
@@ -15,9 +20,12 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Explosions
         private Color _color;
         private float _time;
 
-        public void Initialize(float duration)
+        protected override void OnEntityStartedWork(Entity entity)
         {
-            _duration = duration;
+            float radius = entity.ContactsDetectingRadius.Value;
+
+            transform.localScale = Vector3.one * (radius * DiameterPerRadius);
+            _duration = entity.DeathProcessInitialTime.Value;
         }
 
         private void Awake()
