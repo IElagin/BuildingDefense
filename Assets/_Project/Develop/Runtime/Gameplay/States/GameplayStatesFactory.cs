@@ -1,4 +1,6 @@
+using Assets._Project.Develop.Runtime.Configs.Gameplay.Defense;
 using Assets._Project.Develop.Runtime.Configs.Gameplay.Levels;
+using Assets._Project.Develop.Runtime.Gameplay.EntitiesCore;
 using Assets._Project.Develop.Runtime.Gameplay.Features.BuildingFeature;
 using Assets._Project.Develop.Runtime.Gameplay.Features.Defense;
 using Assets._Project.Develop.Runtime.Gameplay.Features.InputFeature;
@@ -8,6 +10,7 @@ using Assets._Project.Develop.Runtime.Meta.Features.Statistics;
 using Assets._Project.Develop.Runtime.Meta.Features.Wallet;
 using Assets._Project.Develop.Runtime.UI.Gameplay;
 using Assets._Project.Develop.Runtime.Utilities.Conditions;
+using Assets._Project.Develop.Runtime.Utilities.ConfigsManagement;
 using Assets._Project.Develop.Runtime.Utilities.DataManagement.DataProviders;
 using VContainer;
 
@@ -31,9 +34,15 @@ namespace Assets._Project.Develop.Runtime.Gameplay.States
 
         public WaveState CreateWaveState()
         {
+            Entity clickExplosionCaster = _container
+                .Resolve<EntitiesFactory>()
+                .CreateClickExplosionCaster(_container.Resolve<ConfigsProviderService>().GetConfig<DefenseConfig>());
+
             return new WaveState(
                 _container.Resolve<StageProviderService>(),
-                _container.Resolve<ClickExplosionService>());
+                _container.Resolve<IInputService>(),
+                _container.Resolve<GroundPointService>(),
+                clickExplosionCaster);
         }
 
         public WinState CreateWinState()

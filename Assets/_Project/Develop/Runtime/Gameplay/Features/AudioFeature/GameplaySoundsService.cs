@@ -6,12 +6,13 @@ using Assets._Project.Develop.Runtime.Utilities.Audio;
 using Assets._Project.Develop.Runtime.Utilities.Reactive;
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Assets._Project.Develop.Runtime.Gameplay.Features.AudioFeature
 {
     // Gameplay sounds from entity and service events in one place (Studio audio addition, as the FinalProject service):
     // bugs (spawn, death, acid blast at the dome), the dome (hit, destruction), mines (placed, blast, refused click),
-    // the orbital strike and the wave start. Views and prefabs stay free of audio.
+    // the orbital strike (the click explosion caster) and the wave start. Views and prefabs stay free of audio.
     public class GameplaySoundsService : IDisposable
     {
         private readonly IAudioService _audio;
@@ -23,7 +24,6 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.AudioFeature
             IAudioService audio,
             EntitiesLifeContext entitiesLifeContext,
             StageProviderService stageProviderService,
-            ClickExplosionService clickExplosionService,
             MinePlacementService minePlacementService)
         {
             _audio = audio;
@@ -36,7 +36,6 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.AudioFeature
                 OnEntityAdded(entity);
 
             _serviceSubscriptions.Add(stageProviderService.CurrentStageNumber.Subscribe(OnStageChanged));
-            _serviceSubscriptions.Add(clickExplosionService.Exploded.Subscribe(_ => _audio.Play(SoundIds.OrbitalStrike)));
             _serviceSubscriptions.Add(minePlacementService.Denied.Subscribe(() => _audio.Play(SoundIds.MineDenied)));
         }
 
@@ -65,6 +64,10 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.AudioFeature
             {
                 subscriptions.Add(entity.TakeDamageEvent.Subscribe(_ => _audio.Play(SoundIds.DomeHit)));
                 subscriptions.Add(entity.IsDead.Subscribe((_, isDead) => PlayIf(isDead, SoundIds.DomeDestroyed)));
+            }
+            else if (entity.TryGetClickExplosionEvent(out ReactiveEvent<Vector3> clickExplosionEvent))
+            {
+                subscriptions.Add(clickExplosionEvent.Subscribe(_ => _audio.Play(SoundIds.OrbitalStrike)));
             }
             else if (entity.TryGetIsTouchAnotherTeam(out _))
             {

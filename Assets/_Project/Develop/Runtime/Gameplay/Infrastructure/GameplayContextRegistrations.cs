@@ -58,7 +58,6 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Infrastructure
             container.Register(CreateRestPhaseService, Lifetime.Scoped);
 
             container.Register(CreateGroundPointService, Lifetime.Scoped);
-            container.Register(CreateClickExplosionService, Lifetime.Scoped);
             container.Register(CreateMinePlacementService, Lifetime.Scoped);
 
             container.Register(CreateGameplayStatesFactory, Lifetime.Scoped);
@@ -100,7 +99,6 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Infrastructure
                 c.Resolve<IAudioService>(),
                 c.Resolve<EntitiesLifeContext>(),
                 c.Resolve<StageProviderService>(),
-                c.Resolve<ClickExplosionService>(),
                 c.Resolve<MinePlacementService>());
 
         private static GameplayPopupService CreateGameplayPopupService(IObjectResolver c)
@@ -164,16 +162,6 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Infrastructure
                 c.Resolve<WalletService>(),
                 c.Resolve<BuildingHolderService>(),
                 c.Resolve<ConfigsProviderService>().GetConfig<DefenseConfig>());
-        }
-
-        private static ClickExplosionService CreateClickExplosionService(IObjectResolver c)
-        {
-            return new ClickExplosionService(
-                c.Resolve<IInputService>(),
-                c.Resolve<GroundPointService>(),
-                c.Resolve<EntitiesFactory>(),
-                c.Resolve<ConfigsProviderService>().GetConfig<DefenseConfig>(),
-                c.Resolve<TimerServiceFactory>());
         }
 
         private static GroundPointService CreateGroundPointService(IObjectResolver c)

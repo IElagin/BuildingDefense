@@ -1,7 +1,9 @@
 using Assets._Project.Develop.Runtime.Configs.Gameplay.Entities;
 using Assets._Project.Develop.Runtime.Gameplay.EntitiesCore.Mono;
 using Assets._Project.Develop.Runtime.Gameplay.Features.ApplyDamage;
+using Assets._Project.Develop.Runtime.Configs.Gameplay.Defense;
 using Assets._Project.Develop.Runtime.Gameplay.Features.Blast;
+using Assets._Project.Develop.Runtime.Gameplay.Features.Defense;
 using Assets._Project.Develop.Runtime.Gameplay.Features.Explosions;
 using Assets._Project.Develop.Runtime.Gameplay.Features.Knockback;
 using Assets._Project.Develop.Runtime.Gameplay.Features.LifeCycle;
@@ -227,6 +229,22 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
                 .AddSystem(new BlastSystem(this, config.BlastExplosion))
                 .AddSystem(new DeathSystem())
                 .AddSystem(new SelfReleaseSystem(_entitiesLifeContext));
+
+            _entitiesLifeContext.Add(entity);
+
+            return entity;
+        }
+
+        // The click explosion caster has no view: the wave state puts a request, the system makes the explosion.
+        public Entity CreateClickExplosionCaster(DefenseConfig config)
+        {
+            Entity entity = CreateEmpty();
+
+            entity
+                .AddClickExplosionRequest()
+                .AddClickExplosionEvent();
+
+            entity.AddSystem(new ClickExplosionSystem(this, config));
 
             _entitiesLifeContext.Add(entity);
 
