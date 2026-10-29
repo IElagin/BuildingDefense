@@ -43,3 +43,33 @@ MonoBehaviour:
     <Count>k__BackingField: 16
     <SpawnInterval>k__BackingField: 0.35
     <StartDelay>k__BackingField: 2.5
+  - <BurrowIndex>k__BackingField: 1
+    <EnemyConfig>k__BackingField: {fileID: 11400000, guid: 97d4677383017460396d422d4140bdf0, type: 2}
+    <Count>k__BackingField: 2
+    <SpawnInterval>k__BackingField: 2.5
+    <StartDelay>k__BackingField: 3
+  - <BurrowIndex>k__BackingField: 2
+    <EnemyConfig>k__BackingField: {fileID: 11400000, guid: 97d4677383017460396d422d4140bdf0, type: 2}
+    <Count>k__BackingField: 2
+    <SpawnInterval>k__BackingField: 2.5
+    <StartDelay>k__BackingField: 3.7
+  - <BurrowIndex>k__BackingField: 3
+    <EnemyConfig>k__BackingField: {fileID: 11400000, guid: 97d4677383017460396d422d4140bdf0, type: 2}
+    <Count>k__BackingField: 1
+    <SpawnInterval>k__BackingField: 2.5
+    <StartDelay>k__BackingField: 4.4
+  - <BurrowIndex>k__BackingField: 4
+    <EnemyConfig>k__BackingField: {fileID: 11400000, guid: 97d4677383017460396d422d4140bdf0, type: 2}
+    <Count>k__BackingField: 1
+    <SpawnInterval>k__BackingField: 2.5
+    <StartDelay>k__BackingField: 5.1
+  - <BurrowIndex>k__BackingField: 5
+    <EnemyConfig>k__BackingField: {fileID: 11400000, guid: 97d4677383017460396d422d4140bdf0, type: 2}
+    <Count>k__BackingField: 1
+    <SpawnInterval>k__BackingField: 2.5
+    <StartDelay>k__BackingField: 5.8
+  - <BurrowIndex>k__BackingField: 0
+    <EnemyConfig>k__BackingField: {fileID: 11400000, guid: 97d4677383017460396d422d4140bdf0, type: 2}
+    <Count>k__BackingField: 1
+    <SpawnInterval>k__BackingField: 2.5
+    <StartDelay>k__BackingField: 6.5

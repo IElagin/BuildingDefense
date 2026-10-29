@@ -28,3 +28,13 @@ MonoBehaviour:
     <Count>k__BackingField: 10
     <SpawnInterval>k__BackingField: 0.5
     <StartDelay>k__BackingField: 1
+  - <BurrowIndex>k__BackingField: 1
+    <EnemyConfig>k__BackingField: {fileID: 11400000, guid: 97d4677383017460396d422d4140bdf0, type: 2}
+    <Count>k__BackingField: 1
+    <SpawnInterval>k__BackingField: 2.5
+    <StartDelay>k__BackingField: 3
+  - <BurrowIndex>k__BackingField: 3
+    <EnemyConfig>k__BackingField: {fileID: 11400000, guid: 97d4677383017460396d422d4140bdf0, type: 2}
+    <Count>k__BackingField: 1
+    <SpawnInterval>k__BackingField: 2.5
+    <StartDelay>k__BackingField: 3.7

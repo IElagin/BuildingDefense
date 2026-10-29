@@ -177,6 +177,26 @@ MonoBehaviour:
     <PitchMax>k__BackingField: 1.05
     <Cooldown>k__BackingField: 0.05
     <Delay>k__BackingField: 0
+  - <Id>k__BackingField: 17
+    <Channel>k__BackingField: 1
+    <Clips>k__BackingField:
+    - {fileID: 8300000, guid: 690b55762f8dc40928ab1170276d45ab, type: 3}
+    - {fileID: 8300000, guid: 325f57921cce64945b870c4b6d227912, type: 3}
+    <Volume>k__BackingField: 0.45
+    <PitchMin>k__BackingField: 0.9
+    <PitchMax>k__BackingField: 1.12
+    <Cooldown>k__BackingField: 0.08
+    <Delay>k__BackingField: 0
+  - <Id>k__BackingField: 18
+    <Channel>k__BackingField: 1
+    <Clips>k__BackingField:
+    - {fileID: 8300000, guid: a0e6708a7032c44d0923b54ae9d4e9ff, type: 3}
+    - {fileID: 8300000, guid: 147586399e00a4c068d28be53575d410, type: 3}
+    <Volume>k__BackingField: 0.5
+    <PitchMin>k__BackingField: 0.9
+    <PitchMax>k__BackingField: 1.1
+    <Cooldown>k__BackingField: 0.08
+    <Delay>k__BackingField: 0
   _ambients:
   - <Id>k__BackingField: 0
     <Clips>k__BackingField:

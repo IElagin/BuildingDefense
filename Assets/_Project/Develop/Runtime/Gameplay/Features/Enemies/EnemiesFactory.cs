@@ -40,6 +40,12 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Enemies
                     _brainsFactory.CreateBomberBrain(entity);
                     break;
 
+                case SpitterConfig spitterConfig:
+                    entity = _entitiesFactory.CreateSpitter(position, spitterConfig);
+                    entity.AddCurrentTarget(new ReactiveVariable<Entity>(_buildingHolderService.Building));
+                    _brainsFactory.CreateSpitterBrain(entity);
+                    break;
+
                 default:
                     throw new ArgumentException($"Not support {config.GetType()} type config");
             }

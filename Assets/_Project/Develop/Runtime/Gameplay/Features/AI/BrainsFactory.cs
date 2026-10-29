@@ -30,6 +30,17 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.AI
             return brain;
         }
 
+        // Walk to the target, then stand at the reach distance and attack it like the turret does.
+        public StateMachineBrain CreateSpitterBrain(Entity entity)
+        {
+            AIStateMachine stateMachine = CreateMoveThenAttackStateMachine(entity);
+            StateMachineBrain brain = new StateMachineBrain(stateMachine);
+
+            _brainsContext.SetFor(entity, brain);
+
+            return brain;
+        }
+
         // The course main hero's combat without movement: find the target, turn to it, shoot.
         public StateMachineBrain CreateTurretBrain(Entity entity, ITargetSelector targetSelector)
         {
@@ -54,6 +65,28 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.AI
 
             AIStateMachine stateMachine = new AIStateMachine();
             stateMachine.AddState(moveToTargetState);
+
+            return stateMachine;
+        }
+
+        private AIStateMachine CreateMoveThenAttackStateMachine(Entity entity)
+        {
+            MoveToTargetState moveToTargetState = new MoveToTargetState(entity);
+
+            AIStateMachine attackState = CreateAutoAttackStateMachine(entity);
+
+            ReactiveVariable<bool> isTargetReached = entity.IsTargetReached;
+
+            ICondition fromMoveToAttackCondition = new FuncCondition(() => isTargetReached.Value);
+            ICondition fromAttackToMoveCondition = new FuncCondition(() => isTargetReached.Value == false);
+
+            AIStateMachine stateMachine = new AIStateMachine();
+
+            stateMachine.AddState(moveToTargetState);
+            stateMachine.AddState(attackState);
+
+            stateMachine.AddTransition(moveToTargetState, attackState, fromMoveToAttackCondition);
+            stateMachine.AddTransition(attackState, moveToTargetState, fromAttackToMoveCondition);
 
             return stateMachine;
         }

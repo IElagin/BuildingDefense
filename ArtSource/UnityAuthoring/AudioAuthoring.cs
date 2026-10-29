@@ -40,6 +40,8 @@ public static class AudioAuthoring
         (SoundIds.TurretPlace, AudioChannels.Gameplay, 0.7f, 0.97f, 1.03f, 0.05f),
         (SoundIds.TurretShot, AudioChannels.Gameplay, 0.4f, 0.92f, 1.08f, 0.07f),
         (SoundIds.PuddlePlace, AudioChannels.Gameplay, 0.6f, 0.95f, 1.05f, 0.05f),
+        (SoundIds.SpitterSpit, AudioChannels.Gameplay, 0.45f, 0.9f, 1.12f, 0.08f),
+        (SoundIds.AcidSpitSplash, AudioChannels.Gameplay, 0.5f, 0.9f, 1.1f, 0.08f),
     };
 
     public static string Run()

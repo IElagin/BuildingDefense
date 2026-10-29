@@ -251,6 +251,16 @@ def defense_sounds():
     for k, name in enumerate(("laserSmall_000", "laserSmall_002", "laserSmall_004"), 1):
         ffmpeg_mix(f"SFX_TurretShot_{k}", [(kenney(sci, name), 0, 1)], -9)
     ffmpeg_mix("SFX_PuddlePlace", [(kenney(sci, "slime_001"), 0, 1), (kenney(ui, "drop_002"), 0, 0.6)], -7, max_seconds=0.7)
+    spitter_sounds()
+
+
+def spitter_sounds():
+    """Final assignment 2026-10-29: the spitter's spit and the acid blob splashing on the dome."""
+    sci, impact, ui = "sci-fi-sounds", "impact-sounds", "interface-sounds"
+    for k, drop in enumerate(("drop_001", "drop_003"), 1):
+        ffmpeg_mix(f"SFX_SpitterSpit_{k}", [(kenney(ui, drop), 0, 0.8), (kenney(sci, "slime_000"), 0.02, 0.7)], -9, max_seconds=0.45)
+    for k, (soft, slime) in enumerate((("impactSoft_medium_000", "slime_001"), ("impactSoft_medium_002", "slime_000")), 1):
+        ffmpeg_mix(f"SFX_AcidSpitSplash_{k}", [(kenney(impact, soft), 0, 1), (kenney(sci, slime), 0.01, 0.8)], -8, max_seconds=0.6)
 
 
 def main():

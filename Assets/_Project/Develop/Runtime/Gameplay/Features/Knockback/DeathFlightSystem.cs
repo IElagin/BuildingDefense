@@ -15,7 +15,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Knockback
     // on the living model kept its spawn rotation while the entity turned. Goes after DeathSystem in the recipe.
     public class DeathFlightSystem : IInitializableSystem, IUpdatableSystem, IDisposableSystem
     {
-        private readonly BomberConfig _config;
+        private readonly BugConfig _config;
 
         private Transform _model;
         private Collider _collider;
@@ -27,7 +27,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Knockback
         private Vector3 _impulse;
         private bool _hasImpulse;
 
-        public DeathFlightSystem(BomberConfig config)
+        public DeathFlightSystem(BugConfig config)
         {
             _config = config;
         }

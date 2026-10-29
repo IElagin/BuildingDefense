@@ -18,6 +18,8 @@ namespace Assets._Project.Develop.Runtime.Utilities.Audio
         DomeDestroyed,
         TurretPlace,
         TurretShot,
-        PuddlePlace
+        PuddlePlace,
+        SpitterSpit,
+        AcidSpitSplash
     }
 }
