@@ -5,17 +5,16 @@ using UnityEngine;
 
 namespace Assets._Project.Develop.Runtime.Gameplay.Features.AI.States
 {
+    // Asks NavMeshMovementSystem to walk to the target; leaving the state, or losing the target, stops the bug where it stands.
     public class MoveToTargetState : State, IUpdatableState
     {
-        private readonly ReactiveVariable<Vector3> _moveDirection;
-        private readonly ReactiveVariable<Vector3> _rotationDirection;
+        private readonly ReactiveVariable<Vector3> _moveDestination;
         private readonly ReactiveVariable<Entity> _currentTarget;
         private readonly Transform _transform;
 
         public MoveToTargetState(Entity entity)
         {
-            _moveDirection = entity.MoveDirection;
-            _rotationDirection = entity.RotationDirection;
+            _moveDestination = entity.MoveDestination;
             _currentTarget = entity.CurrentTarget;
             _transform = entity.Transform;
         }
@@ -24,7 +23,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.AI.States
         {
             base.Exit();
 
-            _moveDirection.Value = Vector3.zero;
+            _moveDestination.Value = _transform.position;
         }
 
         public void Update(float deltaTime)
@@ -33,16 +32,11 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.AI.States
 
             if (target == null)
             {
-                _moveDirection.Value = Vector3.zero;
+                _moveDestination.Value = _transform.position;
                 return;
             }
 
-            Vector3 direction = target.Transform.position - _transform.position;
-            direction.y = 0;
-            direction.Normalize();
-
-            _moveDirection.Value = direction;
-            _rotationDirection.Value = direction;
+            _moveDestination.Value = target.Transform.position;
         }
     }
 }

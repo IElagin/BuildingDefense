@@ -233,6 +233,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2039762222247344085}
   - component: {fileID: 7050997619250766261}
+  - component: {fileID: 2452554477339572546}
   m_Layer: 0
   m_Name: Turret
   m_TagString: Untagged
@@ -269,6 +270,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ba212f482dcf40e897e79148d968f7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Assets._Project.Develop.Runtime.Gameplay.EntitiesCore.Mono.MonoEntity
+--- !u!208 &2452554477339572546
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4969652840346647624}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 0
+  m_Extents: {x: 0.4249846, y: 0.5, z: 0.4249846}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0.25, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1 &9129115717093231804
 GameObject:
   m_ObjectHideFlags: 0

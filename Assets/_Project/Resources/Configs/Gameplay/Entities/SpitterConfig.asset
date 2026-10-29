@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Assets._Project.Develop.Runtime.Configs.Gameplay.Entities.SpitterConfig
   <MoveSpeed>k__BackingField: 2.2
   <RotationSpeed>k__BackingField: 720
+  <AvoidancePriority>k__BackingField: 30
   <MaxHealth>k__BackingField: 40
   <DeathProcessTime>k__BackingField: 2.2
   <SpawnProcessTime>k__BackingField: 0.6

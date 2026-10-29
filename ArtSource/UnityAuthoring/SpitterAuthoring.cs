@@ -4,7 +4,8 @@
 // spitter controller (the bomber layout plus Spit on IsAttack), the Spitter prefab from a copy of the Bomber prefab
 // (new visual with InstantAttackView, shoot point at the spout, the same corpse setup as HordeAuthoring.SetupBomber),
 // the AcidSpit projectile prefab, SpitterConfig, and the spitter entries of the waves. The bomber entries stay as
-// HordeAuthoring tuned them; old spitter entries are replaced.
+// HordeAuthoring tuned them; old spitter entries are replaced. The copied Bomber prefab brings the NavMeshAgent
+// (NavMeshAuthoring).
 using System.Linq;
 using System.Text;
 using Assets._Project.Develop.Runtime.Configs.Gameplay.Entities;
@@ -235,10 +236,6 @@ public static class SpitterAuthoring
             shootRegistrator = root.AddComponent<ShootPointEntityRegistrator>();
         Assign(shootRegistrator, ("_shootPoint", shootPoint));
 
-        // a hundred bombers: the bomber crowd, whose velocity is set every frame, flows around a standing spitter
-        // instead of pushing it into the dome (at 10 the crowd still pushed it from 7 m to the dome)
-        root.GetComponent<Rigidbody>().mass = 100f;
-
         SetupCorpse(root, visual);
 
         PrefabUtility.SaveAsPrefabAsset(root, path);
@@ -340,11 +337,13 @@ public static class SpitterAuthoring
         serialized.FindProperty("<MoveSpeed>k__BackingField").floatValue = 2.2f;
         serialized.FindProperty("<MaxHealth>k__BackingField").floatValue = 40f;
         serialized.FindProperty("<ReachDistance>k__BackingField").floatValue = 7f;
+        // more important than the bombers (50): they step around a standing spitter (NavMeshAuthoring)
+        serialized.FindProperty("<AvoidancePriority>k__BackingField").intValue = 30;
         serialized.FindProperty("<SpitExplosion>k__BackingField").objectReferenceValue =
             AssetDatabase.LoadAssetAtPath<ExplosionConfig>(Configs + "Entities/AcidBlastConfig.asset");
         serialized.ApplyModifiedPropertiesWithoutUndo();
         EditorUtility.SetDirty(config);
-        log.AppendLine("SpitterConfig: HP 40, speed 2.2, stops 7 m from the dome, acid blast look");
+        log.AppendLine("SpitterConfig: HP 40, speed 2.2, stops 7 m from the dome, avoidance priority 30, acid blast look");
         return config;
     }
 

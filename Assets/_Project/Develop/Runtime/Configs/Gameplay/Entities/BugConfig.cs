@@ -7,6 +7,8 @@ namespace Assets._Project.Develop.Runtime.Configs.Gameplay.Entities
     {
         [field: SerializeField, Min(0)] public float MoveSpeed { get; private set; } = 2.5f;
         [field: SerializeField, Min(0)] public float RotationSpeed { get; private set; } = 720;
+        // NavMeshAgent.avoidancePriority: lower is more important, a lower bug is walked around by the others
+        [field: SerializeField, Range(0, 99)] public int AvoidancePriority { get; private set; } = 50;
         [field: SerializeField, Min(0)] public float MaxHealth { get; private set; } = 50;
         [field: SerializeField, Min(0)] public float DeathProcessTime { get; private set; } = 2.2f;
         [field: SerializeField, Min(0)] public float SpawnProcessTime { get; private set; } = 0.6f;

@@ -2,6 +2,7 @@ using Assets._Project.Develop.Runtime.Gameplay.EntitiesCore;
 using Assets._Project.Develop.Runtime.Utilities.Conditions;
 using Assets._Project.Develop.Runtime.Utilities.Reactive;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace Assets._Project.Develop.Runtime.Gameplay.Features.MovementFeature
 {
@@ -13,6 +14,21 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.MovementFeature
     public class MoveSpeed : IEntityComponent
     {
         public ReactiveVariable<float> Value;
+    }
+
+    public class MoveDestination : IEntityComponent
+    {
+        public ReactiveVariable<Vector3> Value;
+    }
+
+    public class NavMeshAgentComponent : IEntityComponent
+    {
+        public NavMeshAgent Value;
+    }
+
+    public class AvoidancePriority : IEntityComponent
+    {
+        public ReactiveVariable<int> Value;
     }
 
     public class IsMoving : IEntityComponent

@@ -90,8 +90,9 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
             _monoEntitiesFactory.Create(entity, position, config.PrefabPath);
 
             entity
-                .AddMoveDirection()
+                .AddMoveDestination(new ReactiveVariable<Vector3>(position))
                 .AddMoveSpeed(new ReactiveVariable<float>(config.MoveSpeed))
+                .AddAvoidancePriority(new ReactiveVariable<int>(config.AvoidancePriority))
                 .AddIsMoving()
                 .AddRotationDirection()
                 .AddRotationSpeed(new ReactiveVariable<float>(config.RotationSpeed))
@@ -149,7 +150,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
 
             entity
                 .AddSystem(new SpawnProcessTimerSystem())
-                .AddSystem(new RigidbodyMovementSystem())
+                .AddSystem(new NavMeshMovementSystem())
                 .AddSystem(new RigidbodyRotationSystem())
                 .AddSystem(new TargetReachDetectorSystem())
                 .AddSystem(new BlastSystem(this, config.BlastExplosion))
@@ -157,6 +158,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
                 .AddSystem(new DeathSystem())
                 .AddSystem(new DeathFlightSystem(config))
                 .AddSystem(new DisableCollidersOnDeathSystem())
+                .AddSystem(new DisableNavMeshAgentOnDeathSystem())
                 .AddSystem(new DeathProcessTimerSystem())
                 .AddSystem(new BugSoundsSystem(_audio))
                 .AddSystem(new SelfReleaseSystem(_entitiesLifeContext));
@@ -172,8 +174,9 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
             _monoEntitiesFactory.Create(entity, position, config.PrefabPath);
 
             entity
-                .AddMoveDirection()
+                .AddMoveDestination(new ReactiveVariable<Vector3>(position))
                 .AddMoveSpeed(new ReactiveVariable<float>(config.MoveSpeed))
+                .AddAvoidancePriority(new ReactiveVariable<int>(config.AvoidancePriority))
                 .AddIsMoving()
                 .AddRotationDirection()
                 .AddRotationSpeed(new ReactiveVariable<float>(config.RotationSpeed))
@@ -245,7 +248,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
 
             entity
                 .AddSystem(new SpawnProcessTimerSystem())
-                .AddSystem(new RigidbodyMovementSystem())
+                .AddSystem(new NavMeshMovementSystem())
                 .AddSystem(new RigidbodyRotationSystem())
                 .AddSystem(new TargetReachDetectorSystem())
                 .AddSystem(new AttackCancelSystem())
@@ -259,6 +262,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
                 .AddSystem(new DeathSystem())
                 .AddSystem(new DeathFlightSystem(config))
                 .AddSystem(new DisableCollidersOnDeathSystem())
+                .AddSystem(new DisableNavMeshAgentOnDeathSystem())
                 .AddSystem(new DeathProcessTimerSystem())
                 .AddSystem(new SpitterSoundsSystem(_audio))
                 .AddSystem(new SelfReleaseSystem(_entitiesLifeContext));

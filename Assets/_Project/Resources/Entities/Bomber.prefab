@@ -49,6 +49,8 @@ GameObject:
   - component: {fileID: 1917421494631954257}
   - component: {fileID: 5491268021586104869}
   - component: {fileID: 133368904945640538}
+  - component: {fileID: 891565992279607857}
+  - component: {fileID: 3361403460450279214}
   m_Layer: 6
   m_Name: Bomber
   m_TagString: Untagged
@@ -120,8 +122,8 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
   m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!136 &2340995623279981181
@@ -214,6 +216,40 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Assets._Project.Develop.Runtime.Gameplay.Features.Knockback.CorpseShrinkView
   _model: {fileID: 5110336850135358029}
   _shrinkTime: 0.4
+--- !u!195 &891565992279607857
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2455737206078625900}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.4
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 1
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
+--- !u!114 &3361403460450279214
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2455737206078625900}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a7f90d80b0b445ceb0a2a8587ac8efd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Assets._Project.Develop.Runtime.Gameplay.Features.MovementFeature.NavMeshAgentEntityRegistrator
 --- !u!1 &6366470385811536569
 GameObject:
   m_ObjectHideFlags: 0
