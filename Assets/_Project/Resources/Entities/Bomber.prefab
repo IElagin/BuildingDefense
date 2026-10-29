@@ -455,6 +455,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f6f40e3205b8d4a919ad43ab4efb7129, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6157033609693364380}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f6f40e3205b8d4a919ad43ab4efb7129, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8202303279355272781}
   m_SourcePrefab: {fileID: 100100000, guid: f6f40e3205b8d4a919ad43ab4efb7129, type: 3}
 --- !u!95 &1156225118818910263 stripped
 Animator:
@@ -546,3 +549,16 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.8556822, y: 0.91434824, z: 0.5248556}
   m_Center: {x: 0, y: -0.03666666, z: -0.32624578}
+--- !u!114 &8202303279355272781
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5593542095934079223}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fd8b0f3d4d2e4cd4bf49dd7f2122ba3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Assets._Project.Develop.Runtime.Gameplay.Features.Abilities.OrbitalVolleyHitView
+  _hitEffectPrefab: {fileID: 1810152033834785057, guid: 01c04d6af56b04041b814e6527661878, type: 3}

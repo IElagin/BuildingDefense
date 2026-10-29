@@ -1,6 +1,7 @@
 using Assets._Project.Develop.Runtime.Configs.Gameplay.Entities;
 using Assets._Project.Develop.Runtime.Gameplay.EntitiesCore.Mono;
 using Assets._Project.Develop.Runtime.Gameplay.Common;
+using Assets._Project.Develop.Runtime.Gameplay.Features.Abilities;
 using Assets._Project.Develop.Runtime.Gameplay.Features.ApplyDamage;
 using Assets._Project.Develop.Runtime.Gameplay.Features.Attack;
 using Assets._Project.Develop.Runtime.Gameplay.Features.Attack.Shoot;
@@ -112,6 +113,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
                 .AddDeathProcessCurrentTime()
                 .AddTakeDamageRequest()
                 .AddTakeDamageEvent()
+                .AddOrbitalVolleyHitEvent()
                 .AddReachDistance(new ReactiveVariable<float>(config.ReachDistance))
                 .AddIsTargetReached()
                 .AddBlastRadius(new ReactiveVariable<float>(config.BlastRadius))
@@ -196,6 +198,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
                 .AddDeathProcessCurrentTime()
                 .AddTakeDamageRequest()
                 .AddTakeDamageEvent()
+                .AddOrbitalVolleyHitEvent()
                 .AddReachDistance(new ReactiveVariable<float>(config.ReachDistance))
                 .AddIsTargetReached()
                 .AddSpawnInitialTime(new ReactiveVariable<float>(config.SpawnProcessTime))

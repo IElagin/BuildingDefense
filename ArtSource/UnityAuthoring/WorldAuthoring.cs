@@ -7,11 +7,15 @@
 // post-processing volume (bloom, colour grading, vignette), warm low sun, haze background with fog.
 // Final assignment 2026-10-29: the arena is 1.3 times larger (room for turrets and spitters at range), the camera
 // is farther at the same angle; entry WorldAuthoring.RunScene rebuilds only the Gameplay scene environment and look.
+// Entry WorldAuthoring.RunAbilityEffects (2026-10-29) makes the orbital volley beam and the dome heal wave and hangs
+// their views next to ApplyDamageView on the Bomber, Spitter and Building visuals.
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Assets._Project.Develop.Runtime.Configs.Gameplay.Entities;
+using Assets._Project.Develop.Runtime.Gameplay.Features.Abilities;
 using Assets._Project.Develop.Runtime.Gameplay.Features.ApplyDamage;
+using Assets._Project.Develop.Runtime.Gameplay.Features.Heal;
 using Assets._Project.Develop.Runtime.Gameplay.Features.Sensors;
 using UnityEditor;
 using UnityEditor.Animations;
@@ -74,6 +78,57 @@ public static class WorldAuthoring
         SetupBurrow(log);
         SetupRenderPipeline(log);
         SetupScene(log);
+
+        AssetDatabase.SaveAssets();
+        return log.ToString();
+    }
+
+    public static string RunAbilityEffects()
+    {
+        var log = new StringBuilder();
+        Material particles = AssetDatabase.LoadAssetAtPath<Material>(MaterialsFolder + "ParticleFlat.mat");
+
+        GameObject volley = SaveCompositeEffect(Vfx + "VolleyBeamEffect.prefab", "VolleyBeamEffect", 0.8f, root =>
+        {
+            // thinner and shorter-lived than the click strike, but the same sky beam
+            Beam(root, particles);
+            Transform beam = root.transform.Find("Beam");
+            beam.localPosition = new Vector3(0f, 20f, 0f);
+            ParticleSystem.MainModule main = beam.GetComponent<ParticleSystem>().main;
+            main.startSizeX = 0.45f;
+            main.startSizeY = 20f;
+            main.startSizeZ = 0.45f;
+            main.startLifetime = 0.28f;
+            Burst(root, "Flash", particles, 18, (0.3f, 0.45f), (2f, 4f), (0.14f, 0.24f), 1.2f, Hex("8AF6FF"), Hex("FFFFFF"), 60f, false);
+        });
+
+        Mesh plus = PlusMesh();
+        GameObject heal = SaveCompositeEffect(Vfx + "DomeHealEffect.prefab", "DomeHealEffect", 1.8f, root =>
+        {
+            ParticleSystem ring = Burst(root, "Ring", particles, 64, (0.6f, 0.8f), (5f, 7f), (0.24f, 0.34f), 0f, Hex("7CFF3A"), Hex("B8FF6A"), 0f, false);
+            ring.transform.localPosition = new Vector3(0f, 0.15f, 0f);
+            ParticleSystem.ShapeModule ringShape = ring.shape;
+            ringShape.shapeType = ParticleSystemShapeType.Circle;
+            ringShape.radius = 1.7f;
+            ringShape.radiusThickness = 0f;
+            ringShape.arc = 360f;
+            ringShape.rotation = new Vector3(90f, 0f, 0f);
+
+            ParticleSystem pluses = Burst(root, "Pluses", particles, 12, (1.1f, 1.5f), (1.4f, 2.2f), (0.75f, 0.95f), -0.1f, Hex("7CFF3A"), Hex("D4FF9A"), 35f, false);
+            pluses.transform.localPosition = new Vector3(0f, 1.4f, 0f);
+            ParticleSystem.MainModule plusesMain = pluses.main;
+            plusesMain.startRotation3D = false;
+            plusesMain.startRotation = 0f;
+            ParticleSystem.ShapeModule plusesShape = pluses.shape;
+            plusesShape.radius = 1.1f;
+            ParticleSystemRenderer plusesRenderer = pluses.GetComponent<ParticleSystemRenderer>();
+            plusesRenderer.mesh = plus;
+            plusesRenderer.alignment = ParticleSystemRenderSpace.Facing;
+        });
+
+        foreach (string bug in new[] { "Bomber", "Spitter" })
+            AddViewNextToDamageView<OrbitalVolleyHitView>(bug, "_hitEffectPrefab", volley, log);
+        AddViewNextToDamageView<HealView>("Building", "_healEffectPrefab", heal, log);
 
         AssetDatabase.SaveAssets();
         return log.ToString();
@@ -415,6 +470,68 @@ public static class WorldAuthoring
         GameObject prefab = PrefabUtility.SaveAsPrefabAsset(effect, path);
         Object.DestroyImmediate(effect);
         return prefab;
+    }
+
+    // Several systems under one carrier: the carrier emits nothing and destroys the instance after its duration.
+    private static GameObject SaveCompositeEffect(string path, string name, float duration, System.Action<GameObject> build)
+    {
+        var root = new GameObject(name);
+        ParticleSystem carrier = root.AddComponent<ParticleSystem>();
+        ParticleSystem.MainModule main = carrier.main;
+        main.duration = duration;
+        main.loop = false;
+        main.playOnAwake = true;
+        main.stopAction = ParticleSystemStopAction.Destroy;
+        ParticleSystem.EmissionModule emission = carrier.emission;
+        emission.enabled = false;
+        ParticleSystem.ShapeModule shape = carrier.shape;
+        shape.enabled = false;
+        root.GetComponent<ParticleSystemRenderer>().enabled = false;
+
+        build(root);
+        GameObject prefab = PrefabUtility.SaveAsPrefabAsset(root, path);
+        Object.DestroyImmediate(root);
+        return prefab;
+    }
+
+    private static Mesh PlusMesh()
+    {
+        string path = Vfx + "PlusMesh.asset";
+        var cube = Resources.GetBuiltinResource<Mesh>("Cube.fbx");
+        var combine = new[]
+        {
+            new CombineInstance { mesh = cube, transform = Matrix4x4.Scale(new Vector3(1f, 0.32f, 0.12f)) },
+            new CombineInstance { mesh = cube, transform = Matrix4x4.Scale(new Vector3(0.32f, 1f, 0.12f)) },
+        };
+
+        var plus = AssetDatabase.LoadAssetAtPath<Mesh>(path);
+        bool exists = plus != null;
+        if (exists == false)
+            plus = new Mesh { name = "PlusMesh" };
+
+        plus.Clear();
+        plus.CombineMeshes(combine, true, true);
+        plus.RecalculateBounds();
+
+        if (exists)
+            EditorUtility.SetDirty(plus);
+        else
+            AssetDatabase.CreateAsset(plus, path);
+        return plus;
+    }
+
+    private static void AddViewNextToDamageView<TView>(string prefab, string field, GameObject effect, StringBuilder log) where TView : Component
+    {
+        string path = Entities + prefab + ".prefab";
+        GameObject root = PrefabUtility.LoadPrefabContents(path);
+        GameObject visual = root.GetComponentInChildren<ApplyDamageView>(true).gameObject;
+        if (visual.TryGetComponent(out TView view) == false)
+            view = visual.AddComponent<TView>();
+
+        Assign(view, (field, effect.GetComponent<ParticleSystem>()));
+        PrefabUtility.SaveAsPrefabAsset(root, path);
+        PrefabUtility.UnloadPrefabContents(root);
+        log.AppendLine($"{prefab}: {typeof(TView).Name} -> {effect.name}");
     }
 
     private static void SetupScene(StringBuilder log)

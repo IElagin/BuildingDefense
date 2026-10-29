@@ -66,6 +66,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Abilities
                     return;
 
                 ForgetTarget(entity);
+                entity.OrbitalVolleyHitEvent.Invoke();
                 entity.TakeDamageRequest.Invoke(entity.MaxHealth.Value * _damagePercent / 100);
             }));
         }

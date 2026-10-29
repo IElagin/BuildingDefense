@@ -418,6 +418,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 990b76e0f64f8471d8e2227f3cd63492, type: 3}
       insertIndex: -1
       addedObject: {fileID: 560499534082400190}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 990b76e0f64f8471d8e2227f3cd63492, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7889216103741243542}
   m_SourcePrefab: {fileID: 100100000, guid: 990b76e0f64f8471d8e2227f3cd63492, type: 3}
 --- !u!4 &7285107818062364507 stripped
 Transform:
@@ -443,3 +446,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Assets._Project.Develop.Runtime.Gameplay.Features.ApplyDamage.ApplyDamageView
   _applyDamageEffectPrefab: {fileID: 8438083304102601525, guid: 7015b09687d0147cb9550913a1a8c3e3, type: 3}
   _effectSpawnPoint: {fileID: 5580169923591841220}
+--- !u!114 &7889216103741243542
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7949476055737656801}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: caec6fb1912864158ab3652ac965b13d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Assets._Project.Develop.Runtime.Gameplay.Features.Heal.HealView
+  _healEffectPrefab: {fileID: 6276063647265020694, guid: f910dc77849db43f0bd8cb359311bb4e, type: 3}
