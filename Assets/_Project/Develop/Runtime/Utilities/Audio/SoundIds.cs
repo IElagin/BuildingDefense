@@ -20,6 +20,8 @@ namespace Assets._Project.Develop.Runtime.Utilities.Audio
         TurretShot,
         PuddlePlace,
         SpitterSpit,
-        AcidSpitSplash
+        AcidSpitSplash,
+        DomeRepair,
+        OrbitalVolley
     }
 }

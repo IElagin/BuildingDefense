@@ -1,45 +1,44 @@
-# Audio (2026-10-21)
+# Audio (2026-10-21, updated 2026-10-29)
 
-Not part of the course (it has no audio module): the Studio audio addition from the Architecture Starter, the same module as FinalProject. Sounds follow the sci-fi swarm direction: an orbital strike beam, land mines, chitin bugs, a metal dome reactor, desert wind.
+Not part of the course (it has no audio module): the Studio audio addition from the Architecture Starter, the same module as FinalProject. Sounds follow the sci-fi swarm direction: an orbital strike beam, land mines, turrets, chitin bugs and acid, a metal dome reactor; music is a calm synth menu theme and a dark hive / tactical battle playlist.
 
 ## How it is wired
 
-- **Settings in one place:** `Assets/_Project/Resources/Configs/Audio/AudioConfig.asset`. For every sound it holds the id (`SoundIds`), channel (UI / Gameplay / Ambient), clip variants, volume, pitch spread and cooldown. It also holds an ambient loop per `AmbientIds`, channel volumes and the ambient crossfade.
+- **Settings in one place:** `Assets/_Project/Resources/Configs/Audio/AudioConfig.asset`. For every sound it holds the id (`SoundIds`), channel (UI / Gameplay / Ambient), clip variants, volume, pitch spread and cooldown. It also holds a playlist per `AmbientIds`, channel volumes and the ambient crossfade.
 - **Service:** `IAudioService` (`Play`, `Stop`, `PlayAmbient`, `SetVolume`) is a project singleton, `Resources/Utilities/AudioService.prefab` (12 one-shot sources, two crossfading ambient sources). It is created in `ProjectContextRegistrations` after the configs are loaded.
-- **Ambient:** the scene registrations start `Menu` and `Gameplay`. Each is one seamless 32 s loop that the service crossfades into itself.
-- **Gameplay sounds:** `Gameplay/Features/AudioFeature/GameplaySoundsService` (gameplay scope) listens to entities and services:
+- **Music:** the scene registrations start `Menu` and `Gameplay`. The service plays the ambient's clips in the order of its `Clips` list, starting from the first one each time the ambient starts, and crossfades (2 s) into the next track before the current one ends; after the last it returns to the first. The menu has one track, the battle four. **To change the order,** reorder `Clips` of the `Gameplay` ambient in the Inspector; `AudioAuthoring` refills the list by file name (`AMB_Gameplay_1…4`), so after rerunning it either rename the files or reorder again.
+- **Gameplay sounds** are systems in the entity recipes (`Gameplay/Features/AudioFeature`), each subscribed to its entity's events (curator's L8 review):
 
-  | Source | Event | Sound |
+  | System | Event | Sound |
   |---|---|---|
-  | Bugs | appear from a burrow | BugSpawn |
-  | Bugs | killed | BugDeath |
-  | Bugs | blow up at the dome | AcidBlast |
-  | Dome | hit | DomeHit |
-  | Dome | destroyed | DomeDestroyed |
-  | Mines | placed | MinePlace |
-  | Mines | blast | MineBlast |
-  | `ClickExplosionService.Exploded` | orbital strike | OrbitalStrike |
-  | `MinePlacementService.Denied` | refused mine click | MineDenied |
-  | Stage number grows | wave starts | WaveStart |
+  | `BugSoundsSystem` (bomber) | out of a burrow / orbital volley hit / killed / blew up at the dome | BugSpawn / OrbitalVolley / BugDeath / AcidBlast |
+  | `SpitterSoundsSystem` | out of a burrow / orbital volley hit / spit leaves / killed | BugSpawn / OrbitalVolley / SpitterSpit / BugDeath |
+  | `AcidSpitSoundsSystem` | the acid blob splashes | AcidSpitSplash |
+  | `BuildingSoundsSystem` (dome) | hit / repaired / destroyed | DomeHit / DomeRepair / DomeDestroyed |
+  | `MineSoundsSystem` | placed / blast | MinePlace / MineBlast |
+  | `TurretSoundsSystem` | placed / shot | TurretPlace / TurretShot |
+  | `PuddleSoundsSystem` | placed | PuddlePlace |
+  | `ClickExplosionSoundSystem` | orbital strike | OrbitalStrike |
 
-  Views and prefabs have no audio code.
+  A refused placement plays MineDenied, a new wave WaveStart. Views and prefabs have no audio code.
 - **UI sounds** in presenters:
   - menu Play → UIOpen;
   - the start-wave button → UIClick;
   - the win and defeat popups → Win / Defeat when shown, UIClick on their buttons.
-- **Cooldowns keep hordes listenable:** a strike that kills 30 bugs plays one death, not thirty.
+- **Cooldowns keep hordes listenable:** a strike that kills 30 bugs plays one death, not thirty; eight volley beams make a quick run of zaps (cooldown 0.09 s).
 
 ## Sources
 
-`ArtSource/Audio/make_audio.py` builds every clip into `Assets/_Project/Art/Audio` (SFX 48 kHz mono WAV, ambient 24 kHz mono WAV). `ArtSource/UnityAuthoring/AudioAuthoring.cs` then sets the import (SFX Vorbis 0.8, decompress on load; ambient streaming), the prefab and the config.
+`ArtSource/Audio/make_audio.py` builds every SFX clip into `Assets/_Project/Art/Audio/SFX` (48 kHz mono WAV). `ArtSource/UnityAuthoring/AudioAuthoring.cs` then sets the import (SFX Vorbis, decompress on load, mono; music streaming, stereo), the prefab and the config.
 
+- **Music — Suno v6 through SYNTX** (2026-10-29, the user's subscription, instrumental): `Assets/_Project/Art/Audio/Ambient/AMB_Menu.mp3` and `AMB_Gameplay_1…4.mp3`, cut from the originals without re-encoding (silent heads and fade-out tails removed). Prompts, hashes and the user's choice: [SYNTX/README.md](SYNTX/README.md); the originals are in `ArtSource/Library/SYNTX` (not in Git).
 - **Kenney CC0** ([kenney.nl](https://kenney.nl), Creative Commons Zero; credit not required, given here with thanks), mixed and trimmed with ffmpeg:
 
   | Pack | sha256 | Used for |
   |---|---|---|
-  | Sci-Fi Sounds 1.0 | `119340f3…49e04` | OrbitalStrike (laserLarge + lowFrequency_explosion), MineBlast (explosionCrunch), AcidBlast (slime), DomeDestroyed, the force-field layer of DomeHit |
-  | Impact Sounds | `029d734a…77f8` | DomeHit (impactMetal_heavy), MinePlace (impactPlate_medium) |
-  | Interface Sounds | `f2193d07…1232` | UIClick, UIOpen, MineDenied, the beep of MinePlace |
+  | Sci-Fi Sounds 1.0 | `119340f3…49e04` | OrbitalStrike (laserLarge + lowFrequency_explosion), OrbitalVolley (laserRetro + forceField), MineBlast (explosionCrunch), AcidBlast and the spit (slime), TurretShot (laserSmall), DomeDestroyed, the force-field layer of DomeHit |
+  | Impact Sounds | `029d734a…77f8` | DomeHit (impactMetal_heavy), MinePlace (impactPlate_medium), TurretPlace, AcidSpitSplash (impactSoft) |
+  | Interface Sounds | `f2193d07…1232` | UIClick, UIOpen, MineDenied, the beep of MinePlace, the drops of the spit and the puddle |
 
   The packs are unpacked in `ArtSource/Library/Kenney`, which is not in Git; full hashes are in the script header.
 - **Local synthesis** (pure Python, fixed seeds; blocks from FinalProject's `sfx_synth.py`):
@@ -47,12 +46,10 @@ Not part of the course (it has no audio module): the Studio audio addition from 
   - BugDeath — a chitin crunch with a falling squeak;
   - WaveStart — a two-tone base siren;
   - Win and Defeat stingers;
-  - ambient Menu (desert wind) and Gameplay (wind plus a distant hive drone and rare chirps).
+  - DomeRepair — a soft rising major arpeggio of bells.
 
-## Verified 2026-10-21
+## Verified
 
-- Compile PASS, 0 new Console errors.
-- Background Play is muted, so playback was checked through the service's last-play log and its playing sources:
-  - the menu ambient crossfades into the gameplay ambient;
-  - all 14 sound ids played at their events: wave start, spawn, strike and deaths, acid blast and dome hit, mine placed and refused, mine blast, defeat with dome destruction, restart click, win.
+- 2026-10-21: all 14 first sound ids played at their events in background Play (checked through the service's last-play log, Play is muted).
+- 2026-10-29: compile PASS, 0 new Console errors; the regenerated SFX are byte-identical except the three new clips; the music playlist and the new sounds — see the Implementation Report.
 - Listening and levels are the user's review.

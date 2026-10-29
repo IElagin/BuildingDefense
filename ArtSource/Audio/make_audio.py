@@ -2,13 +2,13 @@
 
 Usage: python3 ArtSource/Audio/make_audio.py
   -> Assets/_Project/Art/Audio/SFX/SFX_<SoundId>[_n].wav (48 kHz mono 16-bit)
-  -> Assets/_Project/Art/Audio/Ambient/AMB_<AmbientId>.wav (seamless 32 s loops, 24 kHz mono: wind needs no more)
 Kenney packs (CC0, kenney.nl, downloaded 2026-10-21) are unpacked in ArtSource/Library/Kenney (not in Git):
   sci-fi-sounds.zip    sha256 119340f351a5098ad814f78719438c0da355a9ce8a4c8a3af6a8d48aa3d49e04
   impact-sounds.zip    sha256 029d734af1582474edf3a694d1b0cebc97c1c152f2f39fa34d4c2bafc5de77f8
   interface-sounds.zip sha256 f2193d072726d6758a5f7871b2dcc54dcce0d5c35c6f0a62f92549b327c81232
 Synthesis (pure Python, fixed seeds; building blocks from FinalProject ArtSource/Tools/sfx_synth.py): bug spawn and
-death, wave alarm, win and defeat stingers, desert wind with a distant hive drone.
+death, wave alarm, win and defeat stingers, dome repair chime.
+Music (Assets/_Project/Art/Audio/Ambient/AMB_*.mp3) is not generated here: Suno tracks from SYNTX, see SYNTX/README.md (originals in ArtSource/Library/SYNTX).
 """
 import math
 import random
@@ -22,7 +22,6 @@ RATE = 48000
 ROOT = Path(__file__).resolve().parents[2]
 KENNEY = ROOT / "ArtSource/Library/Kenney"
 SFX = ROOT / "Assets/_Project/Art/Audio/SFX"
-AMBIENT = ROOT / "Assets/_Project/Art/Audio/Ambient"
 
 
 # ---------- synthesis building blocks ----------
@@ -171,31 +170,12 @@ def defeat(rng):
     return finish(mix(*parts, gain(drone, 0.5)), -4)
 
 
-def wind_loop(seconds, rng, drone):
-    """Desert wind: filtered noise with slow gusts; optional distant hive drone. Seamless: the tail fades into the head."""
-    fade = 2.0
-    n = int((seconds + fade) * RATE)
-    raw = noise(seconds + fade, rng)
-    gust = lambda t: 0.55 + 0.25 * math.sin(2 * math.pi * t / 7.3) + 0.2 * math.sin(2 * math.pi * t / 2.9 + 1.3)
-    wind = lowpass(highpass(raw, 90), lambda t: 350 + 650 * gust(t))
-    wind = [v * (0.6 + 0.4 * gust(i / RATE)) for i, v in enumerate(wind)]
-    layers = [wind]
-    if drone:
-        hum = mix(sine(55.0, seconds + fade), gain(sine(82.4, seconds + fade), 0.5), gain(sine(110.6, seconds + fade), 0.25))
-        trem = [0.6 + 0.4 * math.sin(2 * math.pi * 0.23 * i / RATE) for i in range(n)]
-        layers.append(gain(apply(hum, trem), 0.18))
-        for _ in range(int(seconds / 3)):
-            chirp = apply(sine(lambda t, f=rng.uniform(1800, 2600): f + 300 * math.sin(2 * math.pi * 11 * t), 0.18),
-                          env_exp(int(0.18 * RATE), 0.02, 0.05))
-            layers.append(offset(gain(lowpass(chirp, 2200), 0.05), rng.uniform(0.0, seconds)))
-    track = mix(*layers)[:n]
-    body, tail = track[: int(seconds * RATE)], track[int(seconds * RATE):]
-    f = len(tail)
-    for i in range(f):
-        k = i / f
-        body[i] = body[i] * k + tail[i] * (1 - k)
-    peak = max(abs(v) for v in body) or 1.0
-    return [v * 10 ** (-6 / 20) / peak for v in body]
+def dome_repair(rng):
+    # dome repair: a soft rising major arpeggio of bells over a short warm pad
+    notes = [523.25, 659.25, 783.99, 1046.5]
+    parts = [offset(gain(bell(f, 1.0, 0.45), 1 - 0.15 * k), 0.07 * k) for k, f in enumerate(notes)]
+    pad = apply(mix(sine(523.25, 1.0), gain(sine(783.99, 1.0), 0.5)), env_exp(int(1.0 * RATE), 0.12, 0.35))
+    return finish(mix(*parts, gain(pad, 0.25)), -7)
 
 
 # ---------- Kenney clips ----------
@@ -261,6 +241,14 @@ def spitter_sounds():
         ffmpeg_mix(f"SFX_SpitterSpit_{k}", [(kenney(ui, drop), 0, 0.8), (kenney(sci, "slime_000"), 0.02, 0.7)], -9, max_seconds=0.45)
     for k, (soft, slime) in enumerate((("impactSoft_medium_000", "slime_001"), ("impactSoft_medium_002", "slime_000")), 1):
         ffmpeg_mix(f"SFX_AcidSpitSplash_{k}", [(kenney(impact, soft), 0, 1), (kenney(sci, slime), 0.01, 0.8)], -8, max_seconds=0.6)
+    ability_sounds()
+
+
+def ability_sounds():
+    """Abilities 2026-10-29: the orbital volley beam on a bug — a short retro laser zap with a thin force-field tail."""
+    sci = "sci-fi-sounds"
+    for k, laser in enumerate(("laserRetro_001", "laserRetro_003"), 1):
+        ffmpeg_mix(f"SFX_OrbitalVolley_{k}", [(kenney(sci, laser), 0, 1), (kenney(sci, "forceField_002"), 0.03, 0.3)], -8, max_seconds=0.5)
 
 
 def main():
@@ -275,19 +263,7 @@ def main():
     save_sfx("SFX_WaveStart", wave_alarm(rng))
     save_sfx("SFX_Win", win(rng))
     save_sfx("SFX_Defeat", defeat(rng))
-
-    # ambient: synthesized at 48 kHz, stored at 24 kHz (sample-exact resampling keeps the loop seamless)
-    AMBIENT.mkdir(parents=True, exist_ok=True)
-    for name, drone, seed in (("AMB_Menu", False, 11), ("AMB_Gameplay", True, 12)):
-        loop = wind_loop(32.0, random.Random(seed), drone)
-        half = [(loop[i] + loop[i + 1]) * 0.5 for i in range(0, len(loop) - 1, 2)]
-        path = AMBIENT / f"{name}.wav"
-        with wave.open(str(path), "wb") as w:
-            w.setnchannels(1)
-            w.setsampwidth(2)
-            w.setframerate(RATE // 2)
-            w.writeframes(b"".join(struct.pack("<h", int(max(-1.0, min(1.0, v)) * 32767)) for v in half))
-        print(f"{name}.wav 32.00s loop (synth)")
+    save_sfx("SFX_DomeRepair", dome_repair(rng))
 
 
 if __name__ == "__main__":

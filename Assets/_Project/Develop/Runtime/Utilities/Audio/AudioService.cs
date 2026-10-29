@@ -4,7 +4,8 @@ using UnityEngine;
 
 namespace Assets._Project.Develop.Runtime.Utilities.Audio
 {
-    // Project-lifetime audio: a pool of one-shot sources and two ambient sources that crossfade between playlist tracks.
+    // Project-lifetime audio: a pool of one-shot sources and two ambient sources that crossfade between playlist tracks
+    // in the order of the ambient's clip list.
     public class AudioService : MonoBehaviour, IAudioService
     {
         private const int OneShotSourcesCount = 12;
@@ -79,7 +80,7 @@ namespace Assets._Project.Develop.Runtime.Utilities.Audio
                 return;
 
             _currentAmbient = ambient;
-            _currentTrack = Random.Range(0, ambient.Clips.Count);
+            _currentTrack = 0;
             CrossfadeTo(ambient.Clips[_currentTrack]);
         }
 
@@ -108,10 +109,7 @@ namespace Assets._Project.Develop.Runtime.Utilities.Audio
 
         private void NextTrack()
         {
-            int count = _currentAmbient.Clips.Count;
-            if (count > 1)
-                _currentTrack = (_currentTrack + Random.Range(1, count)) % count;
-
+            _currentTrack = (_currentTrack + 1) % _currentAmbient.Clips.Count;
             CrossfadeTo(_currentAmbient.Clips[_currentTrack]);
         }
 

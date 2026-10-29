@@ -42,6 +42,8 @@ public static class AudioAuthoring
         (SoundIds.PuddlePlace, AudioChannels.Gameplay, 0.6f, 0.95f, 1.05f, 0.05f),
         (SoundIds.SpitterSpit, AudioChannels.Gameplay, 0.45f, 0.9f, 1.12f, 0.08f),
         (SoundIds.AcidSpitSplash, AudioChannels.Gameplay, 0.5f, 0.9f, 1.1f, 0.08f),
+        (SoundIds.DomeRepair, AudioChannels.Gameplay, 0.7f, 1f, 1f, 0.3f),
+        (SoundIds.OrbitalVolley, AudioChannels.Gameplay, 0.45f, 0.92f, 1.1f, 0.09f),
     };
 
     public static string Run()
@@ -52,7 +54,7 @@ public static class AudioAuthoring
         {
             var importer = (AudioImporter)AssetImporter.GetAtPath(path);
             bool ambient = path.StartsWith(Ambient);
-            importer.forceToMono = true;
+            importer.forceToMono = !ambient; // the music tracks stay stereo
             AudioImporterSampleSettings settings = importer.defaultSampleSettings;
             settings.loadType = ambient ? AudioClipLoadType.Streaming : AudioClipLoadType.DecompressOnLoad;
             settings.compressionFormat = AudioCompressionFormat.Vorbis;

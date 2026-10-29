@@ -5,12 +5,13 @@ using System;
 
 namespace Assets._Project.Develop.Runtime.Gameplay.Features.AudioFeature
 {
-    // The dome's sounds: every hit and its destruction.
+    // The dome's sounds: every hit, every repair and its destruction.
     public class BuildingSoundsSystem : IInitializableSystem, IDisposableSystem
     {
         private readonly IAudioService _audio;
 
         private IDisposable _takeDamageDisposable;
+        private IDisposable _healDisposable;
         private IDisposable _isDeadDisposable;
 
         public BuildingSoundsSystem(IAudioService audio)
@@ -21,16 +22,20 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.AudioFeature
         public void OnInit(Entity entity)
         {
             _takeDamageDisposable = entity.TakeDamageEvent.Subscribe(OnTakeDamage);
+            _healDisposable = entity.HealEvent.Subscribe(OnHeal);
             _isDeadDisposable = entity.IsDead.Subscribe(OnIsDeadChanged);
         }
 
         public void OnDispose()
         {
             _takeDamageDisposable.Dispose();
+            _healDisposable.Dispose();
             _isDeadDisposable.Dispose();
         }
 
         private void OnTakeDamage(float damage) => _audio.Play(SoundIds.DomeHit);
+
+        private void OnHeal(float amount) => _audio.Play(SoundIds.DomeRepair);
 
         private void OnIsDeadChanged(bool oldValue, bool isDead)
         {
