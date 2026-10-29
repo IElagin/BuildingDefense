@@ -2,7 +2,6 @@ using Assets._Project.Develop.Runtime.Configs.Gameplay.Defense;
 using Assets._Project.Develop.Runtime.Gameplay.EntitiesCore;
 using Assets._Project.Develop.Runtime.Gameplay.Features.InputFeature;
 using Assets._Project.Develop.Runtime.Gameplay.Features.BuildingFeature;
-using Assets._Project.Develop.Runtime.Gameplay.Features.TeamsFeature;
 using Assets._Project.Develop.Runtime.Meta.Features.Wallet;
 using Assets._Project.Develop.Runtime.Utilities.Reactive;
 using System;
@@ -18,7 +17,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Defense
     {
         private readonly IInputService _inputService;
         private readonly GroundPointService _groundPointService;
-        private readonly EntitiesFactory _entitiesFactory;
+        private readonly DefensesFactory _defensesFactory;
         private readonly EntitiesLifeContext _entitiesLifeContext;
         private readonly WalletService _walletService;
         private readonly BuildingHolderService _buildingHolderService;
@@ -30,7 +29,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Defense
         public DefensePlacementService(
             IInputService inputService,
             GroundPointService groundPointService,
-            EntitiesFactory entitiesFactory,
+            DefensesFactory defensesFactory,
             EntitiesLifeContext entitiesLifeContext,
             WalletService walletService,
             BuildingHolderService buildingHolderService,
@@ -38,7 +37,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Defense
         {
             _inputService = inputService;
             _groundPointService = groundPointService;
-            _entitiesFactory = entitiesFactory;
+            _defensesFactory = defensesFactory;
             _entitiesLifeContext = entitiesLifeContext;
             _walletService = walletService;
             _buildingHolderService = buildingHolderService;
@@ -54,9 +53,6 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Defense
         public Vector3 PointerPoint { get; private set; }
 
         public bool CanPlaceAtPointer { get; private set; }
-
-        // Turrets and puddles get their recipes with the next part of the assignment.
-        public bool IsAvailable(DefenseTypes type) => type == DefenseTypes.Mine;
 
         public int GetPrice(DefenseTypes type)
         {
@@ -83,16 +79,18 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Defense
                 case DefenseTypes.Mine:
                     return _config.Mine.BlastRadius;
 
+                case DefenseTypes.Turret:
+                    return _config.Turret.AttackRadius;
+
+                case DefenseTypes.Puddle:
+                    return _config.Puddle.Radius;
+
                 default:
                     throw new ArgumentException($"Not support {type} defense");
             }
         }
 
-        public void Select(DefenseTypes type)
-        {
-            if (IsAvailable(type))
-                _selected.Value = type;
-        }
+        public void Select(DefenseTypes type) => _selected.Value = type;
 
         public void Update()
         {
@@ -121,20 +119,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Defense
             }
 
             _walletService.Spend(CurrencyTypes.Gold, GetPrice(type));
-            Create(type, point);
-        }
-
-        private void Create(DefenseTypes type, Vector3 point)
-        {
-            switch (type)
-            {
-                case DefenseTypes.Mine:
-                    _entitiesFactory.CreateMine(point, _config.Mine, Teams.Player);
-                    break;
-
-                default:
-                    throw new ArgumentException($"Not support {type} defense");
-            }
+            _defensesFactory.Create(type, point);
         }
 
         private bool IsFreePlace(Vector3 point)
@@ -151,7 +136,8 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Defense
             return true;
         }
 
-        private static bool IsDefense(Entity entity) => entity.HasComponent<Mine>();
+        private static bool IsDefense(Entity entity) =>
+            entity.HasComponent<Mine>() || entity.HasComponent<Turret>() || entity.HasComponent<Puddle>();
 
         private static float FlatDistance(Vector3 a, Vector3 b)
         {

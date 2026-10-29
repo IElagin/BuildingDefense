@@ -241,6 +241,16 @@ def kenney_sounds():
     for k, name in enumerate(("impactMetal_heavy_000", "impactMetal_heavy_002", "impactMetal_heavy_004"), 1):
         ffmpeg_mix(f"SFX_DomeHit_{k}", [(kenney(impact, name), 0, 1), (kenney(sci, "forceField_001"), 0, 0.25)], -6)
     ffmpeg_mix("SFX_DomeDestroyed", [(kenney(sci, "lowFrequency_explosion_001"), 0, 1), (kenney(sci, "explosionCrunch_003"), 0.05, 0.8)], -2)
+    defense_sounds()
+
+
+def defense_sounds():
+    """Final assignment 2026-10-29: the turret and the puddle."""
+    sci, impact, ui = "sci-fi-sounds", "impact-sounds", "interface-sounds"
+    ffmpeg_mix("SFX_TurretPlace", [(kenney(impact, "impactMetal_medium_001"), 0, 1), (kenney(sci, "computerNoise_000"), 0.1, 0.5)], -5, max_seconds=0.8)
+    for k, name in enumerate(("laserSmall_000", "laserSmall_002", "laserSmall_004"), 1):
+        ffmpeg_mix(f"SFX_TurretShot_{k}", [(kenney(sci, name), 0, 1)], -9)
+    ffmpeg_mix("SFX_PuddlePlace", [(kenney(sci, "slime_001"), 0, 1), (kenney(ui, "drop_002"), 0, 0.6)], -7, max_seconds=0.7)
 
 
 def main():

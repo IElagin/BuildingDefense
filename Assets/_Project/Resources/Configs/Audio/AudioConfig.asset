@@ -148,6 +148,35 @@ MonoBehaviour:
     <PitchMax>k__BackingField: 1
     <Cooldown>k__BackingField: 0
     <Delay>k__BackingField: 0
+  - <Id>k__BackingField: 14
+    <Channel>k__BackingField: 1
+    <Clips>k__BackingField:
+    - {fileID: 8300000, guid: 93e74438c91344a1baf678a382c3edc4, type: 3}
+    <Volume>k__BackingField: 0.7
+    <PitchMin>k__BackingField: 0.97
+    <PitchMax>k__BackingField: 1.03
+    <Cooldown>k__BackingField: 0.05
+    <Delay>k__BackingField: 0
+  - <Id>k__BackingField: 15
+    <Channel>k__BackingField: 1
+    <Clips>k__BackingField:
+    - {fileID: 8300000, guid: 0dbca50365fdb473da3dc7155dfaafce, type: 3}
+    - {fileID: 8300000, guid: 2bfb4b93dfd124290bb55db37b38c729, type: 3}
+    - {fileID: 8300000, guid: b0b86153546404ee9b1ab390656f026c, type: 3}
+    <Volume>k__BackingField: 0.4
+    <PitchMin>k__BackingField: 0.92
+    <PitchMax>k__BackingField: 1.08
+    <Cooldown>k__BackingField: 0.07
+    <Delay>k__BackingField: 0
+  - <Id>k__BackingField: 16
+    <Channel>k__BackingField: 1
+    <Clips>k__BackingField:
+    - {fileID: 8300000, guid: 50e71911eab644ad9a84f7351ba14389, type: 3}
+    <Volume>k__BackingField: 0.6
+    <PitchMin>k__BackingField: 0.95
+    <PitchMax>k__BackingField: 1.05
+    <Cooldown>k__BackingField: 0.05
+    <Delay>k__BackingField: 0
   _ambients:
   - <Id>k__BackingField: 0
     <Clips>k__BackingField:

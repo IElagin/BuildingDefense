@@ -15,6 +15,9 @@ namespace Assets._Project.Develop.Runtime.Utilities.Audio
         BugDeath,
         AcidBlast,
         DomeHit,
-        DomeDestroyed
+        DomeDestroyed,
+        TurretPlace,
+        TurretShot,
+        PuddlePlace
     }
 }

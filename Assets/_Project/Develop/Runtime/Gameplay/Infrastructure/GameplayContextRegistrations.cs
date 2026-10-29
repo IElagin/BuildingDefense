@@ -57,6 +57,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Infrastructure
             container.Register(CreateRestPhaseService, Lifetime.Scoped);
 
             container.Register(CreateGroundPointService, Lifetime.Scoped);
+            container.Register(CreateDefensesFactory, Lifetime.Scoped);
             container.Register(CreateDefensePlacementService, Lifetime.Scoped);
 
             container.Register(CreateGameplayStatesFactory, Lifetime.Scoped);
@@ -144,11 +145,16 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Infrastructure
             return new DefensePlacementService(
                 c.Resolve<IInputService>(),
                 c.Resolve<GroundPointService>(),
-                c.Resolve<EntitiesFactory>(),
+                c.Resolve<DefensesFactory>(),
                 c.Resolve<EntitiesLifeContext>(),
                 c.Resolve<WalletService>(),
                 c.Resolve<BuildingHolderService>(),
                 c.Resolve<ConfigsProviderService>().GetConfig<DefenseConfig>());
+        }
+
+        private static DefensesFactory CreateDefensesFactory(IObjectResolver c)
+        {
+            return new DefensesFactory(c);
         }
 
         private static GroundPointService CreateGroundPointService(IObjectResolver c)
@@ -232,7 +238,8 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Infrastructure
                 c.Resolve<EntitiesLifeContext>(),
                 c.Resolve<MonoEntitiesFactory>(),
                 c.Resolve<CollidersRegistryService>(),
-                c.Resolve<IAudioService>());
+                c.Resolve<IAudioService>(),
+                c.Resolve<RestPhaseService>());
         }
 
         // The single place where the scene learns its level; services take the LevelConfig from the container.

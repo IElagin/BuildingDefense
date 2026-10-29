@@ -12,6 +12,8 @@ namespace Assets._Project.Develop.Runtime.UI.Gameplay.Defense
         private readonly DefensePlacementService _defensePlacementService;
         private readonly RestPhaseService _restPhaseService;
 
+        private bool _isDisposed;
+
         public PlacementPreviewPresenter(
             PlacementPreviewView view,
             ViewsFactory viewsFactory,
@@ -31,11 +33,16 @@ namespace Assets._Project.Develop.Runtime.UI.Gameplay.Defense
 
         public void Dispose()
         {
+            _isDisposed = true;
             _viewsFactory.Release(_view);
         }
 
+        // the scene container is disposed a frame before the bootstrap stops calling LateUpdate
         public void LateUpdate()
         {
+            if (_isDisposed)
+                return;
+
             if (_restPhaseService.IsActive.Value == false || _defensePlacementService.HasPointerPoint == false)
             {
                 _view.Hide();

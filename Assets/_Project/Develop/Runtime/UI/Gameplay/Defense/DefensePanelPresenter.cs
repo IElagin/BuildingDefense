@@ -43,7 +43,6 @@ namespace Assets._Project.Develop.Runtime.UI.Gameplay.Defense
                 Action handler = () => OnCardClicked(type);
 
                 card.Value.SetPrice(_defensePlacementService.GetPrice(type).ToString());
-                card.Value.SetLocked(_defensePlacementService.IsAvailable(type) == false);
                 card.Value.Clicked += handler;
                 _clickHandlers.Add(card.Value, handler);
             }

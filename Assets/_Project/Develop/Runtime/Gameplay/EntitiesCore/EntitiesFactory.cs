@@ -1,14 +1,19 @@
 using Assets._Project.Develop.Runtime.Configs.Gameplay.Entities;
 using Assets._Project.Develop.Runtime.Gameplay.EntitiesCore.Mono;
+using Assets._Project.Develop.Runtime.Gameplay.Common;
 using Assets._Project.Develop.Runtime.Gameplay.Features.ApplyDamage;
+using Assets._Project.Develop.Runtime.Gameplay.Features.Attack;
+using Assets._Project.Develop.Runtime.Gameplay.Features.Attack.Shoot;
 using Assets._Project.Develop.Runtime.Configs.Gameplay.Defense;
 using Assets._Project.Develop.Runtime.Gameplay.Features.AudioFeature;
 using Assets._Project.Develop.Runtime.Gameplay.Features.Blast;
+using Assets._Project.Develop.Runtime.Gameplay.Features.ContactTakeDamage;
 using Assets._Project.Develop.Runtime.Gameplay.Features.Defense;
 using Assets._Project.Develop.Runtime.Gameplay.Features.Explosions;
 using Assets._Project.Develop.Runtime.Gameplay.Features.Knockback;
 using Assets._Project.Develop.Runtime.Gameplay.Features.LifeCycle;
 using Assets._Project.Develop.Runtime.Gameplay.Features.MovementFeature;
+using Assets._Project.Develop.Runtime.Gameplay.Features.Rest;
 using Assets._Project.Develop.Runtime.Gameplay.Features.Sensors;
 using Assets._Project.Develop.Runtime.Gameplay.Features.SpawnFeature;
 using Assets._Project.Develop.Runtime.Gameplay.Features.TargetReach;
@@ -24,22 +29,27 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
     public class EntitiesFactory
     {
         private const int ContactsBufferSize = 256;
+        // the arena has no walls: a bolt that missed dies this far from where it was shot
+        private const float ProjectileMaxDistance = 30;
 
         private readonly EntitiesLifeContext _entitiesLifeContext;
         private readonly CollidersRegistryService _collidersRegistryService;
         private readonly MonoEntitiesFactory _monoEntitiesFactory;
         private readonly IAudioService _audio;
+        private readonly RestPhaseService _restPhaseService;
 
         public EntitiesFactory(
             EntitiesLifeContext entitiesLifeContext,
             MonoEntitiesFactory monoEntitiesFactory,
             CollidersRegistryService collidersRegistryService,
-            IAudioService audio)
+            IAudioService audio,
+            RestPhaseService restPhaseService)
         {
             _entitiesLifeContext = entitiesLifeContext;
             _monoEntitiesFactory = monoEntitiesFactory;
             _collidersRegistryService = collidersRegistryService;
             _audio = audio;
+            _restPhaseService = restPhaseService;
         }
 
         public Entity CreateBuilding(Vector3 position, BuildingConfig config, float maxHealth)
@@ -239,6 +249,158 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
                 .AddSystem(new BlastSystem(this, config.BlastExplosion))
                 .AddSystem(new DeathSystem())
                 .AddSystem(new MineSoundsSystem(_audio))
+                .AddSystem(new SelfReleaseSystem(_entitiesLifeContext));
+
+            _entitiesLifeContext.Add(entity);
+
+            return entity;
+        }
+
+        // The turret holds its aim while a shot is in process; the role factory adds the target, team and brain.
+        public Entity CreateTurret(Vector3 position, TurretConfig config)
+        {
+            Entity entity = CreateEmpty();
+
+            _monoEntitiesFactory.Create(entity, position, config.PrefabPath);
+
+            entity
+                .AddRotationDirection()
+                .AddRotationSpeed(new ReactiveVariable<float>(config.RotationSpeed))
+                .AddAttackProcessModifiedTime(new ReactiveVariable<float>(config.AttackProcessTime))
+                .AddAttackProcessCurrentTime()
+                .AddInAttackProcess()
+                .AddStartAttackRequest()
+                .AddStartAttackEvent()
+                .AddEndAttackEvent()
+                .AddAttackDelayModifiedTime(new ReactiveVariable<float>(config.AttackDelayTime))
+                .AddAttackDelayEndEvent()
+                .AddInstantAttackDamage(new ReactiveVariable<float>(config.Damage))
+                .AddAttackCooldownModifiedTime(new ReactiveVariable<float>(config.AttackCooldown))
+                .AddAttackCooldownCurrentTime()
+                .AddInAttackCooldown();
+
+            ICompositeCondition canRotate = new CompositeCondition()
+                .Add(new FuncCondition(() => entity.InAttackProcess.Value == false));
+
+            ICompositeCondition canStartAttack = new CompositeCondition()
+                .Add(new FuncCondition(() => entity.InAttackProcess.Value == false))
+                .Add(new FuncCondition(() => entity.InAttackCooldown.Value == false));
+
+            entity
+                .AddCanRotate(canRotate)
+                .AddCanStartAttack(canStartAttack);
+
+            entity
+                .AddSystem(new RigidbodyRotationSystem())
+                .AddSystem(new StartAttackSystem())
+                .AddSystem(new AttackProcessTimerSystem())
+                .AddSystem(new AttackDelayEndTriggerSystem())
+                .AddSystem(new InstantShootSystem(this))
+                .AddSystem(new EndAttackSystem())
+                .AddSystem(new AttackCooldownTimerSystem())
+                .AddSystem(new TurretSoundsSystem(_audio));
+
+            return entity;
+        }
+
+        public Entity CreateProjectile(Vector3 position, Vector3 direction, float damage, Entity owner)
+        {
+            Entity entity = CreateEmpty();
+
+            _monoEntitiesFactory.Create(entity, position, "Entities/Projectile");
+
+            entity
+                .AddIsProjectile()
+                .AddOwner(new ReactiveVariable<Entity>(owner))
+                .AddMoveDirection(new ReactiveVariable<Vector3>(direction))
+                .AddMoveSpeed(new ReactiveVariable<float>(25))
+                .AddIsMoving()
+                .AddRotationDirection(new ReactiveVariable<Vector3>(direction))
+                .AddRotationSpeed(new ReactiveVariable<float>(9999))
+                .AddIsDead()
+                .AddContactsDetectingMask(Layers.CharactersMask | Layers.EnvironmentMask)
+                .AddContactCollidersBuffer(new Buffer<Collider>(64))
+                .AddContactEntitiesBuffer(new Buffer<Entity>(64))
+                .AddBodyContactDamage(new ReactiveVariable<float>(damage))
+                .AddDeathMask(Layers.EnvironmentMask)
+                .AddIsTouchDeathMask()
+                .AddIsTouchAnotherTeam()
+                .AddTeam(new ReactiveVariable<Teams>(owner.Team.Value));
+
+            ICompositeCondition canMove = new CompositeCondition()
+                .Add(new FuncCondition(() => entity.IsDead.Value == false));
+
+            ICompositeCondition canRotate = new CompositeCondition()
+                .Add(new FuncCondition(() => entity.IsDead.Value == false));
+
+            ICompositeCondition mustDie = new CompositeCondition(LogicOperations.Or)
+                .Add(new FuncCondition(() => entity.IsTouchDeathMask.Value))
+                .Add(new FuncCondition(() => entity.IsTouchAnotherTeam.Value))
+                .Add(new FuncCondition(() => (entity.Transform.position - position).sqrMagnitude > ProjectileMaxDistance * ProjectileMaxDistance));
+
+            ICompositeCondition mustSelfRelease = new CompositeCondition()
+                .Add(new FuncCondition(() => entity.IsDead.Value));
+
+            entity
+                .AddCanMove(canMove)
+                .AddCanRotate(canRotate)
+                .AddMustDie(mustDie)
+                .AddMustSelfRelease(mustSelfRelease);
+
+            entity
+                .AddSystem(new RigidbodyMovementSystem())
+                .AddSystem(new RigidbodyRotationSystem())
+                .AddSystem(new BodyContactsDetectingSystem())
+                .AddSystem(new BodyContactsEntitiesFilterSystem(_collidersRegistryService))
+                .AddSystem(new DealDamageOnContactSystem())
+                .AddSystem(new DeathMaskTouchDetectorSystem())
+                .AddSystem(new AnotherTeamTouchDetectorSystem())
+                .AddSystem(new DeathSystem())
+                .AddSystem(new DisableCollidersOnDeathSystem())
+                .AddSystem(new SelfReleaseSystem(_entitiesLifeContext));
+
+            _entitiesLifeContext.Add(entity);
+
+            return entity;
+        }
+
+        // A puddle hurts the other team standing in it and dries up when the wave after its rest is over.
+        public Entity CreatePuddle(Vector3 position, PuddleConfig config, Teams team)
+        {
+            Entity entity = CreateEmpty();
+
+            _monoEntitiesFactory.Create(entity, position, config.PrefabPath);
+
+            entity
+                .AddPuddle()
+                .AddTeam(new ReactiveVariable<Teams>(team))
+                .AddContactsDetectingMask(Layers.CharactersMask)
+                .AddContactsDetectingRadius(new ReactiveVariable<float>(config.Radius))
+                .AddContactCollidersBuffer(new Buffer<Collider>(ContactsBufferSize))
+                .AddContactEntitiesBuffer(new Buffer<Entity>(ContactsBufferSize))
+                .AddAreaDamage(new ReactiveVariable<float>(config.Damage))
+                .AddAreaDamagePeriod(new ReactiveVariable<float>(config.DamagePeriod))
+                .AddAreaDamageCurrentTime()
+                .AddIsWaveOver()
+                .AddIsDead();
+
+            ICompositeCondition mustDie = new CompositeCondition()
+                .Add(new FuncCondition(() => entity.IsWaveOver.Value));
+
+            ICompositeCondition mustSelfRelease = new CompositeCondition()
+                .Add(new FuncCondition(() => entity.IsDead.Value));
+
+            entity
+                .AddMustDie(mustDie)
+                .AddMustSelfRelease(mustSelfRelease);
+
+            entity
+                .AddSystem(new SphereContactsDetectingSystem())
+                .AddSystem(new BodyContactsEntitiesFilterSystem(_collidersRegistryService))
+                .AddSystem(new PeriodicAreaDamageSystem())
+                .AddSystem(new WaveOverDetectorSystem(_restPhaseService))
+                .AddSystem(new DeathSystem())
+                .AddSystem(new PuddleSoundsSystem(_audio))
                 .AddSystem(new SelfReleaseSystem(_entitiesLifeContext));
 
             _entitiesLifeContext.Add(entity);

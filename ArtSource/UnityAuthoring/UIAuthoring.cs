@@ -390,11 +390,6 @@ public static class UIAuthoring
         TMP_Text price = AddText(Place(content, "Price", new Vector2(0.5f, 0), new Vector2(0, 0.5f), new Vector2(0, 28), new Vector2(70, 36)),
             "25", _russo, 30, Gold, TextAlignmentOptions.MidlineLeft, _russoOutline);
 
-        RectTransform locked = Stretch(rect, "Locked");
-        AddImage(locked, S("Panel"), new Color(1, 1, 1, 0.75f));
-        AddText(Stretch(locked, "Label"), "скоро", _exoSemiBold, 30, TextWarm, TextAlignmentOptions.Center);
-        locked.gameObject.SetActive(false);
-
         var card = rect.gameObject.AddComponent<DefenseCardView>();
         SetRef(card, "_button", button);
         SetRef(card, "_background", background);
@@ -402,7 +397,6 @@ public static class UIAuthoring
         SetRef(card, "_selectedSprite", S("ButtonTeal"));
         SetRef(card, "_content", group);
         SetRef(card, "_priceText", price);
-        SetRef(card, "_lockedLabel", locked.gameObject);
         return card;
     }
 

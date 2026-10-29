@@ -37,6 +37,9 @@ public static class AudioAuthoring
         (SoundIds.AcidBlast, AudioChannels.Gameplay, 0.55f, 0.9f, 1.1f, 0.08f),
         (SoundIds.DomeHit, AudioChannels.Gameplay, 0.6f, 0.92f, 1.05f, 0.12f),
         (SoundIds.DomeDestroyed, AudioChannels.Gameplay, 1f, 1f, 1f, 0f),
+        (SoundIds.TurretPlace, AudioChannels.Gameplay, 0.7f, 0.97f, 1.03f, 0.05f),
+        (SoundIds.TurretShot, AudioChannels.Gameplay, 0.4f, 0.92f, 1.08f, 0.07f),
+        (SoundIds.PuddlePlace, AudioChannels.Gameplay, 0.6f, 0.95f, 1.05f, 0.05f),
     };
 
     public static string Run()
