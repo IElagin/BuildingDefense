@@ -15,47 +15,47 @@ MonoBehaviour:
   _burrowSpawns:
   - <BurrowIndex>k__BackingField: 0
     <EnemyConfig>k__BackingField: {fileID: 11400000, guid: 6e15bc2a2307d4690bab9c7468d54dc4, type: 2}
-    <Count>k__BackingField: 25
+    <Count>k__BackingField: 20
     <SpawnInterval>k__BackingField: 0.28
     <StartDelay>k__BackingField: 0
   - <BurrowIndex>k__BackingField: 1
     <EnemyConfig>k__BackingField: {fileID: 11400000, guid: 6e15bc2a2307d4690bab9c7468d54dc4, type: 2}
-    <Count>k__BackingField: 25
+    <Count>k__BackingField: 20
     <SpawnInterval>k__BackingField: 0.28
     <StartDelay>k__BackingField: 0.5
   - <BurrowIndex>k__BackingField: 2
     <EnemyConfig>k__BackingField: {fileID: 11400000, guid: 6e15bc2a2307d4690bab9c7468d54dc4, type: 2}
-    <Count>k__BackingField: 25
+    <Count>k__BackingField: 20
     <SpawnInterval>k__BackingField: 0.28
     <StartDelay>k__BackingField: 1
   - <BurrowIndex>k__BackingField: 3
     <EnemyConfig>k__BackingField: {fileID: 11400000, guid: 6e15bc2a2307d4690bab9c7468d54dc4, type: 2}
-    <Count>k__BackingField: 25
+    <Count>k__BackingField: 20
     <SpawnInterval>k__BackingField: 0.28
     <StartDelay>k__BackingField: 1.5
   - <BurrowIndex>k__BackingField: 4
     <EnemyConfig>k__BackingField: {fileID: 11400000, guid: 6e15bc2a2307d4690bab9c7468d54dc4, type: 2}
-    <Count>k__BackingField: 25
+    <Count>k__BackingField: 20
     <SpawnInterval>k__BackingField: 0.28
     <StartDelay>k__BackingField: 2
   - <BurrowIndex>k__BackingField: 5
     <EnemyConfig>k__BackingField: {fileID: 11400000, guid: 6e15bc2a2307d4690bab9c7468d54dc4, type: 2}
-    <Count>k__BackingField: 25
+    <Count>k__BackingField: 20
     <SpawnInterval>k__BackingField: 0.28
     <StartDelay>k__BackingField: 2.5
   - <BurrowIndex>k__BackingField: 1
     <EnemyConfig>k__BackingField: {fileID: 11400000, guid: 97d4677383017460396d422d4140bdf0, type: 2}
-    <Count>k__BackingField: 2
+    <Count>k__BackingField: 3
     <SpawnInterval>k__BackingField: 2.5
     <StartDelay>k__BackingField: 3
   - <BurrowIndex>k__BackingField: 2
     <EnemyConfig>k__BackingField: {fileID: 11400000, guid: 97d4677383017460396d422d4140bdf0, type: 2}
-    <Count>k__BackingField: 2
+    <Count>k__BackingField: 3
     <SpawnInterval>k__BackingField: 2.5
     <StartDelay>k__BackingField: 3.7
   - <BurrowIndex>k__BackingField: 3
     <EnemyConfig>k__BackingField: {fileID: 11400000, guid: 97d4677383017460396d422d4140bdf0, type: 2}
-    <Count>k__BackingField: 2
+    <Count>k__BackingField: 3
     <SpawnInterval>k__BackingField: 2.5
     <StartDelay>k__BackingField: 4.4
   - <BurrowIndex>k__BackingField: 4

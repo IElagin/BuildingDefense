@@ -22,6 +22,6 @@ MonoBehaviour:
   - {x: -14.488887, y: 0, z: -3.882286}
   - {x: 10.6066, y: 0, z: -10.606604}
   <BuildingMaxHealth>k__BackingField: 150
-  <RestDuration>k__BackingField: 12
-  <WinGoldReward>k__BackingField: 50
+  <RestDuration>k__BackingField: 15
+  <WinGoldReward>k__BackingField: 60
   <WinDiamondReward>k__BackingField: 3

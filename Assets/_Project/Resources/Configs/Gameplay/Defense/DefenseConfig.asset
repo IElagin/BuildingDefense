@@ -20,7 +20,7 @@ MonoBehaviour:
   <MinePrice>k__BackingField: 25
   <Turret>k__BackingField: {fileID: 11400000, guid: 9e0d1f21fa85d41dca961a67161dfd64, type: 2}
   <Puddle>k__BackingField: {fileID: 11400000, guid: 94b8a768b4a0a4962bd850ce74d86d3b, type: 2}
-  <TurretPrice>k__BackingField: 60
+  <TurretPrice>k__BackingField: 50
   <PuddlePrice>k__BackingField: 35
   <MinDistanceToBuilding>k__BackingField: 3
   <MaxDistanceToBuilding>k__BackingField: 13

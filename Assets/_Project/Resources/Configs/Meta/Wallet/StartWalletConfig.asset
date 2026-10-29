@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Assets._Project.Develop.Runtime.Configs.Meta.Wallet.StartWalletConfig
   _values:
   - <Type>k__BackingField: 0
-    <Value>k__BackingField: 100
+    <Value>k__BackingField: 150
   - <Type>k__BackingField: 1
     <Value>k__BackingField: 0
