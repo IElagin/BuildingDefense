@@ -13,6 +13,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.States
     public class WinState : EndGameState, IUpdatableState
     {
         private readonly WalletService _walletService;
+        private readonly RunSpendingRefund _runSpendingRefund;
         private readonly GameStatisticsService _statisticsService;
         private readonly PlayerDataProvider _playerDataProvider;
         private readonly GameplayPopupService _popupService;
@@ -22,6 +23,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.States
         public WinState(
             IInputService inputService,
             WalletService walletService,
+            RunSpendingRefund runSpendingRefund,
             GameStatisticsService statisticsService,
             PlayerDataProvider playerDataProvider,
             GameplayPopupService popupService,
@@ -29,6 +31,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.States
             int diamondReward) : base(inputService)
         {
             _walletService = walletService;
+            _runSpendingRefund = runSpendingRefund;
             _statisticsService = statisticsService;
             _playerDataProvider = playerDataProvider;
             _popupService = popupService;
@@ -42,6 +45,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.States
 
             Debug.Log("ПОБЕДА!");
 
+            _runSpendingRefund.Refund();
             _walletService.Add(CurrencyTypes.Gold, _goldReward);
             _walletService.Add(CurrencyTypes.Diamond, _diamondReward);
             _statisticsService.AddWin();

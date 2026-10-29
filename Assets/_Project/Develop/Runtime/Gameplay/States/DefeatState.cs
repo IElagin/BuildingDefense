@@ -11,16 +11,19 @@ namespace Assets._Project.Develop.Runtime.Gameplay.States
 {
     public class DefeatState : EndGameState, IUpdatableState
     {
+        private readonly RunSpendingRefund _runSpendingRefund;
         private readonly GameStatisticsService _statisticsService;
         private readonly PlayerDataProvider _playerDataProvider;
         private readonly GameplayPopupService _popupService;
 
         public DefeatState(
             IInputService inputService,
+            RunSpendingRefund runSpendingRefund,
             GameStatisticsService statisticsService,
             PlayerDataProvider playerDataProvider,
             GameplayPopupService popupService) : base(inputService)
         {
+            _runSpendingRefund = runSpendingRefund;
             _statisticsService = statisticsService;
             _playerDataProvider = playerDataProvider;
             _popupService = popupService;
@@ -32,6 +35,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.States
 
             Debug.Log("ПОРАЖЕНИЕ!");
 
+            _runSpendingRefund.Refund();
             _statisticsService.AddLoss();
 
             _playerDataProvider.SaveAsync().Forget(AsyncErrors.Report);

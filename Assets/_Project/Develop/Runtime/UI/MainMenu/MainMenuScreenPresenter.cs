@@ -1,5 +1,6 @@
 using Assets._Project.Develop.Runtime.Configs.Gameplay.Levels;
 using Assets._Project.Develop.Runtime.Gameplay.Infrastructure;
+using Assets._Project.Develop.Runtime.Meta.Features.Statistics;
 using Assets._Project.Develop.Runtime.UI.Core;
 using Assets._Project.Develop.Runtime.UI.Statistics;
 using Assets._Project.Develop.Runtime.UI.Wallet;
@@ -8,7 +9,6 @@ using Assets._Project.Develop.Runtime.Utilities.ConfigsManagement;
 using Assets._Project.Develop.Runtime.Utilities.SceneManagement;
 using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace Assets._Project.Develop.Runtime.UI.MainMenu
 {
@@ -23,6 +23,7 @@ namespace Assets._Project.Develop.Runtime.UI.MainMenu
         private readonly MainMenuPopupService _popupService;
 
         private readonly ConfigsProviderService _configsProviderService;
+        private readonly GameStatisticsService _statisticsService;
         private readonly IAudioService _audio;
 
         private readonly List<IPresenter> _childPresenters = new();
@@ -33,6 +34,7 @@ namespace Assets._Project.Develop.Runtime.UI.MainMenu
             SceneSwitcherService sceneSwitcherService,
             MainMenuPopupService popupService,
             ConfigsProviderService configsProviderService,
+            GameStatisticsService statisticsService,
             IAudioService audio)
         {
             _screen = screen;
@@ -40,6 +42,7 @@ namespace Assets._Project.Develop.Runtime.UI.MainMenu
             _sceneSwitcherService = sceneSwitcherService;
             _popupService = popupService;
             _configsProviderService = configsProviderService;
+            _statisticsService = statisticsService;
             _audio = audio;
         }
 
@@ -85,7 +88,8 @@ namespace Assets._Project.Develop.Runtime.UI.MainMenu
             _audio.Play(SoundIds.UIOpen);
 
             int levelsCount = _configsProviderService.GetConfig<LevelsListConfig>().Levels.Count;
-            int levelNumber = Random.Range(1, levelsCount + 1);
+            // Levels go in order: a loss replays the level, a win opens the next; after the last, back to the first.
+            int levelNumber = _statisticsService.Wins.Value % levelsCount + 1;
 
             _sceneSwitcherService
                 .ProcessSwitchTo(Scenes.Gameplay, new GameplayInputArgs(levelNumber)).Forget(AsyncErrors.Report);

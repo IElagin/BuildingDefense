@@ -58,11 +58,12 @@ namespace Assets._Project.Develop.Runtime.Gameplay.States
             return defenseConfig.ClickExplosionDamage * (1 + boostPercent / 100);
         }
 
-        public WinState CreateWinState()
+        public WinState CreateWinState(RunSpendingRefund runSpendingRefund)
         {
             return new WinState(
                 _container.Resolve<IInputService>(),
                 _container.Resolve<WalletService>(),
+                runSpendingRefund,
                 _container.Resolve<GameStatisticsService>(),
                 _container.Resolve<PlayerDataProvider>(),
                 _container.Resolve<GameplayPopupService>(),
@@ -70,10 +71,11 @@ namespace Assets._Project.Develop.Runtime.Gameplay.States
                 _container.Resolve<LevelConfig>().WinDiamondReward);
         }
 
-        public DefeatState CreateDefeatState()
+        public DefeatState CreateDefeatState(RunSpendingRefund runSpendingRefund)
         {
             return new DefeatState(
                 _container.Resolve<IInputService>(),
+                runSpendingRefund,
                 _container.Resolve<GameStatisticsService>(),
                 _container.Resolve<PlayerDataProvider>(),
                 _container.Resolve<GameplayPopupService>());
@@ -86,8 +88,10 @@ namespace Assets._Project.Develop.Runtime.Gameplay.States
 
             GameplayStateMachine coreLoopState = CreateCoreLoopState();
 
-            DefeatState defeatState = CreateDefeatState();
-            WinState winState = CreateWinState();
+            RunSpendingRefund runSpendingRefund = new RunSpendingRefund(_container.Resolve<WalletService>());
+
+            DefeatState defeatState = CreateDefeatState(runSpendingRefund);
+            WinState winState = CreateWinState(runSpendingRefund);
 
             ICompositeCondition coreLoopToWinStateCondition = new CompositeCondition()
                 .Add(new FuncCondition(() => stageProviderService.CurrentStageResult.Value == StageResults.Completed))
