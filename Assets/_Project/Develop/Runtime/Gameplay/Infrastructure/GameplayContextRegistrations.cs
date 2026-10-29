@@ -1,5 +1,6 @@
 using Assets._Project.Develop.Runtime.Gameplay.EntitiesCore;
 using Assets._Project.Develop.Runtime.Gameplay.EntitiesCore.Mono;
+using Assets._Project.Develop.Runtime.Gameplay.Features.Abilities;
 using Assets._Project.Develop.Runtime.Gameplay.Features.AI;
 using Assets._Project.Develop.Runtime.Gameplay.Features.BuildingFeature;
 using Assets._Project.Develop.Runtime.Gameplay.Features.Defense;
@@ -11,6 +12,7 @@ using Assets._Project.Develop.Runtime.Gameplay.States;
 using Assets._Project.Develop.Runtime.Configs.Gameplay.Defense;
 using Assets._Project.Develop.Runtime.Configs.Gameplay.Levels;
 using Assets._Project.Develop.Runtime.Gameplay.Features.Burrows;
+using Assets._Project.Develop.Runtime.Meta.Features.AbilitiesUpgrade;
 using Assets._Project.Develop.Runtime.Meta.Features.Wallet;
 using Assets._Project.Develop.Runtime.UI;
 using Assets._Project.Develop.Runtime.UI.Core;
@@ -66,6 +68,11 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Infrastructure
 
             container.Register(CreateBuildingHolderService, Lifetime.Scoped);
             container.RegisterBuildCallback(c => c.Resolve<BuildingHolderService>().Initialize());
+
+            container.Register(CreateDomeRepairService, Lifetime.Scoped);
+            container.Register(CreateOrbitalVolleyService, Lifetime.Scoped);
+            container.RegisterBuildCallback(c => c.Resolve<DomeRepairService>().Initialize());
+            container.RegisterBuildCallback(c => c.Resolve<OrbitalVolleyService>().Initialize());
 
             container.Register<IInputService>(CreateDesktopInput, Lifetime.Scoped);
 
@@ -133,6 +140,25 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Infrastructure
         private static GameplayStatesFactory CreateGameplayStatesFactory(IObjectResolver c)
         {
             return new GameplayStatesFactory(c);
+        }
+
+        private static DomeRepairService CreateDomeRepairService(IObjectResolver c)
+        {
+            return new DomeRepairService(
+                c.Resolve<StageProviderService>(),
+                c.Resolve<BuildingHolderService>(),
+                c.Resolve<AbilitiesUpgradeService>().GetCurrentValueFor(AbilityTypes.DomeRepair));
+        }
+
+        private static OrbitalVolleyService CreateOrbitalVolleyService(IObjectResolver c)
+        {
+            AbilitiesUpgradeService abilitiesUpgradeService = c.Resolve<AbilitiesUpgradeService>();
+
+            return new OrbitalVolleyService(
+                c.Resolve<EntitiesLifeContext>(),
+                c.Resolve<StageProviderService>(),
+                abilitiesUpgradeService.GetCurrentValueFor(AbilityTypes.OrbitalVolley),
+                abilitiesUpgradeService.GetCurrentTargetsCountFor(AbilityTypes.OrbitalVolley));
         }
 
         private static BuildingHolderService CreateBuildingHolderService(IObjectResolver c)

@@ -5,15 +5,20 @@
 // loading screen, currency view and gameplay HUD, builds the course result popups and HP bars, and puts
 // a health bar point on the bomber and building prefabs. Prefabs keep their roots; children are rebuilt.
 // Entry UIAuthoring.RunGameplayHud (final assignment, 2026-10-29) rebuilds only the gameplay HUD with the defense
-// cards and the placement ring prefab.
+// cards and the placement ring prefab. Entry UIAuthoring.RunShop (final assignment, piece 5) makes the ability
+// configs (only when missing), sets the currency icons, rebuilds the menu with the shop button and builds the shop popup.
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Assets._Project.Develop.Runtime.Configs.Meta.Abilities;
 using Assets._Project.Develop.Runtime.Configs.Meta.Wallet;
+using Assets._Project.Develop.Runtime.Meta.Features.AbilitiesUpgrade;
+using Assets._Project.Develop.Runtime.Meta.Features.Wallet;
 using Assets._Project.Develop.Runtime.Gameplay.Features.LifeCycle;
 using Assets._Project.Develop.Runtime.UI;
+using Assets._Project.Develop.Runtime.UI.AbilitiesShopPopup;
 using Assets._Project.Develop.Runtime.UI.CommonViews;
 using Assets._Project.Develop.Runtime.UI.Gameplay;
 using Assets._Project.Develop.Runtime.UI.Gameplay.Defense;
@@ -39,6 +44,7 @@ public static class UIAuthoring
     private const string Backgrounds = "Assets/_Project/Art/Sprites/Backgrounds/";
     private const string UI = "Assets/_Project/Resources/UI/";
     private const string Entities = "Assets/_Project/Resources/Entities/";
+    private const string AbilitiesConfigs = "Assets/_Project/Resources/Configs/Meta/Abilities/";
     private const string ParticleMaterial = "Assets/_Project/Art/Materials/ParticleFlat.mat";
 
     private const string Charset =
@@ -114,6 +120,27 @@ public static class UIAuthoring
 
         AssetDatabase.SaveAssets();
         log.AppendLine("gameplay HUD with defense cards, placement preview");
+        return log.ToString();
+    }
+
+    public static string RunShop()
+    {
+        var log = new StringBuilder();
+
+        ImportSprites(log);
+        _russo = FontAsset("RussoOne-Regular.ttf", "RussoOne SDF", log);
+        _exo = FontAsset("Exo2-Regular.ttf", "Exo2 SDF", log);
+        _exoSemiBold = FontAsset("Exo2-SemiBold.ttf", "Exo2 SemiBold SDF", log);
+        _russoOutline = OutlineMaterial(_russo, "RussoOne SDF Outline");
+
+        MakeAbilitiesConfigs(log);
+        SetCurrencyIcon();
+        BuildMainMenuScreen();
+        BuildUpgradableAbilityView();
+        BuildAbilitiesShopPopup();
+
+        AssetDatabase.SaveAssets();
+        log.AppendLine("shop: configs, currency icons, menu button, popup");
         return log.ToString();
     }
 
@@ -212,9 +239,81 @@ public static class UIAuthoring
         var so = new SerializedObject(config);
         SerializedProperty configs = so.FindProperty("_configs");
         for (int i = 0; i < configs.arraySize; i++)
-            configs.GetArrayElementAtIndex(i).FindPropertyRelative("<Sprite>k__BackingField").objectReferenceValue = S("IconGold");
+        {
+            SerializedProperty entry = configs.GetArrayElementAtIndex(i);
+            var type = (CurrencyTypes)entry.FindPropertyRelative("<Type>k__BackingField").enumValueIndex;
+            entry.FindPropertyRelative("<Sprite>k__BackingField").objectReferenceValue = S(type == CurrencyTypes.Diamond ? "IconDiamond" : "IconGold");
+        }
         so.ApplyModifiedPropertiesWithoutUndo();
         EditorUtility.SetDirty(config);
+    }
+
+    // Start numbers of the plan (2026-10-29); once made, the configs are tuned in the Inspector and kept.
+    private static void MakeAbilitiesConfigs(StringBuilder log)
+    {
+        EnsureFolder(AbilitiesConfigs.TrimEnd('/'));
+
+        string upgradePath = AbilitiesConfigs + "AbilitiesUpgradeConfig.asset";
+        if (AssetDatabase.LoadAssetAtPath<AbilitiesUpgradeConfig>(upgradePath) == null)
+        {
+            var upgrade = ScriptableObject.CreateInstance<AbilitiesUpgradeConfig>();
+            AssetDatabase.CreateAsset(upgrade, upgradePath);
+            var so = new SerializedObject(upgrade);
+            SerializedProperty abilities = so.FindProperty("_abilities");
+            abilities.arraySize = 3;
+            SetAbilityUpgrade(abilities.GetArrayElementAtIndex(0), AbilityTypes.DomeRepair, new[] { 5f, 10f, 15f }, new int[0]);
+            SetAbilityUpgrade(abilities.GetArrayElementAtIndex(1), AbilityTypes.OrbitalVolley, new[] { 30f, 45f, 60f }, new[] { 3, 5, 8 });
+            SetAbilityUpgrade(abilities.GetArrayElementAtIndex(2), AbilityTypes.StrikeBoost, new[] { 15f, 30f, 50f }, new int[0]);
+            so.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(upgrade);
+            log.AppendLine("AbilitiesUpgradeConfig created");
+        }
+
+        string viewPath = AbilitiesConfigs + "AbilitiesViewConfig.asset";
+        if (AssetDatabase.LoadAssetAtPath<AbilitiesViewConfig>(viewPath) == null)
+        {
+            var view = ScriptableObject.CreateInstance<AbilitiesViewConfig>();
+            AssetDatabase.CreateAsset(view, viewPath);
+            var so = new SerializedObject(view);
+            SerializedProperty abilities = so.FindProperty("_abilities");
+            abilities.arraySize = 3;
+            SetAbilityView(abilities.GetArrayElementAtIndex(0), AbilityTypes.DomeRepair, "Ремонт купола", "+{0}% HP купола в начале волны", "IconRepair");
+            SetAbilityView(abilities.GetArrayElementAtIndex(1), AbilityTypes.OrbitalVolley, "Орбитальный залп", "{0}% HP первым {1} жукам волны", "IconVolley");
+            SetAbilityView(abilities.GetArrayElementAtIndex(2), AbilityTypes.StrikeBoost, "Усиленный удар", "+{0}% к урону клик-удара", "IconStrike");
+            so.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(view);
+            log.AppendLine("AbilitiesViewConfig created");
+        }
+    }
+
+    private static void SetAbilityUpgrade(SerializedProperty entry, AbilityTypes type, float[] values, int[] targetsCounts)
+    {
+        int[] costs = { 5, 10, 15 };
+        entry.FindPropertyRelative("<Type>k__BackingField").enumValueIndex = (int)type;
+        entry.FindPropertyRelative("<CostType>k__BackingField").enumValueIndex = (int)CurrencyTypes.Diamond;
+
+        SerializedProperty valuesProperty = entry.FindPropertyRelative("<Values>k__BackingField");
+        valuesProperty.arraySize = values.Length;
+        for (int i = 0; i < values.Length; i++)
+            valuesProperty.GetArrayElementAtIndex(i).floatValue = values[i];
+
+        SerializedProperty targetsProperty = entry.FindPropertyRelative("<TargetsCounts>k__BackingField");
+        targetsProperty.arraySize = targetsCounts.Length;
+        for (int i = 0; i < targetsCounts.Length; i++)
+            targetsProperty.GetArrayElementAtIndex(i).intValue = targetsCounts[i];
+
+        SerializedProperty costsProperty = entry.FindPropertyRelative("<UpgradeCosts>k__BackingField");
+        costsProperty.arraySize = costs.Length;
+        for (int i = 0; i < costs.Length; i++)
+            costsProperty.GetArrayElementAtIndex(i).intValue = costs[i];
+    }
+
+    private static void SetAbilityView(SerializedProperty entry, AbilityTypes type, string name, string effectFormat, string icon)
+    {
+        entry.FindPropertyRelative("<Type>k__BackingField").enumValueIndex = (int)type;
+        entry.FindPropertyRelative("<Name>k__BackingField").stringValue = name;
+        entry.FindPropertyRelative("<EffectFormat>k__BackingField").stringValue = effectFormat;
+        entry.FindPropertyRelative("<Sprite>k__BackingField").objectReferenceValue = S(icon);
     }
 
     // ---------- screens ----------
@@ -259,11 +358,13 @@ public static class UIAuthoring
             title.fontStyle = FontStyles.UpperCase;
 
             Button play = MakeButton(safeArea, "PlayButton", new Vector2(0.5f, 0), new Vector2(0.5f, 0), new Vector2(0, 120), new Vector2(560, 150), S("ButtonTeal"), "Играть", 72);
+            Button shop = MakeButton(safeArea, "ShopButton", new Vector2(0.5f, 0), new Vector2(0, 0.5f), new Vector2(320, 195), new Vector2(400, 120), S("ButtonOrange"), "Магазин", 52);
 
             var view = root.GetComponent<MainMenuScreenView>();
             SetRef(view, "<WalletView>k__BackingField", wallet);
             SetRef(view, "<StatisticsView>k__BackingField", statistics);
             SetRef(view, "_playButton", play);
+            SetRef(view, "_openShopButton", shop);
         });
     }
 
@@ -523,6 +624,86 @@ public static class UIAuthoring
 
             SetRef(view, "_continueButton", menu);
             SetRef(view, "_restartButton", restart);
+        });
+    }
+
+    // Course UpgradableStatView (L11): one row of the shop — icon, name, level, effect, buy button.
+    private static void BuildUpgradableAbilityView()
+    {
+        Rebuild(UI + "AbilitiesShopPopup/UpgradableAbilityView.prefab", root =>
+        {
+            var rect = (RectTransform)root.transform;
+            rect.anchorMin = rect.anchorMax = new Vector2(0.5f, 0.5f);
+            rect.sizeDelta = new Vector2(1320, 170);
+
+            AddImage(Stretch(root.transform, "Background"), S("Panel"), Color.white);
+            Image icon = AddImage(Place(root.transform, "Icon", new Vector2(0, 0.5f), new Vector2(0, 0.5f), new Vector2(28, 0), new Vector2(124, 124)), S("IconRepair"), Color.white);
+            icon.preserveAspect = true;
+            TMP_Text name = AddText(Place(root.transform, "Name", new Vector2(0, 1), new Vector2(0, 1), new Vector2(176, -16), new Vector2(560, 60)),
+                "Ремонт купола", _russo, 44, TextWhite, TextAlignmentOptions.MidlineLeft, _russoOutline);
+            TMP_Text level = AddText(Place(root.transform, "Level", new Vector2(1, 1), new Vector2(1, 1), new Vector2(-312, -18), new Vector2(200, 56)),
+                "Ур. 0/3", _exoSemiBold, 34, TextMuted, TextAlignmentOptions.MidlineRight);
+            TMP_Text effect = AddText(Place(root.transform, "Effect", new Vector2(0, 0), new Vector2(0, 0), new Vector2(176, 14), new Vector2(830, 84)),
+                "Не куплено\n» +5% HP купола в начале волны", _exoSemiBold, 30, TextWarm, TextAlignmentOptions.TopLeft);
+
+            RectTransform buyRect = Place(root.transform, "BuyButton", new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(-26, 0), new Vector2(256, 116));
+            Image buyBackground = AddImage(buyRect, S("ButtonTeal"), Color.white, true);
+            var button = buyRect.gameObject.AddComponent<Button>();
+            button.targetGraphic = buyBackground;
+            ColorBlock colors = button.colors;
+            colors.highlightedColor = new Color(0.93f, 0.97f, 1f);
+            colors.pressedColor = new Color(0.78f, 0.82f, 0.85f);
+            colors.fadeDuration = 0.08f;
+            button.colors = colors;
+            button.navigation = new Navigation { mode = Navigation.Mode.None };
+            buyRect.gameObject.AddComponent<ButtonPressFeedback>();
+            Image priceIcon = AddImage(Place(buyRect, "PriceIcon", new Vector2(0, 0.5f), new Vector2(0, 0.5f), new Vector2(30, 0), new Vector2(62, 62)), S("IconDiamond"), Color.white);
+            priceIcon.preserveAspect = true;
+            TMP_Text price = AddText(Stretch(buyRect, "Price", 92, 6, 18, 6), "5", _russo, 50, TextWhite, TextAlignmentOptions.Center, _russoOutline);
+
+            var buy = buyRect.gameObject.AddComponent<BuyButtonView>();
+            SetRef(buy, "_button", button);
+            SetRef(buy, "_background", buyBackground);
+            SetRef(buy, "_availableSprite", S("ButtonTeal"));
+            SetRef(buy, "_lockedSprite", S("ButtonDark"));
+            SetRef(buy, "_priceText", price);
+            SetRef(buy, "_priceIcon", priceIcon);
+
+            UpgradableAbilityView view = GetOrAdd<UpgradableAbilityView>(root);
+            SetRef(view, "_abilityName", name);
+            SetRef(view, "_abilityIcon", icon);
+            SetRef(view, "_levelText", level);
+            SetRef(view, "_effectText", effect);
+            SetRef(view, "<BuyButtonView>k__BackingField", buy);
+        });
+    }
+
+    // Course StatsUpgradePopupView (L11) in the result popups' frame: wallet, three ability rows, close button.
+    private static void BuildAbilitiesShopPopup()
+    {
+        Rebuild(UI + "AbilitiesShopPopup/AbilitiesShopPopup.prefab", root =>
+        {
+            AbilitiesShopPopupView view = GetOrAdd<AbilitiesShopPopupView>(root);
+            RectTransform body = PopupFrame(root, view, Teal, Teal, "Магазин");
+            ((RectTransform)body.Find("Header")).anchoredPosition = new Vector2(0, 330);
+            ((RectTransform)body.Find("Glow")).anchoredPosition = new Vector2(0, 0);
+
+            IconTextListView wallet = WalletList(Place(body, "WalletView", new Vector2(0, 1), new Vector2(0, 1), new Vector2(30, -30), new Vector2(700, 96)), TextAnchor.UpperLeft);
+
+            RectTransform listRect = Place(body, "Abilities", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 1), new Vector2(0, 210), new Vector2(1320, 542));
+            var layout = listRect.gameObject.AddComponent<VerticalLayoutGroup>();
+            layout.childAlignment = TextAnchor.UpperCenter;
+            layout.spacing = 16;
+            layout.childControlWidth = layout.childControlHeight = false;
+            layout.childForceExpandWidth = layout.childForceExpandHeight = false;
+            var list = listRect.gameObject.AddComponent<UpgradableAbilityListView>();
+            SetRef(list, "_parent", listRect);
+
+            Button close = MakeButton(body, "CloseButton", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0, -420), new Vector2(390, 112), S("ButtonDark"), "Закрыть", 46);
+            UnityEventTools.AddVoidPersistentListener(close.onClick, new UnityAction(view.OnCloseButtonClicked));
+
+            SetRef(view, "<CurrencyListView>k__BackingField", wallet);
+            SetRef(view, "<UpgradableAbilityListView>k__BackingField", list);
         });
     }
 

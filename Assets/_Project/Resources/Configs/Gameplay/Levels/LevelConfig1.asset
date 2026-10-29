@@ -24,3 +24,4 @@ MonoBehaviour:
   <BuildingMaxHealth>k__BackingField: 150
   <RestDuration>k__BackingField: 12
   <WinGoldReward>k__BackingField: 50
+  <WinDiamondReward>k__BackingField: 3

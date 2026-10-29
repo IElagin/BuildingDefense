@@ -13,4 +13,10 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Defense
     {
         public ReactiveEvent<Vector3> Value;
     }
+
+    // The click damage of this run: the config value raised by the bought strike boost.
+    public class ClickExplosionDamage : IEntityComponent
+    {
+        public ReactiveVariable<float> Value;
+    }
 }

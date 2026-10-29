@@ -1,4 +1,5 @@
 using Assets._Project.Develop.Runtime.Configs.Meta.Wallet;
+using Assets._Project.Develop.Runtime.Meta.Features.AbilitiesUpgrade;
 using Assets._Project.Develop.Runtime.Meta.Features.Wallet;
 using Assets._Project.Develop.Runtime.Utilities.ConfigsManagement;
 using Assets._Project.Develop.Runtime.Utilities.Reactive;
@@ -22,7 +23,8 @@ namespace Assets._Project.Develop.Runtime.Utilities.DataManagement.DataProviders
         {
             return new PlayerData()
             {
-                WalletData = InitWalletData()
+                WalletData = InitWalletData(),
+                AbilityLevels = InitAbilityLevels()
             };
         }
 
@@ -36,6 +38,16 @@ namespace Assets._Project.Develop.Runtime.Utilities.DataManagement.DataProviders
                 walletData[currencyType] = walletConfig.GetValueFor(currencyType);
 
             return walletData;
+        }
+
+        private Dictionary<AbilityTypes, int> InitAbilityLevels()
+        {
+            Dictionary<AbilityTypes, int> abilityLevels = new();
+
+            foreach (AbilityTypes abilityType in Enum.GetValues(typeof(AbilityTypes)))
+                abilityLevels[abilityType] = 0;
+
+            return abilityLevels;
         }
     }
 }

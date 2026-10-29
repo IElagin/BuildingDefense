@@ -20,6 +20,8 @@ namespace Assets._Project.Develop.Runtime.UI.MainMenu
 
         private readonly SceneSwitcherService _sceneSwitcherService;
 
+        private readonly MainMenuPopupService _popupService;
+
         private readonly ConfigsProviderService _configsProviderService;
         private readonly IAudioService _audio;
 
@@ -29,12 +31,14 @@ namespace Assets._Project.Develop.Runtime.UI.MainMenu
             MainMenuScreenView screen,
             ProjectPresentersFactory projectPresentersFactory,
             SceneSwitcherService sceneSwitcherService,
+            MainMenuPopupService popupService,
             ConfigsProviderService configsProviderService,
             IAudioService audio)
         {
             _screen = screen;
             _projectPresentersFactory = projectPresentersFactory;
             _sceneSwitcherService = sceneSwitcherService;
+            _popupService = popupService;
             _configsProviderService = configsProviderService;
             _audio = audio;
         }
@@ -42,6 +46,7 @@ namespace Assets._Project.Develop.Runtime.UI.MainMenu
         public void Initialize()
         {
             _screen.PlayButtonClicked += OnPlayButtonClicked;
+            _screen.OpenShopButtonClicked += OnOpenShopButtonClicked;
 
             CreateWallet();
             CreateStatistics();
@@ -53,6 +58,8 @@ namespace Assets._Project.Develop.Runtime.UI.MainMenu
         public void Dispose()
         {
             _screen.PlayButtonClicked -= OnPlayButtonClicked;
+            _screen.OpenShopButtonClicked -= OnOpenShopButtonClicked;
+
             foreach (IPresenter presenter in _childPresenters)
                 presenter.Dispose();
 
@@ -82,6 +89,12 @@ namespace Assets._Project.Develop.Runtime.UI.MainMenu
 
             _sceneSwitcherService
                 .ProcessSwitchTo(Scenes.Gameplay, new GameplayInputArgs(levelNumber)).Forget(AsyncErrors.Report);
+        }
+
+        private void OnOpenShopButtonClicked()
+        {
+            _audio.Play(SoundIds.UIOpen);
+            _popupService.OpenAbilitiesShopPopup();
         }
     }
 }

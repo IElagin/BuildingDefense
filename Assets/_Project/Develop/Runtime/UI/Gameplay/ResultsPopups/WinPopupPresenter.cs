@@ -5,7 +5,7 @@ using Cysharp.Threading.Tasks;
 
 namespace Assets._Project.Develop.Runtime.UI.Gameplay.ResultsPopups
 {
-    // Course WinPopupPresenter (L8); the game shows the gold reward of the level.
+    // Course WinPopupPresenter (L8); the game shows the gold and diamond rewards of the level.
     public class WinPopupPresenter : PopupPresenterBase
     {
         private const string TitleName = "ПОБЕДА!";
@@ -14,17 +14,20 @@ namespace Assets._Project.Develop.Runtime.UI.Gameplay.ResultsPopups
         private readonly SceneSwitcherService _sceneSwitcher;
         private readonly IAudioService _audio;
         private readonly int _goldReward;
+        private readonly int _diamondReward;
 
         public WinPopupPresenter(
             WinPopupView view,
             SceneSwitcherService sceneSwitcher,
             IAudioService audio,
-            int goldReward)
+            int goldReward,
+            int diamondReward)
         {
             _view = view;
             _sceneSwitcher = sceneSwitcher;
             _audio = audio;
             _goldReward = goldReward;
+            _diamondReward = diamondReward;
         }
 
         protected override PopupViewBase PopupView => _view;
@@ -34,7 +37,7 @@ namespace Assets._Project.Develop.Runtime.UI.Gameplay.ResultsPopups
             base.Initialize();
 
             _view.SetTitle(TitleName);
-            _view.SetReward($"Купол выстоял. Награда: +{_goldReward}");
+            _view.SetReward($"Купол выстоял. Награда: золото +{_goldReward}, алмазы +{_diamondReward}");
 
             _view.ContinueClicked += OnContinueClicked;
 

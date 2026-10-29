@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 558fd58294a4746e3b642861367d4f08, type: 3}
+  m_Name: AbilitiesUpgradeConfig
+  m_EditorClassIdentifier: Assembly-CSharp::Assets._Project.Develop.Runtime.Configs.Meta.Abilities.AbilitiesUpgradeConfig
+  _abilities:
+  - <Type>k__BackingField: 0
+    <Values>k__BackingField:
+    - 5
+    - 10
+    - 15
+    <TargetsCounts>k__BackingField: 
+    <CostType>k__BackingField: 1
+    <UpgradeCosts>k__BackingField: 050000000a0000000f000000
+  - <Type>k__BackingField: 1
+    <Values>k__BackingField:
+    - 30
+    - 45
+    - 60
+    <TargetsCounts>k__BackingField: 030000000500000008000000
+    <CostType>k__BackingField: 1
+    <UpgradeCosts>k__BackingField: 050000000a0000000f000000
+  - <Type>k__BackingField: 2
+    <Values>k__BackingField:
+    - 15
+    - 30
+    - 50
+    <TargetsCounts>k__BackingField: 
+    <CostType>k__BackingField: 1
+    <UpgradeCosts>k__BackingField: 050000000a0000000f000000

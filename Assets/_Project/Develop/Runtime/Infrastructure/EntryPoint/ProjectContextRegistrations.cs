@@ -1,5 +1,6 @@
 using VContainer;
 using Assets._Project.Develop.Runtime.Configs.Audio;
+using Assets._Project.Develop.Runtime.Meta.Features.AbilitiesUpgrade;
 using Assets._Project.Develop.Runtime.Meta.Features.Statistics;
 using Assets._Project.Develop.Runtime.Meta.Features.Wallet;
 using Assets._Project.Develop.Runtime.UI;
@@ -55,12 +56,15 @@ namespace Assets._Project.Develop.Runtime.Infrastructure.EntryPoint
 
             container.Register(CreateGameStatisticsService, Lifetime.Singleton);
 
+            container.Register(CreateAbilitiesUpgradeService, Lifetime.Singleton);
+
             container.Register<IAudioService>(c => audioService = CreateAudioService(c), Lifetime.Singleton);
 
             container.RegisterBuildCallback(c =>
             {
                 c.Resolve<WalletService>();
                 c.Resolve<GameStatisticsService>();
+                c.Resolve<AbilitiesUpgradeService>();
             });
 
             container.RegisterDisposeCallback(c =>
@@ -78,6 +82,9 @@ namespace Assets._Project.Develop.Runtime.Infrastructure.EntryPoint
 
         private static GameStatisticsService CreateGameStatisticsService(IObjectResolver c)
             => new GameStatisticsService(c.Resolve<PlayerDataProvider>());
+
+        private static AbilitiesUpgradeService CreateAbilitiesUpgradeService(IObjectResolver c)
+            => new AbilitiesUpgradeService(c.Resolve<PlayerDataProvider>(), c.Resolve<ConfigsProviderService>());
 
         private static ViewsFactory CreateViewsFactory(IObjectResolver c)
             => new ViewsFactory(c.Resolve<ResourcesAssetsLoader>());

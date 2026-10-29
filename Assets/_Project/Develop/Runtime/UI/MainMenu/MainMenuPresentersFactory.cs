@@ -20,6 +20,7 @@ namespace Assets._Project.Develop.Runtime.UI.MainMenu
                 view,
                 _container.Resolve<ProjectPresentersFactory>(),
                 _container.Resolve<SceneSwitcherService>(),
+                _container.Resolve<MainMenuPopupService>(),
                 _container.Resolve<ConfigsProviderService>(),
                 _container.Resolve<IAudioService>());
         }

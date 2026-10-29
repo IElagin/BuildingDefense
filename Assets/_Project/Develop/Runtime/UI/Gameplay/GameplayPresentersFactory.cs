@@ -27,13 +27,14 @@ namespace Assets._Project.Develop.Runtime.UI.Gameplay
             _gameplayInputArgs = gameplayInputArgs;
         }
 
-        public WinPopupPresenter CreateWinPopupPresenter(WinPopupView view, int goldReward)
+        public WinPopupPresenter CreateWinPopupPresenter(WinPopupView view, int goldReward, int diamondReward)
         {
             return new WinPopupPresenter(
                 view,
                 _container.Resolve<SceneSwitcherService>(),
                 _container.Resolve<IAudioService>(),
-                goldReward);
+                goldReward,
+                diamondReward);
         }
 
         public DefeatPopupPresenter CreateDefeatPopupPresenter(DefeatPopupView view)

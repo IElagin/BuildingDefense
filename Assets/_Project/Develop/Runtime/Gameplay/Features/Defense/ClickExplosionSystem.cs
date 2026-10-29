@@ -16,6 +16,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Defense
 
         private ReactiveEvent<Vector3> _request;
         private ReactiveEvent<Vector3> _event;
+        private ReactiveVariable<float> _damage;
         private IDisposable _requestDisposable;
         private float _cooldownLeft;
 
@@ -29,6 +30,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Defense
         {
             _request = entity.ClickExplosionRequest;
             _event = entity.ClickExplosionEvent;
+            _damage = entity.ClickExplosionDamage;
 
             _requestDisposable = _request.Subscribe(OnRequest);
         }
@@ -53,7 +55,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Defense
                 point,
                 _config.ClickExplosion,
                 _config.ClickExplosionRadius,
-                _config.ClickExplosionDamage,
+                _damage.Value,
                 Teams.Player);
 
             _cooldownLeft = _config.ClickExplosionCooldown;

@@ -23,12 +23,12 @@ namespace Assets._Project.Develop.Runtime.UI.Gameplay
 
         protected override Transform PopupLayer => _uiRoot.PopupsLayer;
 
-        // Course OpenWinPopup (L8); the game passes the level's gold reward to show it.
-        public WinPopupPresenter OpenWinPopup(int goldReward, Action closedCallback = null)
+        // Course OpenWinPopup (L8); the game passes the level's gold and diamond rewards to show them.
+        public WinPopupPresenter OpenWinPopup(int goldReward, int diamondReward, Action closedCallback = null)
         {
             WinPopupView view = ViewsFactory.Create<WinPopupView>(ViewIDs.WinPopup, PopupLayer);
 
-            WinPopupPresenter popup = _gameplayPresentersFactory.CreateWinPopupPresenter(view, goldReward);
+            WinPopupPresenter popup = _gameplayPresentersFactory.CreateWinPopupPresenter(view, goldReward, diamondReward);
 
             OnPopupCreated(popup, view, closedCallback);
 

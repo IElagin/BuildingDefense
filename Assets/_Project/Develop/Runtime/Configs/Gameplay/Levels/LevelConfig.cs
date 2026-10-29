@@ -13,6 +13,7 @@ namespace Assets._Project.Develop.Runtime.Configs.Gameplay.Levels
         [field: SerializeField, Min(1)] public float BuildingMaxHealth { get; private set; } = 150;
         [field: SerializeField, Min(0)] public float RestDuration { get; private set; } = 12;
         [field: SerializeField, Min(0)] public int WinGoldReward { get; private set; } = 50;
+        [field: SerializeField, Min(0)] public int WinDiamondReward { get; private set; } = 3;
 
         public IReadOnlyList<StageConfig> StageConfigs => _stageConfigs;
 

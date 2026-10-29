@@ -232,6 +232,73 @@ def icon_puddle(size=128):
     save(img, "IconPuddle")
 
 
+def icon_diamond(size=128):
+    s = size * SS
+    img = Image.new("RGBA", (s, s), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    top, girdle, bottom = s * 0.18, s * 0.4, s * 0.9
+    left, right = s * 0.08, s * 0.92
+    crown_l, crown_r = s * 0.3, s * 0.7
+    outline = [(crown_l, top), (crown_r, top), (right, girdle), (s * 0.5, bottom), (left, girdle)]
+    d.polygon([(x, y + 3 * SS) for x, y in outline], fill=hexc("0B3B40"))
+    d.polygon(outline, fill=hexc("2FD3C8"))
+    d.polygon([(crown_l, top), (crown_r, top), (s * 0.62, girdle), (s * 0.38, girdle)], fill=hexc("8AF6FF"))
+    d.polygon([(left, girdle), (crown_l, top), (s * 0.38, girdle)], fill=hexc("5FE6DC"))
+    d.polygon([(s * 0.38, girdle), (s * 0.62, girdle), (s * 0.5, bottom)], fill=hexc("5FE6DC"))
+    d.polygon([(s * 0.62, girdle), (right, girdle), (s * 0.5, bottom)], fill=hexc("127A86"))
+    d.polygon([(s * 0.36, top + 4 * SS), (s * 0.46, top + 4 * SS), (s * 0.4, girdle - 6 * SS)], fill=hexc("FFFFFF", 200))
+    save(img, "IconDiamond")
+
+
+def icon_repair(size=128):
+    """Dome under a green plus: the dome repair ability."""
+    s = size * SS
+    img = Image.new("RGBA", (s, s), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    d.pieslice((s * 0.08, s * 0.34, s * 0.92, s * 1.18), 180, 360, fill=hexc("0B3B40"))
+    d.pieslice((s * 0.14, s * 0.4, s * 0.86, s * 1.12), 180, 360, fill=hexc("2FD3C8"))
+    d.pieslice((s * 0.24, s * 0.5, s * 0.6, s * 0.9), 200, 260, fill=hexc("8AF6FF"))
+    d.rectangle((s * 0.06, s * 0.74, s * 0.94, s * 0.84), fill=hexc("0B3B40"))
+    c, arm, w = s * 0.5, s * 0.2, s * 0.085
+    d.rectangle((c - w - 2 * SS, s * 0.06 - 2 * SS, c + w + 2 * SS, s * 0.06 + 2 * arm + 2 * SS), fill=hexc("1F5A12"))
+    d.rectangle((c - arm - 2 * SS, s * 0.26 - w - 2 * SS, c + arm + 2 * SS, s * 0.26 + w + 2 * SS), fill=hexc("1F5A12"))
+    d.rectangle((c - w, s * 0.06, c + w, s * 0.06 + 2 * arm), fill=hexc("7CFF3A"))
+    d.rectangle((c - arm, s * 0.26 - w, c + arm, s * 0.26 + w), fill=hexc("7CFF3A"))
+    save(img, "IconRepair")
+
+
+def icon_volley(size=128):
+    """Three orbital beams falling on a target: the orbital volley ability."""
+    s = size * SS
+    img = Image.new("RGBA", (s, s), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    d.ellipse((s * 0.12, s * 0.7, s * 0.88, s * 0.94), fill=hexc("5A2414"))
+    d.ellipse((s * 0.2, s * 0.73, s * 0.8, s * 0.91), fill=hexc("FF7A1A"))
+    d.ellipse((s * 0.36, s * 0.77, s * 0.64, s * 0.87), fill=hexc("FFE89A"))
+    for x, top in ((0.24, 0.1), (0.5, 0.02), (0.76, 0.1)):
+        cx = s * x
+        d.polygon([(cx - s * 0.07, s * top), (cx + s * 0.07, s * top), (cx + s * 0.03, s * 0.72), (cx - s * 0.03, s * 0.72)], fill=hexc("5A2414"))
+        d.polygon([(cx - s * 0.045, s * top), (cx + s * 0.045, s * top), (cx + s * 0.015, s * 0.72), (cx - s * 0.015, s * 0.72)], fill=hexc("FFB04A"))
+        d.line([(cx, s * top), (cx, s * 0.7)], fill=hexc("FFE89A"), width=int(3 * SS))
+    save(img, "IconVolley")
+
+
+def icon_strike(size=128):
+    """A blast with an up arrow: the stronger click strike."""
+    s = size * SS
+    img = Image.new("RGBA", (s, s), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    c = (s * 0.42, s * 0.58)
+    d.polygon(star_points(c[0], c[1] + 2 * SS, s * 0.4, s * 0.2, 8), fill=hexc("5A2414"))
+    d.polygon(star_points(c[0], c[1], s * 0.38, s * 0.19, 8), fill=hexc("FF7A1A"))
+    d.polygon(star_points(c[0], c[1], s * 0.24, s * 0.13, 8), fill=hexc("FFD34D"))
+    d.ellipse((c[0] - s * 0.08, c[1] - s * 0.08, c[0] + s * 0.08, c[1] + s * 0.08), fill=hexc("FFE89A"))
+    arrow = [(s * 0.78, s * 0.04), (s * 0.97, s * 0.26), (s * 0.85, s * 0.26), (s * 0.85, s * 0.5), (s * 0.71, s * 0.5), (s * 0.71, s * 0.26), (s * 0.59, s * 0.26)]
+    d.polygon([(x, y + 2 * SS) for x, y in arrow], fill=hexc("1F5A12"))
+    d.polygon(arrow, fill=hexc("7CFF3A"))
+    save(img, "IconStrike")
+
+
 def glow_dot(size=64):
     s = size * SS
     img = Image.new("RGBA", (s, s), (0, 0, 0, 0))
@@ -318,6 +385,10 @@ if __name__ == "__main__":
     icon_mine()
     icon_turret()
     icon_puddle()
+    icon_diamond()
+    icon_repair()
+    icon_volley()
+    icon_strike()
     glow_dot()
     star("Star", hexc("8C5A14"), hexc("E0A82A"), top=hexc("FFD34D"))
     star("StarSlot", hexc("0B3B40"), hexc("1C2833"))

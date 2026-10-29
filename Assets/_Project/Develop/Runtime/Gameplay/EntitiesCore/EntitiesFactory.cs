@@ -10,6 +10,7 @@ using Assets._Project.Develop.Runtime.Gameplay.Features.Blast;
 using Assets._Project.Develop.Runtime.Gameplay.Features.ContactTakeDamage;
 using Assets._Project.Develop.Runtime.Gameplay.Features.Defense;
 using Assets._Project.Develop.Runtime.Gameplay.Features.Explosions;
+using Assets._Project.Develop.Runtime.Gameplay.Features.Heal;
 using Assets._Project.Develop.Runtime.Gameplay.Features.Knockback;
 using Assets._Project.Develop.Runtime.Gameplay.Features.LifeCycle;
 using Assets._Project.Develop.Runtime.Gameplay.Features.MovementFeature;
@@ -63,7 +64,9 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
                 .AddCurrentHealth(new ReactiveVariable<float>(maxHealth))
                 .AddIsDead()
                 .AddTakeDamageRequest()
-                .AddTakeDamageEvent();
+                .AddTakeDamageEvent()
+                .AddHealRequest()
+                .AddHealEvent();
 
             ICompositeCondition mustDie = new CompositeCondition()
                 .Add(new FuncCondition(() => entity.CurrentHealth.Value <= 0));
@@ -71,12 +74,17 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
             ICompositeCondition canApplyDamage = new CompositeCondition()
                 .Add(new FuncCondition(() => entity.IsDead.Value == false));
 
+            ICompositeCondition canHeal = new CompositeCondition()
+                .Add(new FuncCondition(() => entity.IsDead.Value == false));
+
             entity
                 .AddMustDie(mustDie)
-                .AddCanApplyDamage(canApplyDamage);
+                .AddCanApplyDamage(canApplyDamage)
+                .AddCanHeal(canHeal);
 
             entity
                 .AddSystem(new ApplyDamageSystem())
+                .AddSystem(new HealSystem())
                 .AddSystem(new DeathSystem())
                 .AddSystem(new BuildingSoundsSystem(_audio));
 
@@ -584,13 +592,15 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
         }
 
         // The click explosion caster has no view: the wave state puts a request, the system makes the explosion.
-        public Entity CreateClickExplosionCaster(DefenseConfig config)
+        // The damage comes with the bought strike boost, like the course hero stats (MainHeroFactory.GetStats).
+        public Entity CreateClickExplosionCaster(DefenseConfig config, float damage)
         {
             Entity entity = CreateEmpty();
 
             entity
                 .AddClickExplosionRequest()
-                .AddClickExplosionEvent();
+                .AddClickExplosionEvent()
+                .AddClickExplosionDamage(new ReactiveVariable<float>(damage));
 
             entity
                 .AddSystem(new ClickExplosionSystem(this, config))

@@ -6,6 +6,7 @@ using Assets._Project.Develop.Runtime.Gameplay.Features.Defense;
 using Assets._Project.Develop.Runtime.Gameplay.Features.InputFeature;
 using Assets._Project.Develop.Runtime.Gameplay.Features.Rest;
 using Assets._Project.Develop.Runtime.Gameplay.Features.StagesFeature;
+using Assets._Project.Develop.Runtime.Meta.Features.AbilitiesUpgrade;
 using Assets._Project.Develop.Runtime.Meta.Features.Statistics;
 using Assets._Project.Develop.Runtime.Meta.Features.Wallet;
 using Assets._Project.Develop.Runtime.UI.Gameplay;
@@ -34,15 +35,27 @@ namespace Assets._Project.Develop.Runtime.Gameplay.States
 
         public WaveState CreateWaveState()
         {
+            DefenseConfig defenseConfig = _container.Resolve<ConfigsProviderService>().GetConfig<DefenseConfig>();
+
             Entity clickExplosionCaster = _container
                 .Resolve<EntitiesFactory>()
-                .CreateClickExplosionCaster(_container.Resolve<ConfigsProviderService>().GetConfig<DefenseConfig>());
+                .CreateClickExplosionCaster(defenseConfig, GetClickExplosionDamage(defenseConfig));
 
             return new WaveState(
                 _container.Resolve<StageProviderService>(),
                 _container.Resolve<IInputService>(),
                 _container.Resolve<GroundPointService>(),
                 clickExplosionCaster);
+        }
+
+        // Like the course MainHeroFactory.GetStats: the config value raised by the bought strike boost (percent).
+        private float GetClickExplosionDamage(DefenseConfig defenseConfig)
+        {
+            float boostPercent = _container
+                .Resolve<AbilitiesUpgradeService>()
+                .GetCurrentValueFor(AbilityTypes.StrikeBoost);
+
+            return defenseConfig.ClickExplosionDamage * (1 + boostPercent / 100);
         }
 
         public WinState CreateWinState()
@@ -53,7 +66,8 @@ namespace Assets._Project.Develop.Runtime.Gameplay.States
                 _container.Resolve<GameStatisticsService>(),
                 _container.Resolve<PlayerDataProvider>(),
                 _container.Resolve<GameplayPopupService>(),
-                _container.Resolve<LevelConfig>().WinGoldReward);
+                _container.Resolve<LevelConfig>().WinGoldReward,
+                _container.Resolve<LevelConfig>().WinDiamondReward);
         }
 
         public DefeatState CreateDefeatState()

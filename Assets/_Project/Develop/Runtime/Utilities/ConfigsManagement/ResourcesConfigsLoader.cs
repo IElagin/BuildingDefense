@@ -2,6 +2,7 @@ using Assets._Project.Develop.Runtime.Configs.Audio;
 using Assets._Project.Develop.Runtime.Configs.Gameplay.Defense;
 using Assets._Project.Develop.Runtime.Configs.Gameplay.Entities;
 using Assets._Project.Develop.Runtime.Configs.Gameplay.Levels;
+using Assets._Project.Develop.Runtime.Configs.Meta.Abilities;
 using Assets._Project.Develop.Runtime.Configs.Meta.Wallet;
 using Assets._Project.Develop.Runtime.Utilities.AssetsManagement;
 using System;
@@ -24,6 +25,8 @@ namespace Assets._Project.Develop.Runtime.Utilities.ConfigsManagement
             {typeof(BuildingConfig), "Configs/Gameplay/Entities/BuildingConfig"},
             {typeof(DefenseConfig), "Configs/Gameplay/Defense/DefenseConfig"},
             {typeof(AudioConfig), "Configs/Audio/AudioConfig"},
+            {typeof(AbilitiesUpgradeConfig), "Configs/Meta/Abilities/AbilitiesUpgradeConfig"},
+            {typeof(AbilitiesViewConfig), "Configs/Meta/Abilities/AbilitiesViewConfig"},
         };
 
         public ResourcesConfigsLoader(ResourcesAssetsLoader resources)

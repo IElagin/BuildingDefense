@@ -17,6 +17,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.States
         private readonly PlayerDataProvider _playerDataProvider;
         private readonly GameplayPopupService _popupService;
         private readonly int _goldReward;
+        private readonly int _diamondReward;
 
         public WinState(
             IInputService inputService,
@@ -24,13 +25,15 @@ namespace Assets._Project.Develop.Runtime.Gameplay.States
             GameStatisticsService statisticsService,
             PlayerDataProvider playerDataProvider,
             GameplayPopupService popupService,
-            int goldReward) : base(inputService)
+            int goldReward,
+            int diamondReward) : base(inputService)
         {
             _walletService = walletService;
             _statisticsService = statisticsService;
             _playerDataProvider = playerDataProvider;
             _popupService = popupService;
             _goldReward = goldReward;
+            _diamondReward = diamondReward;
         }
 
         public override void Enter()
@@ -40,11 +43,12 @@ namespace Assets._Project.Develop.Runtime.Gameplay.States
             Debug.Log("ПОБЕДА!");
 
             _walletService.Add(CurrencyTypes.Gold, _goldReward);
+            _walletService.Add(CurrencyTypes.Diamond, _diamondReward);
             _statisticsService.AddWin();
 
             _playerDataProvider.SaveAsync().Forget(AsyncErrors.Report);
 
-            _popupService.OpenWinPopup(_goldReward);
+            _popupService.OpenWinPopup(_goldReward, _diamondReward);
         }
 
         public void Update(float deltaTime)

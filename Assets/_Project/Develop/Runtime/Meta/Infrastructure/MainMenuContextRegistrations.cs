@@ -15,12 +15,21 @@ namespace Assets._Project.Develop.Runtime.Meta.Infrastructure
             container.Register(CreateMainMenuUIRoot, Lifetime.Scoped);
             container.Register(CreateMainMenuPresentersFactory, Lifetime.Scoped);
             container.Register(CreateMainMenuScreenPresenter, Lifetime.Scoped);
+            container.Register(CreateMainMenuPopupService, Lifetime.Scoped);
             container.RegisterBuildCallback(c =>
             {
                 c.Resolve<MainMenuUIRoot>();
                 c.Resolve<MainMenuScreenPresenter>().Initialize();
                 c.Resolve<IAudioService>().PlayAmbient(AmbientIds.Menu);
             });
+        }
+
+        private static MainMenuPopupService CreateMainMenuPopupService(IObjectResolver c)
+        {
+            return new MainMenuPopupService(
+                c.Resolve<ViewsFactory>(),
+                c.Resolve<ProjectPresentersFactory>(),
+                c.Resolve<MainMenuUIRoot>());
         }
 
         private static MainMenuUIRoot CreateMainMenuUIRoot(IObjectResolver c)

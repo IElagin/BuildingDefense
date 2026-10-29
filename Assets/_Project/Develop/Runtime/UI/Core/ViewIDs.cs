@@ -10,5 +10,7 @@ namespace Assets._Project.Develop.Runtime.UI.Core
         public const string SimpleHealthBar = nameof(SimpleHealthBar);
         public const string BuildingHealthBar = nameof(BuildingHealthBar);
         public const string PlacementPreview = nameof(PlacementPreview);
+        public const string AbilitiesShopPopup = nameof(AbilitiesShopPopup);
+        public const string UpgradableAbilityView = nameof(UpgradableAbilityView);
     }
 }
