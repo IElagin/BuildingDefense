@@ -8,7 +8,7 @@ using UnityEngine.AI;
 namespace Assets._Project.Develop.Runtime.Gameplay.Features.MovementFeature
 {
     // The course AgentMover (NavMeshTest) as a system: the agent walks the path to MoveDestination and steps
-    // around the other agents by priority; the body turns along the agent velocity in RigidbodyRotationSystem.
+    // around the other agents by priority; the bug turns along the agent velocity in TransformRotationSystem.
     public class NavMeshMovementSystem : IInitializableSystem, IUpdatableSystem
     {
         private const float AgentAcceleration = 999;

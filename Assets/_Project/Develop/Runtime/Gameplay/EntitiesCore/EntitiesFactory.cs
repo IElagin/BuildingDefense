@@ -151,7 +151,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
             entity
                 .AddSystem(new SpawnProcessTimerSystem())
                 .AddSystem(new NavMeshMovementSystem())
-                .AddSystem(new RigidbodyRotationSystem())
+                .AddSystem(new TransformRotationSystem())
                 .AddSystem(new TargetReachDetectorSystem())
                 .AddSystem(new BlastSystem(this, config.BlastExplosion))
                 .AddSystem(new ApplyDamageSystem())
@@ -249,7 +249,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
             entity
                 .AddSystem(new SpawnProcessTimerSystem())
                 .AddSystem(new NavMeshMovementSystem())
-                .AddSystem(new RigidbodyRotationSystem())
+                .AddSystem(new TransformRotationSystem())
                 .AddSystem(new TargetReachDetectorSystem())
                 .AddSystem(new AttackCancelSystem())
                 .AddSystem(new StartAttackSystem())

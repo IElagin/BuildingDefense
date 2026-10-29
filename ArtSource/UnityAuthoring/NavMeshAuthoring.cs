@@ -57,7 +57,7 @@ public static class NavMeshAuthoring
         if (root.TryGetComponent(out NavMeshAgentEntityRegistrator _) == false)
             root.AddComponent<NavMeshAgentEntityRegistrator>();
 
-        // the agent moves the transform; the body only turns through RigidbodyRotationSystem and carries the collider
+        // the agent moves the transform and TransformRotationSystem turns it; the kinematic body only carries the collider
         var body = root.GetComponent<Rigidbody>();
         body.isKinematic = true;
         body.useGravity = false;
