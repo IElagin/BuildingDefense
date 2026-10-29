@@ -1,5 +1,6 @@
 using Assets._Project.Develop.Runtime.Configs.Gameplay.Defense;
 using Assets._Project.Develop.Runtime.Gameplay.EntitiesCore;
+using Assets._Project.Develop.Runtime.Gameplay.Features.Defense;
 using Assets._Project.Develop.Runtime.Gameplay.Features.Rest;
 using Assets._Project.Develop.Runtime.Gameplay.Features.StagesFeature;
 using Assets._Project.Develop.Runtime.Gameplay.Infrastructure;
@@ -52,6 +53,7 @@ namespace Assets._Project.Develop.Runtime.UI.Gameplay
                 _container.Resolve<ProjectPresentersFactory>(),
                 _container.Resolve<StageProviderService>(),
                 _container.Resolve<RestPhaseService>(),
+                _container.Resolve<MinePlacementService>(),
                 _container.Resolve<ConfigsProviderService>().GetConfig<DefenseConfig>(),
                 _container.Resolve<IAudioService>());
         }

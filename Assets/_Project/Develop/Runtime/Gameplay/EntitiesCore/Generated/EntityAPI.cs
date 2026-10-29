@@ -682,6 +682,68 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
 			return AddComponent(new Assets._Project.Develop.Runtime.Gameplay.Features.Knockback.TakeImpulseEvent() {Value = value}); 
 		}
 
+		public Assets._Project.Develop.Runtime.Gameplay.Features.Knockback.CorpseModel CorpseModelC => GetComponent<Assets._Project.Develop.Runtime.Gameplay.Features.Knockback.CorpseModel>();
+
+		public UnityEngine.Transform CorpseModel => CorpseModelC.Value;
+
+		public bool TryGetCorpseModel(out UnityEngine.Transform value)
+		{
+			bool result = TryGetComponent(out Assets._Project.Develop.Runtime.Gameplay.Features.Knockback.CorpseModel component);
+			if(result)
+				value = component.Value;
+			else
+				value = default(UnityEngine.Transform);
+			return result;
+		}
+
+		public Assets._Project.Develop.Runtime.Gameplay.EntitiesCore.Entity AddCorpseModel(UnityEngine.Transform value)
+		{
+			return AddComponent(new Assets._Project.Develop.Runtime.Gameplay.Features.Knockback.CorpseModel() {Value = value}); 
+		}
+
+		public Assets._Project.Develop.Runtime.Gameplay.Features.Knockback.CorpseCollider CorpseColliderC => GetComponent<Assets._Project.Develop.Runtime.Gameplay.Features.Knockback.CorpseCollider>();
+
+		public UnityEngine.Collider CorpseCollider => CorpseColliderC.Value;
+
+		public bool TryGetCorpseCollider(out UnityEngine.Collider value)
+		{
+			bool result = TryGetComponent(out Assets._Project.Develop.Runtime.Gameplay.Features.Knockback.CorpseCollider component);
+			if(result)
+				value = component.Value;
+			else
+				value = default(UnityEngine.Collider);
+			return result;
+		}
+
+		public Assets._Project.Develop.Runtime.Gameplay.EntitiesCore.Entity AddCorpseCollider(UnityEngine.Collider value)
+		{
+			return AddComponent(new Assets._Project.Develop.Runtime.Gameplay.Features.Knockback.CorpseCollider() {Value = value}); 
+		}
+
+		public Assets._Project.Develop.Runtime.Gameplay.Features.Knockback.IsCorpseFlying IsCorpseFlyingC => GetComponent<Assets._Project.Develop.Runtime.Gameplay.Features.Knockback.IsCorpseFlying>();
+
+		public Assets._Project.Develop.Runtime.Utilities.Reactive.ReactiveVariable<System.Boolean> IsCorpseFlying => IsCorpseFlyingC.Value;
+
+		public bool TryGetIsCorpseFlying(out Assets._Project.Develop.Runtime.Utilities.Reactive.ReactiveVariable<System.Boolean> value)
+		{
+			bool result = TryGetComponent(out Assets._Project.Develop.Runtime.Gameplay.Features.Knockback.IsCorpseFlying component);
+			if(result)
+				value = component.Value;
+			else
+				value = default(Assets._Project.Develop.Runtime.Utilities.Reactive.ReactiveVariable<System.Boolean>);
+			return result;
+		}
+
+		public Assets._Project.Develop.Runtime.Gameplay.EntitiesCore.Entity AddIsCorpseFlying()
+		{
+			return AddComponent(new Assets._Project.Develop.Runtime.Gameplay.Features.Knockback.IsCorpseFlying() { Value = new Assets._Project.Develop.Runtime.Utilities.Reactive.ReactiveVariable<System.Boolean>() }); 
+		}
+
+		public Assets._Project.Develop.Runtime.Gameplay.EntitiesCore.Entity AddIsCorpseFlying(Assets._Project.Develop.Runtime.Utilities.Reactive.ReactiveVariable<System.Boolean> value)
+		{
+			return AddComponent(new Assets._Project.Develop.Runtime.Gameplay.Features.Knockback.IsCorpseFlying() {Value = value}); 
+		}
+
 		public Assets._Project.Develop.Runtime.Gameplay.Features.Explosions.AreaDamage AreaDamageC => GetComponent<Assets._Project.Develop.Runtime.Gameplay.Features.Explosions.AreaDamage>();
 
 		public Assets._Project.Develop.Runtime.Utilities.Reactive.ReactiveVariable<System.Single> AreaDamage => AreaDamageC.Value;
@@ -730,6 +792,13 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
 			return AddComponent(new Assets._Project.Develop.Runtime.Gameplay.Features.Explosions.IsAreaDamageApplied() {Value = value}); 
 		}
 
+		public Assets._Project.Develop.Runtime.Gameplay.Features.Enemies.Bug BugC => GetComponent<Assets._Project.Develop.Runtime.Gameplay.Features.Enemies.Bug>();
+
+		public Assets._Project.Develop.Runtime.Gameplay.EntitiesCore.Entity AddBug()
+		{
+			return AddComponent(new Assets._Project.Develop.Runtime.Gameplay.Features.Enemies.Bug() ); 
+		}
+
 		public Assets._Project.Develop.Runtime.Gameplay.Features.Defense.ClickExplosionRequest ClickExplosionRequestC => GetComponent<Assets._Project.Develop.Runtime.Gameplay.Features.Defense.ClickExplosionRequest>();
 
 		public Assets._Project.Develop.Runtime.Utilities.Reactive.ReactiveEvent<UnityEngine.Vector3> ClickExplosionRequest => ClickExplosionRequestC.Value;
@@ -776,6 +845,13 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
 		public Assets._Project.Develop.Runtime.Gameplay.EntitiesCore.Entity AddClickExplosionEvent(Assets._Project.Develop.Runtime.Utilities.Reactive.ReactiveEvent<UnityEngine.Vector3> value)
 		{
 			return AddComponent(new Assets._Project.Develop.Runtime.Gameplay.Features.Defense.ClickExplosionEvent() {Value = value}); 
+		}
+
+		public Assets._Project.Develop.Runtime.Gameplay.Features.Defense.Mine MineC => GetComponent<Assets._Project.Develop.Runtime.Gameplay.Features.Defense.Mine>();
+
+		public Assets._Project.Develop.Runtime.Gameplay.EntitiesCore.Entity AddMine()
+		{
+			return AddComponent(new Assets._Project.Develop.Runtime.Gameplay.Features.Defense.Mine() ); 
 		}
 
 		public Assets._Project.Develop.Runtime.Gameplay.Features.BuildingFeature.IsBuilding IsBuildingC => GetComponent<Assets._Project.Develop.Runtime.Gameplay.Features.BuildingFeature.IsBuilding>();

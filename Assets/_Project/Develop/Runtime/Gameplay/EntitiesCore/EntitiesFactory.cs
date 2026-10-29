@@ -2,6 +2,7 @@ using Assets._Project.Develop.Runtime.Configs.Gameplay.Entities;
 using Assets._Project.Develop.Runtime.Gameplay.EntitiesCore.Mono;
 using Assets._Project.Develop.Runtime.Gameplay.Features.ApplyDamage;
 using Assets._Project.Develop.Runtime.Configs.Gameplay.Defense;
+using Assets._Project.Develop.Runtime.Gameplay.Features.AudioFeature;
 using Assets._Project.Develop.Runtime.Gameplay.Features.Blast;
 using Assets._Project.Develop.Runtime.Gameplay.Features.Defense;
 using Assets._Project.Develop.Runtime.Gameplay.Features.Explosions;
@@ -13,6 +14,7 @@ using Assets._Project.Develop.Runtime.Gameplay.Features.SpawnFeature;
 using Assets._Project.Develop.Runtime.Gameplay.Features.TargetReach;
 using Assets._Project.Develop.Runtime.Gameplay.Features.TeamsFeature;
 using Assets._Project.Develop.Runtime.Utilities;
+using Assets._Project.Develop.Runtime.Utilities.Audio;
 using Assets._Project.Develop.Runtime.Utilities.Conditions;
 using Assets._Project.Develop.Runtime.Utilities.Reactive;
 using UnityEngine;
@@ -26,15 +28,18 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
         private readonly EntitiesLifeContext _entitiesLifeContext;
         private readonly CollidersRegistryService _collidersRegistryService;
         private readonly MonoEntitiesFactory _monoEntitiesFactory;
+        private readonly IAudioService _audio;
 
         public EntitiesFactory(
             EntitiesLifeContext entitiesLifeContext,
             MonoEntitiesFactory monoEntitiesFactory,
-            CollidersRegistryService collidersRegistryService)
+            CollidersRegistryService collidersRegistryService,
+            IAudioService audio)
         {
             _entitiesLifeContext = entitiesLifeContext;
             _monoEntitiesFactory = monoEntitiesFactory;
             _collidersRegistryService = collidersRegistryService;
+            _audio = audio;
         }
 
         public Entity CreateBuilding(Vector3 position, BuildingConfig config, float maxHealth)
@@ -62,7 +67,8 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
 
             entity
                 .AddSystem(new ApplyDamageSystem())
-                .AddSystem(new DeathSystem());
+                .AddSystem(new DeathSystem())
+                .AddSystem(new BuildingSoundsSystem(_audio));
 
             return entity;
         }
@@ -95,7 +101,8 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
                 .AddSpawnInitialTime(new ReactiveVariable<float>(config.SpawnProcessTime))
                 .AddSpawnCurrentTime()
                 .AddInSpawnProcess()
-                .AddTakeImpulseEvent();
+                .AddTakeImpulseEvent()
+                .AddIsCorpseFlying();
 
             ICompositeCondition canMove = new CompositeCondition()
                 .Add(new FuncCondition(() => entity.IsDead.Value == false))
@@ -138,8 +145,10 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
                 .AddSystem(new BlastSystem(this, config.BlastExplosion))
                 .AddSystem(new ApplyDamageSystem())
                 .AddSystem(new DeathSystem())
+                .AddSystem(new DeathFlightSystem(config))
                 .AddSystem(new DisableCollidersOnDeathSystem())
                 .AddSystem(new DeathProcessTimerSystem())
+                .AddSystem(new BugSoundsSystem(_audio))
                 .AddSystem(new SelfReleaseSystem(_entitiesLifeContext));
 
             return entity;
@@ -197,6 +206,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
             _monoEntitiesFactory.Create(entity, position, config.PrefabPath);
 
             entity
+                .AddMine()
                 .AddTeam(new ReactiveVariable<Teams>(team))
                 .AddContactsDetectingMask(Layers.CharactersMask)
                 .AddContactsDetectingRadius(new ReactiveVariable<float>(config.TriggerRadius))
@@ -228,6 +238,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
                 .AddSystem(new AnotherTeamTouchDetectorSystem())
                 .AddSystem(new BlastSystem(this, config.BlastExplosion))
                 .AddSystem(new DeathSystem())
+                .AddSystem(new MineSoundsSystem(_audio))
                 .AddSystem(new SelfReleaseSystem(_entitiesLifeContext));
 
             _entitiesLifeContext.Add(entity);
@@ -244,7 +255,9 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
                 .AddClickExplosionRequest()
                 .AddClickExplosionEvent();
 
-            entity.AddSystem(new ClickExplosionSystem(this, config));
+            entity
+                .AddSystem(new ClickExplosionSystem(this, config))
+                .AddSystem(new ClickExplosionSoundSystem(_audio));
 
             _entitiesLifeContext.Add(entity);
 

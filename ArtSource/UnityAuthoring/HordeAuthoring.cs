@@ -1,7 +1,7 @@
 // Editor authoring for the hordes (L8 look pass, 2026-10-21), run in the open Editor through Pipeline run_script:
 //   unity command --project-path <BuildingDefense> run_script --file ArtSource/UnityAuthoring/HordeAuthoring.cs --entry HordeAuthoring.Run --timeout_ms 180000
 // Idempotent: the Corpses physics layer (corpses hit only the plateau, props and each other; living entities never
-// touch the Environment colliders), the bomber's death flight (corpse collider, DeathFlightView adds the rigidbody;
+// touch the Environment colliders), the bomber's death flight (corpse collider and model for DeathFlightSystem, CorpseShrinkView;
 // thin legs and mandibles cast no shadows), blast impulses per explosion config, the level burrows and waves
 // (up to ~150 bugs at once) and the balance for such waves.
 using System.Collections.Generic;
@@ -50,6 +50,15 @@ public static class HordeAuthoring
         SetupBomber(corpses, log);
         SetupBalance(log);
         SetupLevels(log);
+        AssetDatabase.SaveAssets();
+        return log.ToString();
+    }
+
+    // Only the bomber prefab (entry HordeAuthoring.RunBomber): keeps the tuned balance and levels untouched.
+    public static string RunBomber()
+    {
+        var log = new StringBuilder();
+        SetupBomber(EnsureLayer(CorpsesLayer, log), log);
         AssetDatabase.SaveAssets();
         return log.ToString();
     }
@@ -116,7 +125,7 @@ public static class HordeAuthoring
             renderer.shadowCastingMode = thin ? ShadowCastingMode.Off : ShadowCastingMode.On;
         }
 
-        // the corpse rigidbody is added by DeathFlightView at death: a kinematic body on the living model held its
+        // the corpse rigidbody is added by DeathFlightSystem at death: a kinematic body on the living model held its
         // spawn rotation while the entity turned, so bugs walked sideways or backwards
         if (model.TryGetComponent(out Rigidbody body))
             Object.DestroyImmediate(body);
@@ -130,14 +139,23 @@ public static class HordeAuthoring
         collider.enabled = false;
         model.layer = corpses;
 
-        if (root.TryGetComponent(out DeathFlightView view) == false)
-            view = root.AddComponent<DeathFlightView>();
-        var serialized = new SerializedObject(view);
+        // DeathFlightSystem flies the corpse (curator L8: physics in a system), CorpseShrinkView only displays
+        GameObjectUtility.RemoveMonoBehavioursWithMissingScript(root);
+
+        if (root.TryGetComponent(out CorpseRegistrator registrator) == false)
+            registrator = root.AddComponent<CorpseRegistrator>();
+        var serialized = new SerializedObject(registrator);
         serialized.FindProperty("_model").objectReferenceValue = model.transform;
-        serialized.FindProperty("_corpseCollider").objectReferenceValue = collider;
+        serialized.FindProperty("_collider").objectReferenceValue = collider;
         serialized.ApplyModifiedPropertiesWithoutUndo();
 
-        log.AppendLine($"bomber: corpse collider {collider.size} on {model.name}, DeathFlightView, thin parts without shadows");
+        if (root.TryGetComponent(out CorpseShrinkView shrinkView) == false)
+            shrinkView = root.AddComponent<CorpseShrinkView>();
+        serialized = new SerializedObject(shrinkView);
+        serialized.FindProperty("_model").objectReferenceValue = model.transform;
+        serialized.ApplyModifiedPropertiesWithoutUndo();
+
+        log.AppendLine($"bomber: corpse collider {collider.size} on {model.name}, CorpseRegistrator, CorpseShrinkView, thin parts without shadows");
         PrefabUtility.SaveAsPrefabAsset(root, BomberPrefab);
         PrefabUtility.UnloadPrefabContents(root);
     }

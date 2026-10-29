@@ -1,4 +1,5 @@
 using Assets._Project.Develop.Runtime.Configs.Gameplay.Defense;
+using Assets._Project.Develop.Runtime.Gameplay.Features.Defense;
 using Assets._Project.Develop.Runtime.Gameplay.Features.Rest;
 using Assets._Project.Develop.Runtime.Gameplay.Features.StagesFeature;
 using Assets._Project.Develop.Runtime.UI.Core;
@@ -13,7 +14,7 @@ namespace Assets._Project.Develop.Runtime.UI.Gameplay
 {
     // Course GameplayScreenPresenter (L8: stage number, entity health bars with LateUpdate) plus the game HUD:
     // current phase and hint, gold, rest countdown with the start-wave button. The building's health
-    // is its health bar above the dome.
+    // is its health bar above the dome. Plays the HUD sounds: wave start and a denied mine.
     public class GameplayScreenPresenter : IPresenter
     {
         private readonly GameplayScreenView _screen;
@@ -21,6 +22,7 @@ namespace Assets._Project.Develop.Runtime.UI.Gameplay
         private readonly ProjectPresentersFactory _projectPresentersFactory;
         private readonly StageProviderService _stageProviderService;
         private readonly RestPhaseService _restPhaseService;
+        private readonly MinePlacementService _minePlacementService;
         private readonly DefenseConfig _defenseConfig;
         private readonly IAudioService _audio;
 
@@ -35,6 +37,7 @@ namespace Assets._Project.Develop.Runtime.UI.Gameplay
             ProjectPresentersFactory projectPresentersFactory,
             StageProviderService stageProviderService,
             RestPhaseService restPhaseService,
+            MinePlacementService minePlacementService,
             DefenseConfig defenseConfig,
             IAudioService audio)
         {
@@ -43,6 +46,7 @@ namespace Assets._Project.Develop.Runtime.UI.Gameplay
             _projectPresentersFactory = projectPresentersFactory;
             _stageProviderService = stageProviderService;
             _restPhaseService = restPhaseService;
+            _minePlacementService = minePlacementService;
             _defenseConfig = defenseConfig;
             _audio = audio;
         }
@@ -61,9 +65,10 @@ namespace Assets._Project.Develop.Runtime.UI.Gameplay
             UpdatePhase();
             UpdateRestTime(_restPhaseService.RemainingTime.Value);
 
-            _subscriptions.Add(_stageProviderService.CurrentStageNumber.Subscribe((oldValue, newValue) => UpdatePhase()));
+            _subscriptions.Add(_stageProviderService.CurrentStageNumber.Subscribe(OnStageChanged));
             _subscriptions.Add(_restPhaseService.IsActive.Subscribe((oldValue, newValue) => UpdatePhase()));
             _subscriptions.Add(_restPhaseService.RemainingTime.Subscribe((oldValue, newValue) => UpdateRestTime(newValue)));
+            _subscriptions.Add(_minePlacementService.Denied.Subscribe(() => _audio.Play(SoundIds.MineDenied)));
         }
 
         public void Dispose()
@@ -105,6 +110,14 @@ namespace Assets._Project.Develop.Runtime.UI.Gameplay
         {
             _audio.Play(SoundIds.UIClick);
             _restPhaseService.RequestSkip();
+        }
+
+        private void OnStageChanged(int oldNumber, int newNumber)
+        {
+            if (newNumber > oldNumber)
+                _audio.Play(SoundIds.WaveStart);
+
+            UpdatePhase();
         }
 
         private void UpdatePhase()

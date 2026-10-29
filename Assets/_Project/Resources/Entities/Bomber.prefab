@@ -47,7 +47,8 @@ GameObject:
   - component: {fileID: 8312661149548582686}
   - component: {fileID: 3038774890554794379}
   - component: {fileID: 1917421494631954257}
-  - component: {fileID: 1851660134878627181}
+  - component: {fileID: 5491268021586104869}
+  - component: {fileID: 133368904945640538}
   m_Layer: 6
   m_Name: Bomber
   m_TagString: Untagged
@@ -185,7 +186,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Assets._Project.Develop.Runtime.Gameplay.Features.LifeCycle.HealthBarPointRegistrator
   _point: {fileID: 8248926084983125360}
---- !u!114 &1851660134878627181
+--- !u!114 &5491268021586104869
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -194,15 +195,24 @@ MonoBehaviour:
   m_GameObject: {fileID: 2455737206078625900}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3012a6e07ada14b7db74d558a12673ce, type: 3}
+  m_Script: {fileID: 11500000, guid: 70b5bda427a7545e5b5671fc11b846f2, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Assets._Project.Develop.Runtime.Gameplay.Features.Knockback.DeathFlightView
+  m_EditorClassIdentifier: Assembly-CSharp::Assets._Project.Develop.Runtime.Gameplay.Features.Knockback.CorpseRegistrator
   _model: {fileID: 5110336850135358029}
-  _corpseCollider: {fileID: 6157033609693364380}
-  _mass: 1
-  _linearDamping: 0.05
-  _angularDamping: 0.4
-  _spin: 12
+  _collider: {fileID: 6157033609693364380}
+--- !u!114 &133368904945640538
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2455737206078625900}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 013965325839c4e8aa5c032a36e4e649, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Assets._Project.Develop.Runtime.Gameplay.Features.Knockback.CorpseShrinkView
+  _model: {fileID: 5110336850135358029}
   _shrinkTime: 0.4
 --- !u!1 &6366470385811536569
 GameObject:
