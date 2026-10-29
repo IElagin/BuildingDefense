@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Assets._Project.Develop.Runtime.Gameplay.Features.Attack.Shoot
 {
-    // The course InstantShootSystem for the spitter: the shot is an acid spit that bursts on touch.
+    // The course InstantShootSystem for the spitter: the shot is an acid spit that bursts on touch, aimed at the target body.
     public class AcidSpitShootSystem : IInitializableSystem, IDisposableSystem
     {
         private readonly EntitiesFactory _entitiesFactory;
@@ -18,6 +18,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Attack.Shoot
         private ReactiveEvent _attackDelayEndEvent;
 
         private Transform _shootPoint;
+        private ReactiveVariable<Entity> _currentTarget;
 
         private IDisposable _attackDelayEndDisposable;
 
@@ -34,13 +35,25 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Attack.Shoot
             _attackDelayEndEvent = entity.AttackDelayEndEvent;
 
             _shootPoint = entity.ShootPoint;
+            _currentTarget = entity.CurrentTarget;
 
             _attackDelayEndDisposable = _attackDelayEndEvent.Subscribe(OnAttackDelayEnd);
         }
 
         private void OnAttackDelayEnd()
         {
-            _entitiesFactory.CreateAcidSpit(_shootPoint.position, _shootPoint.forward, _entity, _config);
+            _entitiesFactory.CreateAcidSpit(_shootPoint.position, GetShootDirection(), _entity, _config);
+        }
+
+        // at the nearest point of the dome body, a little up from the spout, rather than straight ahead at its base
+        private Vector3 GetShootDirection()
+        {
+            Entity target = _currentTarget.Value;
+
+            if (target == null)
+                return _shootPoint.forward;
+
+            return (EntitiesHelper.GetNearestPoint(target, _shootPoint.position) - _shootPoint.position).normalized;
         }
 
         public void OnDispose()

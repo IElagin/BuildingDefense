@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Assets._Project.Develop.Runtime.Gameplay.Features.AI.States
 {
-    // Asks NavMeshMovementSystem to walk to the target; leaving the state, or losing the target, stops the bug where it stands.
+    // Asks NavMeshMovementSystem to walk to the nearest point of the target; leaving the state, or losing the target, stops the bug where it stands.
     public class MoveToTargetState : State, IUpdatableState
     {
         private readonly ReactiveVariable<Vector3> _moveDestination;
@@ -36,7 +36,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.AI.States
                 return;
             }
 
-            _moveDestination.Value = target.Transform.position;
+            _moveDestination.Value = EntitiesHelper.GetNearestPoint(target, _transform.position);
         }
     }
 }

@@ -190,9 +190,14 @@ public static class WorldAuthoring
         capsule.height = 3.4f;
         capsule.center = new Vector3(0f, 0.9f, 0f);
 
+        // the bugs walk and spit at the nearest point of this body (EntitiesHelper.GetNearestPoint)
+        if (root.TryGetComponent(out BodyColliderRegistrator body) == false)
+            body = root.AddComponent<BodyColliderRegistrator>();
+        Assign(body, ("_body", capsule));
+
         PrefabUtility.SaveAsPrefabAsset(root, path);
         PrefabUtility.UnloadPrefabContents(root);
-        log.AppendLine("Building: dome visual, Idle animator, hit sparks, capsule r1.6 h3.4");
+        log.AppendLine("Building: dome visual, Idle animator, hit sparks, capsule r1.6 h3.4 registered as the body");
     }
 
     private static void SetupMine(AnimatorController controller, StringBuilder log)

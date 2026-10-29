@@ -30,6 +30,16 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
             return true;
         }
 
+        // The point of the target body nearest to a position: every bug walks and spits at the side of the dome
+        // that faces it, not at its centre (inside the carved NavMesh hole all paths met in one point).
+        public static Vector3 GetNearestPoint(Entity target, Vector3 position)
+        {
+            if (target.TryGetBodyCollider(out CapsuleCollider body) && body.enabled)
+                return body.ClosestPoint(position);
+
+            return target.Transform.position;
+        }
+
         private static bool AreSameTeam(Entity first, Entity second)
         {
             return first.TryGetTeam(out ReactiveVariable<Teams> firstTeam)
