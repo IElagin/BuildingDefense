@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71ebc74d2aef5497cb8d017a3e609f10, type: 3}
   m_Name: SpitterConfig
   m_EditorClassIdentifier: Assembly-CSharp::Assets._Project.Develop.Runtime.Configs.Gameplay.Entities.SpitterConfig
-  <MoveSpeed>k__BackingField: 2.2
+  <MoveSpeed>k__BackingField: 1.6
   <RotationSpeed>k__BackingField: 720
   <AvoidancePriority>k__BackingField: 30
-  <MaxHealth>k__BackingField: 40
+  <MaxHealth>k__BackingField: 70
   <DeathProcessTime>k__BackingField: 2.2
   <SpawnProcessTime>k__BackingField: 0.6
   <ReachDistance>k__BackingField: 7

@@ -15,25 +15,25 @@ MonoBehaviour:
   _abilities:
   - <Type>k__BackingField: 0
     <Values>k__BackingField:
-    - 5
     - 10
-    - 15
+    - 20
+    - 30
     <TargetsCounts>k__BackingField: 
     <CostType>k__BackingField: 1
-    <UpgradeCosts>k__BackingField: 050000000a0000000f000000
+    <UpgradeCosts>k__BackingField: 03000000060000000a000000
   - <Type>k__BackingField: 1
     <Values>k__BackingField:
-    - 30
-    - 45
-    - 60
-    <TargetsCounts>k__BackingField: 030000000500000008000000
+    - 50
+    - 75
+    - 100
+    <TargetsCounts>k__BackingField: 04000000060000000a000000
     <CostType>k__BackingField: 1
-    <UpgradeCosts>k__BackingField: 050000000a0000000f000000
+    <UpgradeCosts>k__BackingField: 03000000060000000a000000
   - <Type>k__BackingField: 2
     <Values>k__BackingField:
-    - 15
-    - 30
-    - 50
+    - 20
+    - 40
+    - 60
     <TargetsCounts>k__BackingField: 
     <CostType>k__BackingField: 1
-    <UpgradeCosts>k__BackingField: 050000000a0000000f000000
+    <UpgradeCosts>k__BackingField: 03000000060000000a000000

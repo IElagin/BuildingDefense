@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: BomberConfig
   m_EditorClassIdentifier: Assembly-CSharp::Assets._Project.Develop.Runtime.Configs.Gameplay.Entities.BomberConfig
   <PrefabPath>k__BackingField: Entities/Bomber
-  <MoveSpeed>k__BackingField: 2.5
+  <MoveSpeed>k__BackingField: 1.8
   <RotationSpeed>k__BackingField: 720
-  <MaxHealth>k__BackingField: 50
+  <MaxHealth>k__BackingField: 60
   <DeathProcessTime>k__BackingField: 2.2
   <SpawnProcessTime>k__BackingField: 0.6
   <ReachDistance>k__BackingField: 2.2

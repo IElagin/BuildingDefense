@@ -15,11 +15,11 @@ MonoBehaviour:
   _burrowSpawns:
   - <BurrowIndex>k__BackingField: 0
     <EnemyConfig>k__BackingField: {fileID: 11400000, guid: 6e15bc2a2307d4690bab9c7468d54dc4, type: 2}
-    <Count>k__BackingField: 7
+    <Count>k__BackingField: 6
     <SpawnInterval>k__BackingField: 0.6
     <StartDelay>k__BackingField: 0
   - <BurrowIndex>k__BackingField: 2
     <EnemyConfig>k__BackingField: {fileID: 11400000, guid: 6e15bc2a2307d4690bab9c7468d54dc4, type: 2}
-    <Count>k__BackingField: 7
+    <Count>k__BackingField: 6
     <SpawnInterval>k__BackingField: 0.6
     <StartDelay>k__BackingField: 0.5

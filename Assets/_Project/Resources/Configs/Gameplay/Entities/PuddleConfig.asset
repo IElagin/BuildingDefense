@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Assets._Project.Develop.Runtime.Configs.Gameplay.Entities.PuddleConfig
   <PrefabPath>k__BackingField: Entities/Puddle
   <Radius>k__BackingField: 2
-  <Damage>k__BackingField: 10
+  <Damage>k__BackingField: 15
   <DamagePeriod>k__BackingField: 0.5
