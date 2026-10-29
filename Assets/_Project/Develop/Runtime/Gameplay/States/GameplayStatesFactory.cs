@@ -29,7 +29,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.States
         {
             return new RestState(
                 _container.Resolve<RestPhaseService>(),
-                _container.Resolve<MinePlacementService>());
+                _container.Resolve<DefensePlacementService>());
         }
 
         public WaveState CreateWaveState()

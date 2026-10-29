@@ -18,5 +18,8 @@ MonoBehaviour:
   <ClickExplosionCooldown>k__BackingField: 0.45
   <Mine>k__BackingField: {fileID: 11400000, guid: 5ef8a5b43c6874d9a86fcc8d6740c4df, type: 2}
   <MinePrice>k__BackingField: 25
-  <MinMineDistanceToBuilding>k__BackingField: 3
-  <MaxMineDistanceToBuilding>k__BackingField: 11
+  <TurretPrice>k__BackingField: 60
+  <PuddlePrice>k__BackingField: 35
+  <MinDistanceToBuilding>k__BackingField: 3
+  <MaxDistanceToBuilding>k__BackingField: 13
+  <MinDistanceBetweenDefenses>k__BackingField: 1.5

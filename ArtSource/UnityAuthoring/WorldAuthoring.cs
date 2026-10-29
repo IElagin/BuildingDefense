@@ -5,6 +5,8 @@
 // the burrow prop (Resources/World/Burrow), and rebuilds the Gameplay scene environment (arena with
 // colliders for corpses, props). Look pass 2026-10-21: perspective diagonal camera like the mood frame,
 // post-processing volume (bloom, colour grading, vignette), warm low sun, haze background with fog.
+// Final assignment 2026-10-29: the arena is 1.3 times larger (room for turrets and spitters at range), the camera
+// is farther at the same angle; entry WorldAuthoring.RunScene rebuilds only the Gameplay scene environment and look.
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -37,9 +39,10 @@ public static class WorldAuthoring
     private const float CameraFieldOfView = 30f;
     private const float CameraPitch = 40f;
     private const float CameraYaw = 45f;
-    private const float CameraDistance = 52f;
-    private const float FogStart = 8f;
-    private const float FogEnd = 34f;
+    private const float CameraDistance = 66f;
+    private const float FogStart = 10f;
+    private const float FogEnd = 44f;
+    private const float ArenaScale = 1.3f;
     private const float SunPitch = 42f;
     private const float SunYaw = 160f;
 
@@ -72,6 +75,18 @@ public static class WorldAuthoring
         SetupRenderPipeline(log);
         SetupScene(log);
 
+        AssetDatabase.SaveAssets();
+        return log.ToString();
+    }
+
+    public static string RunScene()
+    {
+        Scene active = SceneManager.GetActiveScene();
+        if (active.isDirty)
+            return $"NOT_RUN: the open scene {active.path} has unsaved changes";
+
+        var log = new StringBuilder();
+        SetupScene(log);
         AssetDatabase.SaveAssets();
         return log.ToString();
     }
@@ -415,11 +430,13 @@ public static class WorldAuthoring
 
         // the plateau and props are physical only for flying corpses (layer Environment; living bugs ignore it)
         GameObject arena = Place("Arena", Vector3.zero, 0f, null);
+        arena.transform.localScale = Vector3.one * ArenaScale;
         arena.GetComponentInChildren<MeshRenderer>().shadowCastingMode = ShadowCastingMode.Off;
         arena.transform.SetParent(environment.transform, true);
         AddCollider(arena, false);
 
-        // a rounded-square plateau 31 x 28 m; props keep 2.5 m and more from the level burrows (radius 11.5)
+        // a rounded-square plateau 31 x 28 m scaled by ArenaScale (about 41 x 37 m); prop positions scale with it and
+        // keep 3 m and more from the level burrows (radius 15)
         var decor = new (string model, float x, float z, float yaw, float scale)[]
         {
             ("Rock_A", -5.5f, 12f, 30f, 1f), ("Rock_A", 12.5f, -3.5f, 200f, 0.9f), ("Rock_B", -12f, 4f, 80f, 1f),
@@ -431,7 +448,7 @@ public static class WorldAuthoring
 
         foreach ((string model, float x, float z, float yaw, float scale) in decor)
         {
-            GameObject prop = Place(model, new Vector3(x, 0f, z), yaw, environment.transform);
+            GameObject prop = Place(model, new Vector3(x, 0f, z) * ArenaScale, yaw, environment.transform);
             prop.transform.localScale = Vector3.one * scale;
             AddCollider(prop, true);
         }

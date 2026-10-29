@@ -22,7 +22,8 @@ public static class HordeAuthoring
     private const string BomberPrefab = "Assets/_Project/Resources/Entities/Bomber.prefab";
     private const string CorpseMaterial = "Assets/_Project/Art/Materials/CorpsePhysics.asset";
     private const string CorpsesLayer = "Corpses";
-    private const float BurrowRadius = 11.5f;
+    private const float BurrowRadius = 15f;
+    private const float MaxDistanceToBuilding = 13f;
 
     // burrow angles (degrees around the dome) of each level; props are placed clear of all six
     private static readonly float[][] LevelBurrows =
@@ -59,6 +60,18 @@ public static class HordeAuthoring
     {
         var log = new StringBuilder();
         SetupBomber(EnsureLayer(CorpsesLayer, log), log);
+        AssetDatabase.SaveAssets();
+        return log.ToString();
+    }
+
+    // Final assignment arena (2026-10-29): only the burrow positions on the larger arena and the build ring;
+    // waves, balance and the bomber prefab stay as tuned.
+    public static string RunArena()
+    {
+        var log = new StringBuilder();
+        SetupBurrows(log);
+        Set(Load<DefenseConfig>("Defense/DefenseConfig"), ("<MaxDistanceToBuilding>k__BackingField", MaxDistanceToBuilding));
+        log.AppendLine($"build ring up to {MaxDistanceToBuilding} m");
         AssetDatabase.SaveAssets();
         return log.ToString();
     }
@@ -176,19 +189,12 @@ public static class HordeAuthoring
         var bomber = Load<BomberConfig>("Entities/BomberConfig");
         var levels = Load<LevelsListConfig>("Levels/LevelsListConfig");
 
+        SetupBurrows(log);
+
         for (int level = 0; level < LevelBurrows.Length; level++)
         {
             LevelConfig levelConfig = levels.Levels[level];
             var serialized = new SerializedObject(levelConfig);
-            SerializedProperty positions = serialized.FindProperty("_burrowPositions");
-            positions.arraySize = LevelBurrows[level].Length;
-            for (int i = 0; i < LevelBurrows[level].Length; i++)
-            {
-                float angle = LevelBurrows[level][i] * Mathf.Deg2Rad;
-                positions.GetArrayElementAtIndex(i).vector3Value =
-                    new Vector3(Mathf.Cos(angle) * BurrowRadius, 0f, Mathf.Sin(angle) * BurrowRadius);
-            }
-
             serialized.FindProperty("<BuildingMaxHealth>k__BackingField").floatValue = LevelBuildingHealth[level];
             serialized.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(levelConfig);
@@ -221,6 +227,30 @@ public static class HordeAuthoring
 
             log.AppendLine($"level {level + 1}: {LevelBurrows[level].Length} burrows, building {LevelBuildingHealth[level]} HP, waves {string.Join("/", total)}");
         }
+    }
+
+    private static void SetupBurrows(StringBuilder log)
+    {
+        var levels = Load<LevelsListConfig>("Levels/LevelsListConfig");
+
+        for (int level = 0; level < LevelBurrows.Length; level++)
+        {
+            LevelConfig levelConfig = levels.Levels[level];
+            var serialized = new SerializedObject(levelConfig);
+            SerializedProperty positions = serialized.FindProperty("_burrowPositions");
+            positions.arraySize = LevelBurrows[level].Length;
+            for (int i = 0; i < LevelBurrows[level].Length; i++)
+            {
+                float angle = LevelBurrows[level][i] * Mathf.Deg2Rad;
+                positions.GetArrayElementAtIndex(i).vector3Value =
+                    new Vector3(Mathf.Cos(angle) * BurrowRadius, 0f, Mathf.Sin(angle) * BurrowRadius);
+            }
+
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(levelConfig);
+        }
+
+        log.AppendLine($"burrows on radius {BurrowRadius}");
     }
 
     private static T Load<T>(string path) where T : Object =>

@@ -57,7 +57,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Infrastructure
             container.Register(CreateRestPhaseService, Lifetime.Scoped);
 
             container.Register(CreateGroundPointService, Lifetime.Scoped);
-            container.Register(CreateMinePlacementService, Lifetime.Scoped);
+            container.Register(CreateDefensePlacementService, Lifetime.Scoped);
 
             container.Register(CreateGameplayStatesFactory, Lifetime.Scoped);
 
@@ -139,12 +139,13 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Infrastructure
             return new BuildingHolderService(c.Resolve<EntitiesLifeContext>());
         }
 
-        private static MinePlacementService CreateMinePlacementService(IObjectResolver c)
+        private static DefensePlacementService CreateDefensePlacementService(IObjectResolver c)
         {
-            return new MinePlacementService(
+            return new DefensePlacementService(
                 c.Resolve<IInputService>(),
                 c.Resolve<GroundPointService>(),
                 c.Resolve<EntitiesFactory>(),
+                c.Resolve<EntitiesLifeContext>(),
                 c.Resolve<WalletService>(),
                 c.Resolve<BuildingHolderService>(),
                 c.Resolve<ConfigsProviderService>().GetConfig<DefenseConfig>());

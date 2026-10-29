@@ -1,5 +1,6 @@
 using Assets._Project.Develop.Runtime.UI.CommonViews;
 using Assets._Project.Develop.Runtime.UI.Core;
+using Assets._Project.Develop.Runtime.UI.Gameplay.Defense;
 using Assets._Project.Develop.Runtime.UI.Gameplay.HealthDisplay;
 using System;
 using TMPro;
@@ -9,7 +10,7 @@ using UnityEngine.UI;
 namespace Assets._Project.Develop.Runtime.UI.Gameplay
 {
     // Course GameplayScreenView (L8: stage number, entity health bars) plus the game's phase,
-    // hint, rest countdown with the start-wave button and the wallet.
+    // hint, rest countdown with the start-wave button, the defense cards (rest only) and the wallet.
     public class GameplayScreenView : MonoBehaviour, IView
     {
         public event Action StartWaveButtonClicked;
@@ -26,11 +27,17 @@ namespace Assets._Project.Develop.Runtime.UI.Gameplay
 
         [field: SerializeField] public IconTextListView WalletView { get; private set; }
 
+        [field: SerializeField] public DefensePanelView DefensePanel { get; private set; }
+
         public void SetPhase(string text) => _phaseText.text = text;
 
         public void SetHint(string text) => _hintText.text = text;
 
-        public void SetRestVisible(bool isVisible) => _restPanel.SetActive(isVisible);
+        public void SetRestVisible(bool isVisible)
+        {
+            _restPanel.SetActive(isVisible);
+            DefensePanel.gameObject.SetActive(isVisible);
+        }
 
         public void SetRestTime(string text) => _restTimeText.text = text;
 

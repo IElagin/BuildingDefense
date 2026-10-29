@@ -34,9 +34,17 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.InputFeature
                 if (mouse == null || mouse.leftButton.wasPressedThisFrame == false)
                     return false;
 
+                return IsPointerOverUI == false;
+            }
+        }
+
+        public bool IsPointerOverUI
+        {
+            get
+            {
                 EventSystem eventSystem = EventSystem.current;
 
-                return eventSystem == null || eventSystem.IsPointerOverGameObject() == false;
+                return eventSystem != null && eventSystem.IsPointerOverGameObject();
             }
         }
 
@@ -51,6 +59,24 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.InputFeature
 
                 return keyboard != null && keyboard.spaceKey.wasPressedThisFrame;
             }
+        }
+
+        public bool TryGetPressedSlot(out int slot)
+        {
+            slot = 0;
+            Keyboard keyboard = Keyboard.current;
+
+            if (IsEnabled == false || keyboard == null)
+                return false;
+
+            if (keyboard.digit1Key.wasPressedThisFrame || keyboard.numpad1Key.wasPressedThisFrame)
+                slot = 1;
+            else if (keyboard.digit2Key.wasPressedThisFrame || keyboard.numpad2Key.wasPressedThisFrame)
+                slot = 2;
+            else if (keyboard.digit3Key.wasPressedThisFrame || keyboard.numpad3Key.wasPressedThisFrame)
+                slot = 3;
+
+            return slot != 0;
         }
     }
 }

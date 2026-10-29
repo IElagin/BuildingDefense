@@ -4,18 +4,18 @@ using Assets._Project.Develop.Runtime.Utilities.StateMachineCore;
 
 namespace Assets._Project.Develop.Runtime.Gameplay.States
 {
-    // Rest before a wave (the course preparation state): the click places mines until the rest is over.
+    // Rest before a wave (the course preparation state): the player builds defenses until the rest is over.
     public class RestState : State, IUpdatableState
     {
         private readonly RestPhaseService _restPhaseService;
-        private readonly MinePlacementService _minePlacementService;
+        private readonly DefensePlacementService _defensePlacementService;
 
         public RestState(
             RestPhaseService restPhaseService,
-            MinePlacementService minePlacementService)
+            DefensePlacementService defensePlacementService)
         {
             _restPhaseService = restPhaseService;
-            _minePlacementService = minePlacementService;
+            _defensePlacementService = defensePlacementService;
         }
 
         public override void Enter()
@@ -28,7 +28,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.States
         public void Update(float deltaTime)
         {
             _restPhaseService.Update();
-            _minePlacementService.Update();
+            _defensePlacementService.Update();
         }
 
         public override void Exit()

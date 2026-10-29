@@ -4,6 +4,8 @@
 // Latin and Cyrillic from Russo One and Exo 2 (only when missing, so their GUIDs stay), restyles the menu,
 // loading screen, currency view and gameplay HUD, builds the course result popups and HP bars, and puts
 // a health bar point on the bomber and building prefabs. Prefabs keep their roots; children are rebuilt.
+// Entry UIAuthoring.RunGameplayHud (final assignment, 2026-10-29) rebuilds only the gameplay HUD with the defense
+// cards and the placement ring prefab.
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,6 +16,7 @@ using Assets._Project.Develop.Runtime.Gameplay.Features.LifeCycle;
 using Assets._Project.Develop.Runtime.UI;
 using Assets._Project.Develop.Runtime.UI.CommonViews;
 using Assets._Project.Develop.Runtime.UI.Gameplay;
+using Assets._Project.Develop.Runtime.UI.Gameplay.Defense;
 using Assets._Project.Develop.Runtime.UI.Gameplay.HealthDisplay;
 using Assets._Project.Develop.Runtime.UI.Gameplay.ResultsPopups;
 using Assets._Project.Develop.Runtime.UI.MainMenu;
@@ -36,6 +39,7 @@ public static class UIAuthoring
     private const string Backgrounds = "Assets/_Project/Art/Sprites/Backgrounds/";
     private const string UI = "Assets/_Project/Resources/UI/";
     private const string Entities = "Assets/_Project/Resources/Entities/";
+    private const string ParticleMaterial = "Assets/_Project/Art/Materials/ParticleFlat.mat";
 
     private const string Charset =
         "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789" +
@@ -95,10 +99,31 @@ public static class UIAuthoring
         return log.ToString();
     }
 
+    public static string RunGameplayHud()
+    {
+        var log = new StringBuilder();
+
+        ImportSprites(log);
+        _russo = FontAsset("RussoOne-Regular.ttf", "RussoOne SDF", log);
+        _exo = FontAsset("Exo2-Regular.ttf", "Exo2 SDF", log);
+        _exoSemiBold = FontAsset("Exo2-SemiBold.ttf", "Exo2 SemiBold SDF", log);
+        _russoOutline = OutlineMaterial(_russo, "RussoOne SDF Outline");
+
+        BuildGameplayScreen();
+        BuildPlacementPreview();
+
+        AssetDatabase.SaveAssets();
+        log.AppendLine("gameplay HUD with defense cards, placement preview");
+        return log.ToString();
+    }
+
     // ---------- assets ----------
 
     private static void ImportSprites(StringBuilder log)
     {
+        // sprites freshly drawn by make_ui_sprites.py have no importer until the asset database sees them
+        AssetDatabase.Refresh();
+
         foreach (string path in Directory.GetFiles(Sprites, "*.png"))
         {
             var importer = (TextureImporter)AssetImporter.GetAtPath(path);
@@ -320,7 +345,15 @@ public static class UIAuthoring
             Button startWave = MakeButton(restPanel, "StartWaveButton", new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(-22, 0), new Vector2(430, 104),
                 S("ButtonOrange"), "Начать волну\n<size=65%>Space</size>", 38);
 
+            // defense cards to the left of the rest panel, keys 1-3 in DefenseTypes order
+            RectTransform defensePanel = Place(safeArea, "DefensePanel", new Vector2(0, 0), new Vector2(0, 0), new Vector2(30, 36), new Vector2(474, 136));
+            var defensePanelView = defensePanel.gameObject.AddComponent<DefensePanelView>();
+            SetRef(defensePanelView, "<MineCard>k__BackingField", DefenseCard(defensePanel, 0, "IconMine"));
+            SetRef(defensePanelView, "<TurretCard>k__BackingField", DefenseCard(defensePanel, 1, "IconTurret"));
+            SetRef(defensePanelView, "<PuddleCard>k__BackingField", DefenseCard(defensePanel, 2, "IconPuddle"));
+
             var view = root.GetComponent<GameplayScreenView>();
+            SetRef(view, "<DefensePanel>k__BackingField", defensePanelView);
             SetRef(view, "_phaseText", phase);
             SetRef(view, "_hintText", hint);
             SetRef(view, "_restPanel", restPanel.gameObject);
@@ -330,6 +363,70 @@ public static class UIAuthoring
             SetRef(view, "<EntitiesHealthDisplay>k__BackingField", healthDisplay);
             SetRef(view, "<WalletView>k__BackingField", wallet);
         });
+    }
+
+    private static DefenseCardView DefenseCard(RectTransform panel, int index, string icon)
+    {
+        RectTransform rect = Place(panel, "Card" + (index + 1), new Vector2(0, 0), new Vector2(0, 0), new Vector2(index * 162, 0), new Vector2(150, 136));
+        Image background = AddImage(rect, S("ButtonDark"), Color.white, true);
+        var button = rect.gameObject.AddComponent<Button>();
+        button.targetGraphic = background;
+        ColorBlock colors = button.colors;
+        colors.highlightedColor = new Color(0.93f, 0.97f, 1f);
+        colors.pressedColor = new Color(0.78f, 0.82f, 0.85f);
+        colors.disabledColor = new Color(0.5f, 0.5f, 0.5f, 0.75f);
+        colors.fadeDuration = 0.08f;
+        button.colors = colors;
+        button.navigation = new Navigation { mode = Navigation.Mode.None };
+        rect.gameObject.AddComponent<ButtonPressFeedback>();
+
+        RectTransform content = Stretch(rect, "Content");
+        var group = content.gameObject.AddComponent<CanvasGroup>();
+        group.blocksRaycasts = false;
+        AddImage(Place(content, "Icon", new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, -10), new Vector2(76, 76)), S(icon), Color.white).preserveAspect = true;
+        AddText(Place(content, "Key", new Vector2(0, 1), new Vector2(0, 1), new Vector2(14, -8), new Vector2(30, 34)),
+            (index + 1).ToString(), _russo, 28, TextMuted, TextAlignmentOptions.TopLeft);
+        AddImage(Place(content, "GoldIcon", new Vector2(0.5f, 0), new Vector2(1, 0.5f), new Vector2(-4, 28), new Vector2(30, 30)), S("IconGold"), Color.white).preserveAspect = true;
+        TMP_Text price = AddText(Place(content, "Price", new Vector2(0.5f, 0), new Vector2(0, 0.5f), new Vector2(0, 28), new Vector2(70, 36)),
+            "25", _russo, 30, Gold, TextAlignmentOptions.MidlineLeft, _russoOutline);
+
+        RectTransform locked = Stretch(rect, "Locked");
+        AddImage(locked, S("Panel"), new Color(1, 1, 1, 0.75f));
+        AddText(Stretch(locked, "Label"), "скоро", _exoSemiBold, 30, TextWarm, TextAlignmentOptions.Center);
+        locked.gameObject.SetActive(false);
+
+        var card = rect.gameObject.AddComponent<DefenseCardView>();
+        SetRef(card, "_button", button);
+        SetRef(card, "_background", background);
+        SetRef(card, "_normalSprite", S("ButtonDark"));
+        SetRef(card, "_selectedSprite", S("ButtonTeal"));
+        SetRef(card, "_content", group);
+        SetRef(card, "_priceText", price);
+        SetRef(card, "_lockedLabel", locked.gameObject);
+        return card;
+    }
+
+    // A world ring for the placement preview (unlit particle material, coloured by the view).
+    private static void BuildPlacementPreview()
+    {
+        string path = UI + "Gameplay/PlacementPreview.prefab";
+        var root = new GameObject("PlacementPreview");
+        var ring = root.AddComponent<LineRenderer>();
+        ring.sharedMaterial = AssetDatabase.LoadAssetAtPath<Material>(ParticleMaterial);
+        ring.widthMultiplier = 0.14f;
+        ring.numCornerVertices = 2;
+        ring.alignment = LineAlignment.View;
+        ring.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+        ring.receiveShadows = false;
+        ring.useWorldSpace = false;
+        ring.loop = true;
+        ring.positionCount = 0;
+
+        var view = root.AddComponent<PlacementPreviewView>();
+        SetRef(view, "_ring", ring);
+
+        PrefabUtility.SaveAsPrefabAsset(root, path);
+        Object.DestroyImmediate(root);
     }
 
     // Course lesson 55: slider bar with a dark back and a tintable filler; the simple variant hides the text.

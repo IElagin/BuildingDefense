@@ -185,6 +185,53 @@ def icon_timer(size=128):
     save(img, "IconTimer")
 
 
+def icon_mine(size=128):
+    s = size * SS
+    img = Image.new("RGBA", (s, s), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    d.ellipse((s * 0.1, s * 0.44, s * 0.9, s * 0.86), fill=hexc("1E1626"))
+    d.ellipse((s * 0.12, s * 0.36, s * 0.88, s * 0.78), fill=hexc("4A5560"))
+    d.ellipse((s * 0.2, s * 0.4, s * 0.8, s * 0.7), fill=hexc("6B7884"))
+    for k in range(6):
+        a = math.radians(30 + 60 * k)
+        cx, cy = s * 0.5 + math.cos(a) * s * 0.3, s * 0.57 + math.sin(a) * s * 0.17
+        d.ellipse((cx - s * 0.035, cy - s * 0.03, cx + s * 0.035, cy + s * 0.03), fill=hexc("1E1626"))
+    d.ellipse((s * 0.38, s * 0.44, s * 0.62, s * 0.62), fill=hexc("5A2414"))
+    d.ellipse((s * 0.41, s * 0.45, s * 0.59, s * 0.59), fill=hexc("FF8A1F"))
+    d.ellipse((s * 0.45, s * 0.47, s * 0.52, s * 0.52), fill=hexc("FFE89A"))
+    save(img, "IconMine")
+
+
+def icon_turret(size=128):
+    s = size * SS
+    img = Image.new("RGBA", (s, s), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    d.polygon(hexagon(s * 0.5, s * 0.78, s * 0.36), fill=hexc("1E1626"))
+    d.polygon(hexagon(s * 0.5, s * 0.74, s * 0.33), fill=hexc("4A5560"))
+    d.rectangle((s * 0.5, s * 0.3, s * 0.94, s * 0.42), fill=hexc("0B3B40"))
+    d.rectangle((s * 0.52, s * 0.32, s * 0.92, s * 0.4), fill=hexc("2FD3C8"))
+    d.ellipse((s * 0.86, s * 0.29, s * 0.98, s * 0.43), fill=hexc("8AF6FF"))
+    d.pieslice((s * 0.22, s * 0.26, s * 0.78, s * 0.82), 180, 360, fill=hexc("0B3B40"))
+    d.pieslice((s * 0.26, s * 0.3, s * 0.74, s * 0.78), 180, 360, fill=hexc("127A86"))
+    d.rectangle((s * 0.22, s * 0.53, s * 0.78, s * 0.62), fill=hexc("0B3B40"))
+    d.ellipse((s * 0.42, s * 0.38, s * 0.58, s * 0.52), fill=hexc("8AF6FF"))
+    save(img, "IconTurret")
+
+
+def icon_puddle(size=128):
+    s = size * SS
+    img = Image.new("RGBA", (s, s), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    blob = [(0.08, 0.66), (0.2, 0.5), (0.4, 0.46), (0.58, 0.4), (0.82, 0.46), (0.94, 0.62), (0.84, 0.8), (0.6, 0.86), (0.36, 0.84), (0.14, 0.8)]
+    d.polygon([(x * s, y * s + 2 * SS) for x, y in blob], fill=hexc("1F5A12"))
+    d.polygon([(x * s, y * s) for x, y in blob], fill=hexc("4FC21E"))
+    inner = [(0.5 + (x - 0.5) * 0.7, 0.64 + (y - 0.64) * 0.62) for x, y in blob]
+    d.polygon([(x * s, y * s) for x, y in inner], fill=hexc("7CFF3A"))
+    for cx, cy, r in ((0.36, 0.6, 0.05), (0.62, 0.66, 0.04), (0.5, 0.26, 0.06), (0.7, 0.18, 0.035)):
+        d.ellipse((s * (cx - r), s * (cy - r), s * (cx + r), s * (cy + r)), fill=hexc("C8FF9A"))
+    save(img, "IconPuddle")
+
+
 def glow_dot(size=64):
     s = size * SS
     img = Image.new("RGBA", (s, s), (0, 0, 0, 0))
@@ -268,6 +315,9 @@ if __name__ == "__main__":
     icon_shield()
     icon_bug()
     icon_timer()
+    icon_mine()
+    icon_turret()
+    icon_puddle()
     glow_dot()
     star("Star", hexc("8C5A14"), hexc("E0A82A"), top=hexc("FFD34D"))
     star("StarSlot", hexc("0B3B40"), hexc("1C2833"))
