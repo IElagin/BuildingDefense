@@ -2,6 +2,7 @@ using Assets._Project.Develop.Runtime.Configs.Gameplay.Entities;
 using Assets._Project.Develop.Runtime.Configs.Gameplay.Levels;
 using Assets._Project.Develop.Runtime.Gameplay.EntitiesCore;
 using Assets._Project.Develop.Runtime.Gameplay.Features.TeamsFeature;
+using Assets._Project.Develop.Runtime.Meta.Features.AbilitiesUpgrade;
 using VContainer;
 using Assets._Project.Develop.Runtime.Utilities.ConfigsManagement;
 using Assets._Project.Develop.Runtime.Utilities.Reactive;
@@ -19,6 +20,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.BuildingFeature
         private readonly ConfigsProviderService _configsProviderService;
         private readonly EntitiesLifeContext _entitiesLifeContext;
         private readonly LevelConfig _levelConfig;
+        private readonly AbilitiesUpgradeService _abilitiesUpgradeService;
 
         public BuildingFactory(IObjectResolver container)
         {
@@ -27,6 +29,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.BuildingFeature
             _configsProviderService = _container.Resolve<ConfigsProviderService>();
             _entitiesLifeContext = _container.Resolve<EntitiesLifeContext>();
             _levelConfig = _container.Resolve<LevelConfig>();
+            _abilitiesUpgradeService = _container.Resolve<AbilitiesUpgradeService>();
         }
 
         public Entity Create(Vector3 position)
@@ -38,6 +41,8 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.BuildingFeature
             entity
                 .AddIsBuilding()
                 .AddTeam(new ReactiveVariable<Teams>(Teams.Player));
+
+            _entitiesFactory.AddHealOnStageStart(entity, _abilitiesUpgradeService.GetCurrentValueFor(AbilityTypes.DomeRepair));
 
             _entitiesLifeContext.Add(entity);
 

@@ -19,4 +19,9 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Heal
     {
         public ICompositeCondition Value;
     }
+
+    public class HealOnStageStartPercent : IEntityComponent
+    {
+        public ReactiveVariable<float> Value;
+    }
 }

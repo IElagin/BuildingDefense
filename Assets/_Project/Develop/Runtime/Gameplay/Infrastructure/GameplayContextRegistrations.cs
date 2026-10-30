@@ -69,9 +69,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Infrastructure
             container.Register(CreateBuildingHolderService, Lifetime.Scoped);
             container.RegisterBuildCallback(c => c.Resolve<BuildingHolderService>().Initialize());
 
-            container.Register(CreateDomeRepairService, Lifetime.Scoped);
             container.Register(CreateOrbitalVolleyService, Lifetime.Scoped);
-            container.RegisterBuildCallback(c => c.Resolve<DomeRepairService>().Initialize());
             container.RegisterBuildCallback(c => c.Resolve<OrbitalVolleyService>().Initialize());
 
             container.Register<IInputService>(CreateDesktopInput, Lifetime.Scoped);
@@ -140,14 +138,6 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Infrastructure
         private static GameplayStatesFactory CreateGameplayStatesFactory(IObjectResolver c)
         {
             return new GameplayStatesFactory(c);
-        }
-
-        private static DomeRepairService CreateDomeRepairService(IObjectResolver c)
-        {
-            return new DomeRepairService(
-                c.Resolve<StageProviderService>(),
-                c.Resolve<BuildingHolderService>(),
-                c.Resolve<AbilitiesUpgradeService>().GetCurrentValueFor(AbilityTypes.DomeRepair));
         }
 
         private static OrbitalVolleyService CreateOrbitalVolleyService(IObjectResolver c)
@@ -265,7 +255,8 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Infrastructure
                 c.Resolve<MonoEntitiesFactory>(),
                 c.Resolve<CollidersRegistryService>(),
                 c.Resolve<IAudioService>(),
-                c.Resolve<RestPhaseService>());
+                c.Resolve<RestPhaseService>(),
+                c.Resolve<StageProviderService>());
         }
 
         // The single place where the scene learns its level; services take the LevelConfig from the container.

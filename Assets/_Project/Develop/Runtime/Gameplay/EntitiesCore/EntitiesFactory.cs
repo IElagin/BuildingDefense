@@ -16,6 +16,7 @@ using Assets._Project.Develop.Runtime.Gameplay.Features.Knockback;
 using Assets._Project.Develop.Runtime.Gameplay.Features.LifeCycle;
 using Assets._Project.Develop.Runtime.Gameplay.Features.MovementFeature;
 using Assets._Project.Develop.Runtime.Gameplay.Features.Rest;
+using Assets._Project.Develop.Runtime.Gameplay.Features.StagesFeature;
 using Assets._Project.Develop.Runtime.Gameplay.Features.Sensors;
 using Assets._Project.Develop.Runtime.Gameplay.Features.SpawnFeature;
 using Assets._Project.Develop.Runtime.Gameplay.Features.TargetReach;
@@ -39,19 +40,22 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
         private readonly MonoEntitiesFactory _monoEntitiesFactory;
         private readonly IAudioService _audio;
         private readonly RestPhaseService _restPhaseService;
+        private readonly StageProviderService _stageProviderService;
 
         public EntitiesFactory(
             EntitiesLifeContext entitiesLifeContext,
             MonoEntitiesFactory monoEntitiesFactory,
             CollidersRegistryService collidersRegistryService,
             IAudioService audio,
-            RestPhaseService restPhaseService)
+            RestPhaseService restPhaseService,
+            StageProviderService stageProviderService)
         {
             _entitiesLifeContext = entitiesLifeContext;
             _monoEntitiesFactory = monoEntitiesFactory;
             _collidersRegistryService = collidersRegistryService;
             _audio = audio;
             _restPhaseService = restPhaseService;
+            _stageProviderService = stageProviderService;
         }
 
         public Entity CreateBuilding(Vector3 position, BuildingConfig config, float maxHealth)
@@ -65,9 +69,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
                 .AddCurrentHealth(new ReactiveVariable<float>(maxHealth))
                 .AddIsDead()
                 .AddTakeDamageRequest()
-                .AddTakeDamageEvent()
-                .AddHealRequest()
-                .AddHealEvent();
+                .AddTakeDamageEvent();
 
             ICompositeCondition mustDie = new CompositeCondition()
                 .Add(new FuncCondition(() => entity.CurrentHealth.Value <= 0));
@@ -75,17 +77,14 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
             ICompositeCondition canApplyDamage = new CompositeCondition()
                 .Add(new FuncCondition(() => entity.IsDead.Value == false));
 
-            ICompositeCondition canHeal = new CompositeCondition()
-                .Add(new FuncCondition(() => entity.IsDead.Value == false));
-
             entity
                 .AddMustDie(mustDie)
-                .AddCanApplyDamage(canApplyDamage)
-                .AddCanHeal(canHeal);
+                .AddCanApplyDamage(canApplyDamage);
+
+            AddHealing(entity);
 
             entity
                 .AddSystem(new ApplyDamageSystem())
-                .AddSystem(new HealSystem())
                 .AddSystem(new DeathSystem())
                 .AddSystem(new BuildingSoundsSystem(_audio));
 
@@ -612,6 +611,27 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
             _entitiesLifeContext.Add(entity);
 
             return entity;
+        }
+
+        // Called on a recipe that has health and already can be healed (AddHealing).
+        public Entity AddHealOnStageStart(Entity entity, float healPercent)
+        {
+            return entity
+                .AddHealOnStageStartPercent(new ReactiveVariable<float>(healPercent))
+                .AddSystem(new HealOnStageStartSystem(_stageProviderService));
+        }
+
+        // Any recipe with CurrentHealth, MaxHealth and IsDead becomes healable with this call.
+        private void AddHealing(Entity entity)
+        {
+            ICompositeCondition canHeal = new CompositeCondition()
+                .Add(new FuncCondition(() => entity.IsDead.Value == false));
+
+            entity
+                .AddHealRequest()
+                .AddHealEvent()
+                .AddCanHeal(canHeal)
+                .AddSystem(new HealSystem());
         }
 
         private Entity CreateEmpty() => new Entity();
