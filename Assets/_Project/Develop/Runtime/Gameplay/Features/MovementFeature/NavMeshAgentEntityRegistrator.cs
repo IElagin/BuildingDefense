@@ -1,6 +1,5 @@
 using Assets._Project.Develop.Runtime.Gameplay.EntitiesCore;
 using Assets._Project.Develop.Runtime.Gameplay.EntitiesCore.Mono;
-using UnityEngine;
 using UnityEngine.AI;
 
 namespace Assets._Project.Develop.Runtime.Gameplay.Features.MovementFeature

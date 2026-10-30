@@ -6,8 +6,8 @@ using System;
 
 namespace Assets._Project.Develop.Runtime.Gameplay.Features.AudioFeature
 {
-    // A bug's sounds: crawling out of its burrow, the orbital volley beam, then the acid blast at the dome or its death.
-    public class BugSoundsSystem : IInitializableSystem, IDisposableSystem
+    // A bomber's sounds: crawling out of its burrow, the orbital volley beam, then the acid blast at the dome or its death.
+    public class BomberSoundsSystem : IInitializableSystem, IDisposableSystem
     {
         private readonly IAudioService _audio;
 
@@ -15,7 +15,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.AudioFeature
         private IDisposable _orbitalVolleyHitDisposable;
         private IDisposable _isDeadDisposable;
 
-        public BugSoundsSystem(IAudioService audio)
+        public BomberSoundsSystem(IAudioService audio)
         {
             _audio = audio;
         }

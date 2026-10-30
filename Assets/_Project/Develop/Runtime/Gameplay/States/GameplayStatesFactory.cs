@@ -10,6 +10,7 @@ using Assets._Project.Develop.Runtime.Meta.Features.AbilitiesUpgrade;
 using Assets._Project.Develop.Runtime.Meta.Features.Statistics;
 using Assets._Project.Develop.Runtime.Meta.Features.Wallet;
 using Assets._Project.Develop.Runtime.UI.Gameplay;
+using Assets._Project.Develop.Runtime.Utilities;
 using Assets._Project.Develop.Runtime.Utilities.Conditions;
 using Assets._Project.Develop.Runtime.Utilities.ConfigsManagement;
 using Assets._Project.Develop.Runtime.Utilities.DataManagement.DataProviders;
@@ -46,16 +47,6 @@ namespace Assets._Project.Develop.Runtime.Gameplay.States
                 _container.Resolve<IInputService>(),
                 _container.Resolve<GroundPointService>(),
                 clickExplosionCaster);
-        }
-
-        // Like the course MainHeroFactory.GetStats: the config value raised by the bought strike boost (percent).
-        private float GetClickExplosionDamage(DefenseConfig defenseConfig)
-        {
-            float boostPercent = _container
-                .Resolve<AbilitiesUpgradeService>()
-                .GetCurrentValueFor(AbilityTypes.StrikeBoost);
-
-            return defenseConfig.ClickExplosionDamage * (1 + boostPercent / 100);
         }
 
         public WinState CreateWinState(RunSpendingRefund runSpendingRefund)
@@ -142,6 +133,16 @@ namespace Assets._Project.Develop.Runtime.Gameplay.States
             coreLoopState.AddTransition(waveState, restState, waveToRestCondition);
 
             return coreLoopState;
+        }
+
+        // Like the course MainHeroFactory.GetStats: the config value raised by the bought strike boost (percent).
+        private float GetClickExplosionDamage(DefenseConfig defenseConfig)
+        {
+            float boostPercent = _container
+                .Resolve<AbilitiesUpgradeService>()
+                .GetCurrentValueFor(AbilityTypes.StrikeBoost);
+
+            return defenseConfig.ClickExplosionDamage * (1 + Percent.ToShare(boostPercent));
         }
     }
 }

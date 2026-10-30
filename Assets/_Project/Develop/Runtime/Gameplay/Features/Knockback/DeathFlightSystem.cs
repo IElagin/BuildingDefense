@@ -15,6 +15,9 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Knockback
     // on the living model kept its spawn rotation while the entity turned. Goes after DeathSystem in the recipe.
     public class DeathFlightSystem : IInitializableSystem, IUpdatableSystem, IDisposableSystem
     {
+        private const float MinImpulseSpread = 0.85f;
+        private const float MaxImpulseSpread = 1.15f;
+
         private readonly BugConfig _config;
 
         private Transform _model;
@@ -71,7 +74,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Knockback
             body.interpolation = RigidbodyInterpolation.Interpolate;
 
             _collider.enabled = true;
-            body.AddForce(_impulse * Random.Range(0.85f, 1.15f), ForceMode.VelocityChange);
+            body.AddForce(_impulse * Random.Range(MinImpulseSpread, MaxImpulseSpread), ForceMode.VelocityChange);
             body.AddTorque(Random.onUnitSphere * _config.CorpseSpin, ForceMode.VelocityChange);
 
             _isCorpseFlying.Value = true;

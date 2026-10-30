@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Assets._Project.Develop.Runtime.Configs.Gameplay.Entities
 {
-    // One explosion look and lifetime for every source: clicks, mines and bombers.
+    // One explosion look and lifetime for all its sources.
     [CreateAssetMenu(menuName = "Configs/Gameplay/Entities/NewExplosionConfig", fileName = "ExplosionConfig")]
     public class ExplosionConfig : EntityConfig
     {

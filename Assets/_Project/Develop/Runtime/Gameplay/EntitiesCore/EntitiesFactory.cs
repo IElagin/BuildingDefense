@@ -32,7 +32,10 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
     public class EntitiesFactory
     {
         private const int ContactsBufferSize = 256;
-        // the arena has no walls: a bolt that missed dies this far from where it was shot
+        private const int ProjectileContactsBufferSize = 64;
+        private const float ProjectileSpeed = 25;
+        private const float InstantRotationSpeed = 9999;
+        // the arena has no walls: a projectile dies this far from where it was shot
         private const float ProjectileMaxDistance = 30;
 
         private readonly EntitiesLifeContext _entitiesLifeContext;
@@ -169,7 +172,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
                 .AddSystem(new DisableCollidersOnDeathSystem())
                 .AddSystem(new DisableNavMeshAgentOnDeathSystem())
                 .AddSystem(new DeathProcessTimerSystem())
-                .AddSystem(new BugSoundsSystem(_audio))
+                .AddSystem(new BomberSoundsSystem(_audio))
                 .AddSystem(new SelfReleaseSystem(_entitiesLifeContext));
 
             return entity;
@@ -294,11 +297,11 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
                 .AddMoveSpeed(new ReactiveVariable<float>(config.SpitSpeed))
                 .AddIsMoving()
                 .AddRotationDirection(new ReactiveVariable<Vector3>(direction))
-                .AddRotationSpeed(new ReactiveVariable<float>(9999))
+                .AddRotationSpeed(new ReactiveVariable<float>(InstantRotationSpeed))
                 .AddIsDead()
                 .AddContactsDetectingMask(Layers.CharactersMask | Layers.EnvironmentMask)
-                .AddContactCollidersBuffer(new Buffer<Collider>(64))
-                .AddContactEntitiesBuffer(new Buffer<Entity>(64))
+                .AddContactCollidersBuffer(new Buffer<Collider>(ProjectileContactsBufferSize))
+                .AddContactEntitiesBuffer(new Buffer<Entity>(ProjectileContactsBufferSize))
                 .AddDeathMask(Layers.EnvironmentMask)
                 .AddIsTouchDeathMask()
                 .AddIsTouchAnotherTeam()
@@ -319,7 +322,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
 
             ICompositeCondition mustDie = new CompositeCondition(LogicOperations.Or)
                 .Add(new FuncCondition(() => entity.IsBlasted.Value))
-                .Add(new FuncCondition(() => (entity.Transform.position - position).sqrMagnitude > ProjectileMaxDistance * ProjectileMaxDistance));
+                .Add(new FuncCondition(() => IsBeyondProjectileRange(entity, position)));
 
             ICompositeCondition mustSelfRelease = new CompositeCondition()
                 .Add(new FuncCondition(() => entity.IsDead.Value));
@@ -498,14 +501,14 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
                 .AddIsProjectile()
                 .AddOwner(new ReactiveVariable<Entity>(owner))
                 .AddMoveDirection(new ReactiveVariable<Vector3>(direction))
-                .AddMoveSpeed(new ReactiveVariable<float>(25))
+                .AddMoveSpeed(new ReactiveVariable<float>(ProjectileSpeed))
                 .AddIsMoving()
                 .AddRotationDirection(new ReactiveVariable<Vector3>(direction))
-                .AddRotationSpeed(new ReactiveVariable<float>(9999))
+                .AddRotationSpeed(new ReactiveVariable<float>(InstantRotationSpeed))
                 .AddIsDead()
                 .AddContactsDetectingMask(Layers.CharactersMask | Layers.EnvironmentMask)
-                .AddContactCollidersBuffer(new Buffer<Collider>(64))
-                .AddContactEntitiesBuffer(new Buffer<Entity>(64))
+                .AddContactCollidersBuffer(new Buffer<Collider>(ProjectileContactsBufferSize))
+                .AddContactEntitiesBuffer(new Buffer<Entity>(ProjectileContactsBufferSize))
                 .AddBodyContactDamage(new ReactiveVariable<float>(damage))
                 .AddDeathMask(Layers.EnvironmentMask)
                 .AddIsTouchDeathMask()
@@ -521,7 +524,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
             ICompositeCondition mustDie = new CompositeCondition(LogicOperations.Or)
                 .Add(new FuncCondition(() => entity.IsTouchDeathMask.Value))
                 .Add(new FuncCondition(() => entity.IsTouchAnotherTeam.Value))
-                .Add(new FuncCondition(() => (entity.Transform.position - position).sqrMagnitude > ProjectileMaxDistance * ProjectileMaxDistance));
+                .Add(new FuncCondition(() => IsBeyondProjectileRange(entity, position)));
 
             ICompositeCondition mustSelfRelease = new CompositeCondition()
                 .Add(new FuncCondition(() => entity.IsDead.Value));
@@ -633,6 +636,9 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
                 .AddCanHeal(canHeal)
                 .AddSystem(new HealSystem());
         }
+
+        private static bool IsBeyondProjectileRange(Entity entity, Vector3 shotPoint)
+            => (entity.Transform.position - shotPoint).sqrMagnitude > ProjectileMaxDistance * ProjectileMaxDistance;
 
         private Entity CreateEmpty() => new Entity();
     }

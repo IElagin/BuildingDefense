@@ -9,7 +9,7 @@ namespace Assets._Project.Develop.Runtime.Utilities.Audio
         WaveStart,
         OrbitalStrike,
         MinePlace,
-        MineDenied,
+        PlacementDenied,
         MineBlast,
         BugSpawn,
         BugDeath,

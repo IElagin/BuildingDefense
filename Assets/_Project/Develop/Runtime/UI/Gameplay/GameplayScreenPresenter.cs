@@ -67,7 +67,7 @@ namespace Assets._Project.Develop.Runtime.UI.Gameplay
             _subscriptions.Add(_stageProviderService.CurrentStageNumber.Subscribe(OnStageChanged));
             _subscriptions.Add(_restPhaseService.IsActive.Subscribe((oldValue, newValue) => UpdatePhase()));
             _subscriptions.Add(_restPhaseService.RemainingTime.Subscribe((oldValue, newValue) => UpdateRestTime(newValue)));
-            _subscriptions.Add(_defensePlacementService.Denied.Subscribe(() => _audio.Play(SoundIds.MineDenied)));
+            _subscriptions.Add(_defensePlacementService.Denied.Subscribe(() => _audio.Play(SoundIds.PlacementDenied)));
         }
 
         public void Dispose()
@@ -143,7 +143,9 @@ namespace Assets._Project.Develop.Runtime.UI.Gameplay
                 return;
             }
 
-            _screen.SetPhase($"Волна {_stageProviderService.CurrentStageNumber.Value}");
+            int waveNumber = _stageProviderService.CurrentStageNumber.Value;
+
+            _screen.SetPhase($"Волна {waveNumber}");
             _screen.SetHint("Клик по земле — орбитальный удар");
         }
 

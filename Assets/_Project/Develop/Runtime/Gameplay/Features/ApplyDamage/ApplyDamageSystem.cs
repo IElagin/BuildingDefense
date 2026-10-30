@@ -3,7 +3,6 @@ using Assets._Project.Develop.Runtime.Gameplay.EntitiesCore.Systems;
 using Assets._Project.Develop.Runtime.Utilities.Conditions;
 using Assets._Project.Develop.Runtime.Utilities.Reactive;
 using System;
-using UnityEngine;
 
 namespace Assets._Project.Develop.Runtime.Gameplay.Features.ApplyDamage
 {
@@ -45,7 +44,6 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.ApplyDamage
 
             _health.Value = MathF.Max(_health.Value - damage, 0);
             _damageEvent.Invoke(damage);
-            Debug.Log("Я получил урон!");
         }
     }
 }

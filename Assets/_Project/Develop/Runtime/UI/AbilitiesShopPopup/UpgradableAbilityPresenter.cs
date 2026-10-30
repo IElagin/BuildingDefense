@@ -80,13 +80,13 @@ namespace Assets._Project.Develop.Runtime.UI.AbilitiesShopPopup
             _disposables.Clear();
         }
 
-        private void OnAbilityLevelChanged(int arg1, int arg2)
+        private void OnAbilityLevelChanged(int oldLevel, int newLevel)
         {
             UpdateLevelTexts();
             UpdateBuyButtonState();
         }
 
-        private void OnWalletChanged(int arg1, int arg2) => UpdateBuyButtonState();
+        private void OnWalletChanged(int oldAmount, int newAmount) => UpdateBuyButtonState();
 
         private void OnBuyButtonClicked()
         {
@@ -143,17 +143,20 @@ namespace Assets._Project.Develop.Runtime.UI.AbilitiesShopPopup
             string result = level == 0 ? "Не куплено" : GetEffectText(level);
 
             if (level < maxLevel)
-                result += $"\n<color={NextLevelColor}>» {GetEffectText(level + 1)}</color>";
+            {
+                string nextLevelEffect = GetEffectText(level + 1);
+                result += $"\n<color={NextLevelColor}>» {nextLevelEffect}</color>";
+            }
 
             _view.SetEffectText(result);
         }
 
         private string GetEffectText(int level)
         {
-            return string.Format(
-                ViewData.EffectFormat,
-                _abilitiesUpgradeService.GetValueFor(_abilityType, level),
-                _abilitiesUpgradeService.GetTargetsCountFor(_abilityType, level));
+            float value = _abilitiesUpgradeService.GetValueFor(_abilityType, level);
+            int targetsCount = _abilitiesUpgradeService.GetTargetsCountFor(_abilityType, level);
+
+            return string.Format(ViewData.EffectFormat, value, targetsCount);
         }
     }
 }

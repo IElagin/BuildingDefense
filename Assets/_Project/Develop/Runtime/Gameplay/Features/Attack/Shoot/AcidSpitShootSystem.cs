@@ -40,12 +40,17 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Attack.Shoot
             _attackDelayEndDisposable = _attackDelayEndEvent.Subscribe(OnAttackDelayEnd);
         }
 
+        public void OnDispose()
+        {
+            _attackDelayEndDisposable.Dispose();
+        }
+
         private void OnAttackDelayEnd()
         {
             _entitiesFactory.CreateAcidSpit(_shootPoint.position, GetShootDirection(), _entity, _config);
         }
 
-        // at the nearest point of the dome body, a little up from the spout, rather than straight ahead at its base
+        // at the nearest point of the target body, a little up from the spout, rather than straight ahead at its base
         private Vector3 GetShootDirection()
         {
             Entity target = _currentTarget.Value;
@@ -54,11 +59,6 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Attack.Shoot
                 return _shootPoint.forward;
 
             return (EntitiesHelper.GetNearestPoint(target, _shootPoint.position) - _shootPoint.position).normalized;
-        }
-
-        public void OnDispose()
-        {
-            _attackDelayEndDisposable.Dispose();
         }
     }
 }

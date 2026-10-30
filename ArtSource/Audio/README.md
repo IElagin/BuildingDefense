@@ -11,7 +11,7 @@ Not part of the course (it has no audio module): the Studio audio addition from 
 
   | System | Event | Sound |
   |---|---|---|
-  | `BugSoundsSystem` (bomber) | out of a burrow / orbital volley hit / killed / blew up at the dome | BugSpawn / OrbitalVolley / BugDeath / AcidBlast |
+  | `BomberSoundsSystem` | out of a burrow / orbital volley hit / killed / blew up at the dome | BugSpawn / OrbitalVolley / BugDeath / AcidBlast |
   | `SpitterSoundsSystem` | out of a burrow / orbital volley hit / spit leaves / killed | BugSpawn / OrbitalVolley / SpitterSpit / BugDeath |
   | `AcidSpitSoundsSystem` | the acid blob splashes | AcidSpitSplash |
   | `BuildingSoundsSystem` (dome) | hit / repaired / destroyed | DomeHit / DomeRepair / DomeDestroyed |
@@ -20,7 +20,7 @@ Not part of the course (it has no audio module): the Studio audio addition from 
   | `PuddleSoundsSystem` | placed | PuddlePlace |
   | `ClickExplosionSoundSystem` | orbital strike | OrbitalStrike |
 
-  A refused placement plays MineDenied, a new wave WaveStart. Views and prefabs have no audio code.
+  A refused placement plays PlacementDenied, a new wave WaveStart. Views and prefabs have no audio code.
 - **UI sounds** in presenters:
   - menu Play → UIOpen;
   - the start-wave button → UIClick;
@@ -38,7 +38,7 @@ Not part of the course (it has no audio module): the Studio audio addition from 
   |---|---|---|
   | Sci-Fi Sounds 1.0 | `119340f3…49e04` | OrbitalStrike (laserLarge + lowFrequency_explosion), OrbitalVolley (laserRetro + forceField), MineBlast (explosionCrunch), AcidBlast and the spit (slime), TurretShot (laserSmall), DomeDestroyed, the force-field layer of DomeHit |
   | Impact Sounds | `029d734a…77f8` | DomeHit (impactMetal_heavy), MinePlace (impactPlate_medium), TurretPlace, AcidSpitSplash (impactSoft) |
-  | Interface Sounds | `f2193d07…1232` | UIClick, UIOpen, MineDenied, the beep of MinePlace, the drops of the spit and the puddle |
+  | Interface Sounds | `f2193d07…1232` | UIClick, UIOpen, PlacementDenied, the beep of MinePlace, the drops of the spit and the puddle |
 
   The packs are unpacked in `ArtSource/Library/Kenney`, which is not in Git; full hashes are in the script header.
 - **Local synthesis** (pure Python, fixed seeds; blocks from FinalProject's `sfx_synth.py`):

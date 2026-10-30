@@ -30,7 +30,7 @@ public static class AudioAuthoring
         (SoundIds.WaveStart, AudioChannels.Gameplay, 0.6f, 1f, 1f, 0.5f),
         (SoundIds.OrbitalStrike, AudioChannels.Gameplay, 0.8f, 0.95f, 1.05f, 0.05f),
         (SoundIds.MinePlace, AudioChannels.Gameplay, 0.7f, 0.97f, 1.03f, 0.05f),
-        (SoundIds.MineDenied, AudioChannels.UI, 0.6f, 1f, 1f, 0.15f),
+        (SoundIds.PlacementDenied, AudioChannels.UI, 0.6f, 1f, 1f, 0.15f),
         (SoundIds.MineBlast, AudioChannels.Gameplay, 0.8f, 0.92f, 1.06f, 0.06f),
         (SoundIds.BugSpawn, AudioChannels.Gameplay, 0.35f, 0.9f, 1.15f, 0.12f),
         (SoundIds.BugDeath, AudioChannels.Gameplay, 0.45f, 0.85f, 1.2f, 0.035f),

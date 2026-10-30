@@ -13,6 +13,8 @@ namespace Assets._Project.Develop.Runtime.Meta.Features.AbilitiesUpgrade
     // Course StatsUpgradeService (L11): ability levels saved in PlayerData. Level 0 — not bought, the ability is off.
     public class AbilitiesUpgradeService : IDataReader<PlayerData>, IDataWriter<PlayerData>
     {
+        private const int NotBoughtLevel = 0;
+
         private ConfigsProviderService _configsProviderService;
 
         private Dictionary<AbilityTypes, ReactiveVariable<int>> _abilityLevels = new();
@@ -36,13 +38,13 @@ namespace Assets._Project.Develop.Runtime.Meta.Features.AbilitiesUpgrade
             => AbilitiesUpgradeConfig.GetAbilityConfig(type).Values.Count;
 
         public float GetValueFor(AbilityTypes type, int level)
-            => level == 0 ? 0 : AbilitiesUpgradeConfig.GetAbilityConfig(type).Values[level - 1];
+            => level == NotBoughtLevel ? 0 : AbilitiesUpgradeConfig.GetAbilityConfig(type).Values[GetLevelIndex(level)];
 
         public int GetTargetsCountFor(AbilityTypes type, int level)
         {
             List<int> targetsCounts = AbilitiesUpgradeConfig.GetAbilityConfig(type).TargetsCounts;
 
-            return level == 0 || targetsCounts.Count < level ? 0 : targetsCounts[level - 1];
+            return level == NotBoughtLevel || targetsCounts.Count < level ? 0 : targetsCounts[GetLevelIndex(level)];
         }
 
         public float GetCurrentValueFor(AbilityTypes type)
@@ -93,7 +95,7 @@ namespace Assets._Project.Develop.Runtime.Meta.Features.AbilitiesUpgrade
 
             foreach (AbilityTypes abilityType in Enum.GetValues(typeof(AbilityTypes)))
                 if (data.AbilityLevels == null || data.AbilityLevels.ContainsKey(abilityType) == false)
-                    SetLevel(abilityType, 0);
+                    SetLevel(abilityType, NotBoughtLevel);
         }
 
         public void WriteTo(PlayerData data)
@@ -103,6 +105,9 @@ namespace Assets._Project.Develop.Runtime.Meta.Features.AbilitiesUpgrade
             foreach (var ability in _abilityLevels)
                 data.AbilityLevels[ability.Key] = ability.Value.Value;
         }
+
+        // level 1 is the first entry of the config lists
+        private static int GetLevelIndex(int level) => level - 1;
 
         private void SetLevel(AbilityTypes abilityType, int level)
         {

@@ -3,10 +3,10 @@ using Assets._Project.Develop.Runtime.Configs.Gameplay.Levels;
 using Assets._Project.Develop.Runtime.Gameplay.EntitiesCore;
 using Assets._Project.Develop.Runtime.Gameplay.Features.TeamsFeature;
 using Assets._Project.Develop.Runtime.Meta.Features.AbilitiesUpgrade;
-using VContainer;
 using Assets._Project.Develop.Runtime.Utilities.ConfigsManagement;
 using Assets._Project.Develop.Runtime.Utilities.Reactive;
 using UnityEngine;
+using VContainer;
 
 namespace Assets._Project.Develop.Runtime.Gameplay.Features.BuildingFeature
 {

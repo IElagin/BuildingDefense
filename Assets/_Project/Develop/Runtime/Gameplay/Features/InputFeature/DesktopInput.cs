@@ -6,6 +6,11 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.InputFeature
 {
     public class DesktopInput : IInputService
     {
+        private const int NoSlot = 0;
+        private const int FirstSlot = 1;
+        private const int SecondSlot = 2;
+        private const int ThirdSlot = 3;
+
         public bool IsEnabled { get; set; } = true;
 
         public Vector2 PointerPosition
@@ -63,20 +68,20 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.InputFeature
 
         public bool TryGetPressedSlot(out int slot)
         {
-            slot = 0;
+            slot = NoSlot;
             Keyboard keyboard = Keyboard.current;
 
             if (IsEnabled == false || keyboard == null)
                 return false;
 
             if (keyboard.digit1Key.wasPressedThisFrame || keyboard.numpad1Key.wasPressedThisFrame)
-                slot = 1;
+                slot = FirstSlot;
             else if (keyboard.digit2Key.wasPressedThisFrame || keyboard.numpad2Key.wasPressedThisFrame)
-                slot = 2;
+                slot = SecondSlot;
             else if (keyboard.digit3Key.wasPressedThisFrame || keyboard.numpad3Key.wasPressedThisFrame)
-                slot = 3;
+                slot = ThirdSlot;
 
-            return slot != 0;
+            return slot != NoSlot;
         }
     }
 }

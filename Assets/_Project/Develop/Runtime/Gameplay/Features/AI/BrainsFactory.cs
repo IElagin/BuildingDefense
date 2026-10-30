@@ -9,6 +9,8 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.AI
 {
     public class BrainsFactory
     {
+        private const float AttackAimToleranceDegrees = 3f;
+
         private readonly IObjectResolver _container;
         private readonly AIBrainsContext _brainsContext;
         private readonly EntitiesLifeContext _entitiesLifeContext;
@@ -111,7 +113,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.AI
                         return false;
 
                     float angleToTarget = Quaternion.Angle(transform.rotation, Quaternion.LookRotation(target.Transform.position - transform.position));
-                    return angleToTarget < 3f;
+                    return angleToTarget < AttackAimToleranceDegrees;
                 }));
 
             ReactiveVariable<bool> inAttackProcess = entity.InAttackProcess;

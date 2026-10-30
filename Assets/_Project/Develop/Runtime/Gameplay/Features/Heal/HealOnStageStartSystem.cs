@@ -1,6 +1,7 @@
 using Assets._Project.Develop.Runtime.Gameplay.EntitiesCore;
 using Assets._Project.Develop.Runtime.Gameplay.EntitiesCore.Systems;
 using Assets._Project.Develop.Runtime.Gameplay.Features.StagesFeature;
+using Assets._Project.Develop.Runtime.Utilities;
 using Assets._Project.Develop.Runtime.Utilities.Reactive;
 using System;
 
@@ -38,7 +39,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Heal
 
         private void OnStageNumberChanged(int oldNumber, int newNumber)
         {
-            _healRequest.Invoke(_maxHealth.Value * _healPercent.Value / 100);
+            _healRequest.Invoke(_maxHealth.Value * Percent.ToShare(_healPercent.Value));
         }
     }
 }

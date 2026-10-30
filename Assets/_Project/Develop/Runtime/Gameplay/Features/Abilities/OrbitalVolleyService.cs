@@ -1,6 +1,7 @@
 using Assets._Project.Develop.Runtime.Gameplay.EntitiesCore;
 using Assets._Project.Develop.Runtime.Gameplay.Features.Enemies;
 using Assets._Project.Develop.Runtime.Gameplay.Features.StagesFeature;
+using Assets._Project.Develop.Runtime.Utilities;
 using System;
 using System.Collections.Generic;
 
@@ -67,7 +68,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Abilities
 
                 ForgetTarget(entity);
                 entity.OrbitalVolleyHitEvent.Invoke();
-                entity.TakeDamageRequest.Invoke(entity.MaxHealth.Value * _damagePercent / 100);
+                entity.TakeDamageRequest.Invoke(entity.MaxHealth.Value * Percent.ToShare(_damagePercent));
             }));
         }
 

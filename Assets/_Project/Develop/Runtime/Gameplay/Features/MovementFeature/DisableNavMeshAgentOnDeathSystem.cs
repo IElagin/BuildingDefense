@@ -22,15 +22,15 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.MovementFeature
             _isDeadChangedDisposable = _isDead.Subscribe(OnIsDeadChanged);
         }
 
-        private void OnIsDeadChanged(bool arg1, bool isDead)
-        {
-            if (isDead)
-                _agent.enabled = false;
-        }
-
         public void OnDispose()
         {
             _isDeadChangedDisposable.Dispose();
+        }
+
+        private void OnIsDeadChanged(bool oldValue, bool isDead)
+        {
+            if (isDead)
+                _agent.enabled = false;
         }
     }
 }

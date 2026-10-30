@@ -8,6 +8,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Burrows
     public class BurrowsService
     {
         private const string BurrowPrefabPath = "World/Burrow";
+        private const float FullCircleDegrees = 360f;
 
         private readonly LevelConfig _levelConfig;
         private readonly ResourcesAssetsLoader _resourcesAssetsLoader;
@@ -23,7 +24,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Burrows
             GameObject prefab = _resourcesAssetsLoader.Load<GameObject>(BurrowPrefabPath);
 
             foreach (Vector3 position in _levelConfig.BurrowPositions)
-                Object.Instantiate(prefab, position, Quaternion.Euler(0, Random.Range(0f, 360f), 0));
+                Object.Instantiate(prefab, position, Quaternion.Euler(0, Random.Range(0f, FullCircleDegrees), 0));
         }
 
         public Vector3 GetPosition(int burrowIndex) => _levelConfig.BurrowPositions[burrowIndex];

@@ -15,8 +15,8 @@ namespace Assets._Project.Develop.Runtime.Configs.Gameplay.Defense
         [field: SerializeField] public MineConfig Mine { get; private set; }
         [field: SerializeField, Min(0)] public int MinePrice { get; private set; } = 25;
         [field: SerializeField] public TurretConfig Turret { get; private set; }
-        [field: SerializeField] public PuddleConfig Puddle { get; private set; }
         [field: SerializeField, Min(0)] public int TurretPrice { get; private set; } = 60;
+        [field: SerializeField] public PuddleConfig Puddle { get; private set; }
         [field: SerializeField, Min(0)] public int PuddlePrice { get; private set; } = 35;
 
         // the build ring around the building and the gap between two defenses

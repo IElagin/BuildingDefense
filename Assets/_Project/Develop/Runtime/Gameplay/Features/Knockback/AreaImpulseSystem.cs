@@ -11,8 +11,10 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Knockback
     // up and outwards, stronger near the centre. Whoever dies from the blast flies off with this impulse.
     public class AreaImpulseSystem : IInitializableSystem, IUpdatableSystem
     {
-        private const float LiftShare = 1.1f;
-        private const float EdgeShare = 0.55f;
+        private const float LiftFactor = 1.1f;
+        private const float EdgeImpulseShare = 0.55f;
+        private const float MinRadius = 0.01f;
+        private const float MinDirectionSqrMagnitude = 0.0001f;
 
         private readonly HashSet<Entity> _pushedEntities = new();
 
@@ -53,11 +55,11 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Knockback
             Vector3 away = target - centre;
             away.y = 0;
 
-            float closeness = 1 - Mathf.Clamp01(away.magnitude / Mathf.Max(_radius.Value, 0.01f)) * (1 - EdgeShare);
-            Vector2 random = Random.insideUnitCircle.normalized;
-            Vector3 direction = away.sqrMagnitude > 0.0001f ? away.normalized : new Vector3(random.x, 0, random.y);
+            float closeness = 1 - Mathf.Clamp01(away.magnitude / Mathf.Max(_radius.Value, MinRadius)) * (1 - EdgeImpulseShare);
+            Vector2 randomDirection = Random.insideUnitCircle.normalized;
+            Vector3 direction = away.sqrMagnitude > MinDirectionSqrMagnitude ? away.normalized : new Vector3(randomDirection.x, 0, randomDirection.y);
 
-            return (direction + Vector3.up * LiftShare) * (_impulse.Value * closeness);
+            return (direction + Vector3.up * LiftFactor) * (_impulse.Value * closeness);
         }
     }
 }

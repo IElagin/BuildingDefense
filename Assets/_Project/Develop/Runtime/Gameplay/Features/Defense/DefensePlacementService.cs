@@ -15,6 +15,8 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Defense
     // kept for the placement preview.
     public class DefensePlacementService
     {
+        private const int FirstSlot = 1;
+
         private readonly IInputService _inputService;
         private readonly GroundPointService _groundPointService;
         private readonly DefensesFactory _defensesFactory;
@@ -95,7 +97,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Defense
         public void Update()
         {
             if (_inputService.TryGetPressedSlot(out int slot))
-                Select((DefenseTypes)(slot - 1));
+                Select((DefenseTypes)(slot - FirstSlot));
 
             HasPointerPoint = false;
 
@@ -139,9 +141,9 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Defense
         private static bool IsDefense(Entity entity) =>
             entity.HasComponent<Mine>() || entity.HasComponent<Turret>() || entity.HasComponent<Puddle>();
 
-        private static float FlatDistance(Vector3 a, Vector3 b)
+        private static float FlatDistance(Vector3 from, Vector3 to)
         {
-            Vector3 offset = a - b;
+            Vector3 offset = from - to;
             offset.y = 0;
 
             return offset.magnitude;
